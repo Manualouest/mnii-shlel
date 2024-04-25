@@ -6,7 +6,7 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:56:56 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/23 22:32:46 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/04/25 16:04:58 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,11 @@ void	envdelone(t_env_handler *env, void (*del)(void *))
 	env = NULL;
 }
 
-void	enviter(t_env_handler *env, void (*f)(void *))
+void	enviter(t_env_handler *env, void (*f)(t_env_handler *))
 {
 	if (env == NULL)
 		return ;
+	f(env);
 	if (env->next != NULL)
 		enviter(env->next, f);
-	f(&env->info);
 }

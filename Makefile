@@ -11,7 +11,8 @@ LIBFT_A = $(INCLUDES)libft/libft.a
 SRC_DIR = src/
 SRC_NAME = ms_main.c
 SRC_NAME +=	env_handler/ms_env_var.c \
-			env_handler/ms_env_utils.c
+			env_handler/ms_env_utils.c \
+			env_handler/ms_builtin_export.c
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 
 OBJ_DIR = obj/

@@ -6,7 +6,7 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/23 18:20:33 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/04/25 19:00:14 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,15 @@ static char	*read_term(void);
 
 int	main(int argc, char **argv, char **envp)
 {
-	char *input;
 	(void)argc, (void)argv;
 
-	setup_env_struct(envp);
+	char *input;
+	t_env_handler	*env;
+
+	env = setup_env_struct(envp);
+	builtin_export(env, NULL, NULL);
+	envclear(&env, free);
+
 	return (0);
 
 

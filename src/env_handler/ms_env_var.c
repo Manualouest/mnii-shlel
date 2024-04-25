@@ -6,34 +6,39 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:07:29 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/23 18:54:25 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/04/25 17:03:29 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static char *extract_env_name(char *var);
+static t_env_str extract_env_name(char *var);
+static void	print_env(t_env_handler *env);
 
 t_env_handler	*setup_env_struct(char **envp)
 {
-	int		i;
-	char 	*tmp;
+	int				i;
+	t_env_str		tmp;
+	t_env_handler	*lst;
 
 	i = 0;
 	while (envp[i])
 	{
 		tmp = extract_env_name(envp[i]);
-		printf("%s = %s\n", tmp, &tmp[ft_strlen(tmp) + 1]);
-		free(tmp);
+		if (i == 0)
+			lst = env_new(tmp);
+		else
+			envadd_back(&lst, env_new(tmp));
 		i++;
 	}
-	return (NULL);
+	return (lst);
 }
 
-static char *extract_env_name(char *var)
+static t_env_str extract_env_name(char *var)
 {
-	int		i;
-	char	*work;
+	int			i;
+	t_env_str	ret;
+	char		*work;
 
 	i = -1;
 	work = strdup(var);
@@ -44,5 +49,17 @@ static char *extract_env_name(char *var)
 		work[i] = 0;
 		break ;
 	}
-	return (work);
+	ret.name = work;
+	ret.content = &work[i + 1];
+	return (ret);
+}
+
+void builtin_env(t_env_handler *env)
+{
+	enviter(env, print_env);
+}
+
+static void	print_env(t_env_handler *env)
+{
+	printf("%s=%s\n", env->info.name, env->info.content);
 }

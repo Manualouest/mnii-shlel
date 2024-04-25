@@ -6,7 +6,7 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:32:41 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/23 18:11:19 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/04/25 18:59:36 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,5 +35,8 @@
 
 # define PROMPT_CONST "\033[1;31mmnii \033[1;35mshlel:"
 # define PROMPT_USER " \033[1;36m\n$  "
+
+void	builtin_env(t_env_handler *env);
+int		builtin_export(t_env_handler *env, char **name, char **content);
 
 #endif
