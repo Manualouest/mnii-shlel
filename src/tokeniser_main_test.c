@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/04/25 20:04:43 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/04/26 22:44:29 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	main()
 	{
 		full_line = ms_tokeniser_main(a);
 		ms_pipe_test_printer(full_line);
+		ms_pipes_free_main(full_line);
 	}
 	free(path);
 	free(a);
@@ -93,8 +94,6 @@ void	ms_pipes_test_printer_find_symbol(int symbol)
 		write(1, "APPEND", 6);
 	else if (symbol == 7)
 		write(1, "DOLLAR", 6);
-	else if (symbol == 8)
-		write(1, "SLASH", 5);
 }
 
 void	ms_pipe_test_printer(t_pipes *full_line)
@@ -110,8 +109,10 @@ void	ms_pipe_test_printer(t_pipes *full_line)
 		else
 		{
 			write(1, "command = not NULL\n", 19);
-			write(1, &(char){full_line->command->cmd + '0'}, 1);
-			ms_pipes_test_printer_find_cmd(full_line->command->cmd);
+			write(1, &(char){full_line->command->builtins + '0'}, 1);
+			ms_pipes_test_printer_find_cmd(full_line->command->builtins);
+			write(1, "\n", 1);
+			write(1, full_line->command->cmd, ft_strlen(full_line->command->cmd));
 			write(1, "\n", 1);
 			write(1, &(char){full_line->command->has_option + '0'}, 1);
 			write(1, "\n", 1);
@@ -134,12 +135,12 @@ void	ms_pipe_test_printer(t_pipes *full_line)
 					else
 						write(1, "STRING", 6);
 					write(1, "\n", 1);
-					write(1, "		text: ", 8);
+					write(1, "		text: |", 9);
 					if (tp_params->type == 1)
 						write(1, tp_params->text, ft_strlen(tp_params->text));
 					else
 						write(1, "NULL", 4);
-					write(1, "\n", 1);
+					write(1, "|\n", 2);
 					write(1, "		symbol: ", 10);
 					ms_pipes_test_printer_find_symbol(tp_params->symbol);
 					write(1, "\n", 1);

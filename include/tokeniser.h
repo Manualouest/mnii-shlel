@@ -12,13 +12,13 @@
 # include <stdlib.h>
 # include <stdarg.h>
 
-typedef enum TYPE
+typedef enum e_type
 {
 	SYMBOL,
 	STRING
-}	TYPE;
+}	t_type;
 
-typedef enum CMD
+typedef enum e_cmd
 {
 	NO_CMD,
 	ECHO,
@@ -28,9 +28,9 @@ typedef enum CMD
 	UNSET,
 	ENV,
 	EXIT
-}	CMD;
+}	t_cmd;
 
-typedef enum SYMBOLS
+typedef enum e_symbols
 {
 	NO_SYMBOL,
 	QUOTE,
@@ -39,56 +39,60 @@ typedef enum SYMBOLS
 	HEREDOC,// <<
 	REDIRECT,// >
 	APPEND,// >>
-	DOLLAR,
-	SLASH
-}	SYMBOLS;
+	DOLLAR
+}	t_symbols;
 
-typedef enum CMD_ERRORS
+typedef enum e_cmd_errors
 {
 	NO_ERROR,
 	BAD_PARAMS,
 	BAD_CMD,
 	BAD_PATH
-}	CMD_ERRORS;
+}	t_cmd_errors;
 
 typedef	struct	s_pipes
 {
 	struct s_command	*command;
 	struct s_pipes		*right;
-	int					error;
+	t_cmd_errors		error;
 }						t_pipes;
-
-typedef struct s_params
-{
-	int				type;
-	char			*text;
-	int				symbol;
-	int				quote_level;
-	struct s_params	*next;
-}				t_params;
 
 typedef struct s_command
 {
-	int				cmd;
+	t_cmd			builtins;
+	char			*cmd;
 	int				has_option;
 	struct s_params	*params;
-	int				error;
+	t_cmd_errors	error;
 }					t_command;
+
+typedef struct s_params
+{
+	t_type			type;
+	char			*text;
+	t_symbols		symbol;
+	int				quote_level;
+	struct s_params	*next;
+}				t_params;
 
 // ms_tokeniser_main.c
 t_pipes	*ms_tokeniser_main(char *line);
 
 // ms_tokeniser_cmd.c
 void	ms_init_cmd(t_command *command, char *line, int *i);
+char	*ms_get_next_item(char *line, int *main_index);
 
 // ms_tokeniser_params.c
 void	ms_fill_params(t_command *cmd, t_params *params, char *line, int *i);
 
 // ms_tokeniser_utils.c
-int		ms_am_i_at_the_next_pipe(char *line, int i);
 void	ms_head_to_next_pipe(char *line, int *main_index);
-char	*ms_get_next_item(char *line, int *main_index, int quote);
-int		ms_is_symbol(char c);
+int		ms_is_line_done(char *line, int i, char *item);
+int		ms_am_i_at_the_next_pipe(char *line, int i);
 int		ms_is_not_symbol(int c);
+int		ms_is_symbol(char c);
+
+// ms_tokeniser_free.c
+void	ms_pipes_free_main(t_pipes *pipes);
 
 #endif

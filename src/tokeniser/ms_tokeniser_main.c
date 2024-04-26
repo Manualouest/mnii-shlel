@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:06:19 by mbirou            #+#    #+#             */
-/*   Updated: 2024/04/25 20:04:33 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/04/26 22:34:45 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,34 +16,51 @@ int	ms_check_for_pipes(char *line)
 {
 	int	i;
 	int	nb_pipes;
+	int	quote_level;
 
 	i = -1;
 	nb_pipes = 0;
+	quote_level = 0;
 	while (line[++i])
-		if (line[i] == '|')
+	{
+		if (quote_level == 0 && line[i] == "'"[0])
+			quote_level = 1;
+		else if (quote_level == 1 && line[i] == "'"[0])
+			quote_level = 0;
+		else if (quote_level == 0 && line[i] == '"')
+			quote_level = 2;
+		else if (quote_level == 2 && line[i] == '"')
+			quote_level = 0;
+		if (quote_level == 0 && line[i] == '|')
 			nb_pipes ++;
+	}
 	return (nb_pipes);
+}
+
+void	ms_setup_right_pipe(t_pipes *pipe, int nb_pipes)
+{
+	if (nb_pipes > 1)
+		pipe->right = malloc(sizeof(*pipe));
+	else
+		pipe->right = NULL;
 }
 
 void	ms_init_pipes(t_pipes *main, int nb_pipes)
 {
-	t_pipes *temp_pipe;
+	t_pipes	*temp_pipe;
 	t_pipes	*start;
 	int		is_first;
 
 	is_first = 1;
 	main->right = NULL;
-	if (nb_pipes != 0)	
+	if (nb_pipes != 0)
 	{
 		while (nb_pipes > 0)
 		{
 			if (is_first == 1)
 				temp_pipe = malloc(sizeof(*temp_pipe));
 			temp_pipe->command = malloc(sizeof(*temp_pipe->command));
-			if (nb_pipes > 1)
-				temp_pipe->right = malloc(sizeof(*temp_pipe));
-			else
-				temp_pipe->right = NULL;
+			ms_setup_right_pipe(temp_pipe, nb_pipes);
 			if (is_first == 1)
 			{
 				is_first = 0;

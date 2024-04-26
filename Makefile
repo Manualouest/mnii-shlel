@@ -12,7 +12,8 @@ SRC_NAME = tokeniser_main_test.c
 SRC_NAME +=	tokeniser/ms_tokeniser_cmd.c\
 			tokeniser/ms_tokeniser_main.c\
 			tokeniser/ms_tokeniser_params.c\
-			tokeniser/ms_tokeniser_utils.c
+			tokeniser/ms_tokeniser_utils.c\
+			tokeniser/ms_tokeniser_free.c
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 
 OBJ_DIR = obj/
