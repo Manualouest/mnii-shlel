@@ -6,37 +6,45 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:04:18 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/25 19:09:55 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/04/26 01:10:18 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
 
-static void export_no_args(t_env_handler *env);
+static void				export_no_args(t_env_handler *env);
 
-int	builtin_export(t_env_handler *env, char **name, char **content)
+int	builtin_export(t_env_handler *env, t_env_str *params)
 {
 	int				i;
 	t_env_handler	*tmp;
+	t_env_handler	*dup;
 
-	i = 0;
+	i = -1;
 	tmp = NULL;
-	if (!name && !content && env != NULL)
+	if (params == NULL && env != NULL)
 	{
 		enviter(env, export_no_args);
-		return (0);
+		return (EXIT_SUCCESS);
 	}
-	if (!env || !name || !*name || !content || !*content)
-	while (name[i])
+	if (!env || !params || !params[0].name)
+		return (INVALID_PARAMETERS);
+	while (params[++i].name)
 	{
-
+		dup = env_find(env, params[i].name);
+		tmp = env_new((t_env_str){params[i].name, params[i].content});
+		if (!dup)
+			envadd_back(&env, tmp);
+		else
+		{
+			env_replace(&env, tmp, dup);
+			envdelone(dup, free);
+		}
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
-static void export_no_args(t_env_handler *env)
+static void	export_no_args(t_env_handler *env)
 {
 	printf("declare -x %s=%s\n", env->info.name, env->info.content);
 }
-
-static

@@ -6,7 +6,7 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/25 19:00:14 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/04/26 01:13:16 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,16 @@ int	main(int argc, char **argv, char **envp)
 	t_env_handler	*env;
 
 	env = setup_env_struct(envp);
-	builtin_export(env, NULL, NULL);
+
+	t_env_str send[5];
+	send[0] = ms_string_to_env("ArmureValkyrie", 6);
+	send[1] = ms_string_to_env("JoeBidenAmong us Cheese", 8);
+	send[2] = ms_string_to_env("ArmureValkyrie", 6);
+	send[3] = ms_string_to_env("ArmureRanger", 6);
+	send[4].name = NULL;
+	builtin_export(env, send);
+
+	builtin_export(env, NULL);
 	envclear(&env, free);
 
 	return (0);

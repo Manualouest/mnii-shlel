@@ -6,7 +6,7 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:32:41 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/25 18:59:36 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/04/25 23:15:47 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <get_next_line_bonus.h>
 
 # include <ms_env_handler.h>
+# include <ms_error.h>
 
 # include <stdlib.h>
 # include <unistd.h>
@@ -37,6 +38,6 @@
 # define PROMPT_USER " \033[1;36m\n$  "
 
 void	builtin_env(t_env_handler *env);
-int		builtin_export(t_env_handler *env, char **name, char **content);
+int		builtin_export(t_env_handler *env, t_env_str *params);
 
 #endif
