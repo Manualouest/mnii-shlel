@@ -28,8 +28,10 @@ t_env_handler	*env_replace(t_env_handler **env, t_env_handler *new,
 {
 	t_env_handler	*tmp;
 
-	new->next = old->next;
 	tmp = (*env);
+	if (old == NULL || new == NULL)
+		return (NULL);
+	new->next = old->next;
 	while (tmp && tmp->next != old)
 		tmp = tmp->next;
 	if (!tmp)

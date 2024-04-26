@@ -17,7 +17,7 @@ static char	*read_term(void);
 
 int	main(int argc, char **argv, char **envp)
 {
-	(void)argc, (void)argv;
+    (void)argc, (void)argv;
 
 	char *input;
 	t_env_handler	*env;
@@ -30,9 +30,15 @@ int	main(int argc, char **argv, char **envp)
 	send[2] = ms_string_to_env("ArmureValkyrie", 6);
 	send[3] = ms_string_to_env("ArmureRanger", 6);
 	send[4].name = NULL;
-	builtin_export(env, send);
 
+	char *tab[3];
+	tab[0] = "JoeBiden";
+	tab[1] = "Armure";
+	tab[2] = NULL;
+	builtin_export(env, send);
+	builtin_unset(env, tab);
 	builtin_export(env, NULL);
+
 	envclear(&env, free);
 
 	return (0);

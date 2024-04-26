@@ -13,7 +13,7 @@ SRC_NAME = ms_main.c
 SRC_NAME +=	env_handler/ms_env_var.c \
 			env_handler/ms_env_utils_1.c \
 			env_handler/ms_env_utils_2.c \
-			env_handler/ms_builtin_export.c
+			env_handler/ms_env_builtins.c
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 
 OBJ_DIR = obj/
