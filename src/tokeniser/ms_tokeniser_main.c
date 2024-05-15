@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_main.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:06:19 by mbirou            #+#    #+#             */
-/*   Updated: 2024/04/26 22:34:45 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/15 05:11:35 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
+
+void	ms_check_pipes_and_quotes(t_pipes	*main);
 
 int	ms_check_for_pipes(char *line)
 {
@@ -66,6 +68,7 @@ void	ms_init_pipes(t_pipes *main, int nb_pipes)
 				is_first = 0;
 				start = temp_pipe;
 			}
+			temp_pipe->error = NO_ERROR;
 			temp_pipe = temp_pipe->right;
 			nb_pipes --;
 		}
@@ -75,13 +78,14 @@ void	ms_init_pipes(t_pipes *main, int nb_pipes)
 
 void	ms_fill_pipes_main(t_pipes *pipes, char *line)
 {
-	int	i;
+	int			i;
 
 	i = 0;
 	while (pipes != NULL)
 	{
 		ms_init_cmd(pipes->command, line, &i);
 		ms_fill_params(pipes->command, pipes->command->params, line, &i);
+		ms_make_env_easier(pipes->command->params);
 		if (ms_am_i_at_the_next_pipe(line, i) == 0)
 			ms_head_to_next_pipe(line, &i);
 		pipes = pipes->right;
@@ -95,9 +99,11 @@ t_pipes	*ms_tokeniser_main(char *line)
 
 	main = malloc(sizeof(*main));
 	main->command = malloc(sizeof(*main->command));
+	main->error = NO_ERROR;
 	main->right = NULL;
 	nb_pipes = ms_check_for_pipes(line);
 	ms_init_pipes(main, nb_pipes);
 	ms_fill_pipes_main(main, line);
+	ms_parsing_main(main);
 	return (main);
 }

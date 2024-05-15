@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 19:19:20 by mbirou            #+#    #+#             */
-/*   Updated: 2024/04/26 22:21:50 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/15 02:39:56 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,6 @@ int	ms_is_symbol(char c)
 {
 	if (c == "'"[0] || c == '"' || c == '<'
 		|| c == '>' || c == '$')
-		return (1);
-	return (0);
-}
-
-int	ms_is_not_symbol(int c)
-{
-	if (ms_is_symbol(c) == 0)
 		return (1);
 	return (0);
 }

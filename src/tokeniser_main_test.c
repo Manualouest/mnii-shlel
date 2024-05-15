@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokeniser_main_test.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/04/26 22:44:29 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/15 06:23:33 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,14 +66,28 @@ void	ms_pipes_test_printer_find_cmd(int cmd)
 
 void	ms_pipes_test_printer_find_error(int cmd)
 {
+	char	*error_char;
+
 	if (cmd == 0)
 		write(1, ": NO_ERROR", 10);
 	else if (cmd == 1)
-		write(1, ": BAD_PARAMS", 12);
-	else if (cmd == 2)
 		write(1, ": BAD_CMD", 9);
+	else if (cmd == 2)
+		write(1, ": BAD_PIPE", 10);
 	else if (cmd == 3)
-		write(1, ": BAD_PATH", 10);
+		write(1, ": BAD_QUOTE", 11);
+	else if (cmd == 4)
+		write(1, ": EMPTY_ARG", 11);
+	else if (cmd == 5)
+		write(1, ": TOO_MANY_ARGUMENT", 19);
+	else if (cmd == 6)
+		write(1, ": BAD_PARAM", 11);
+		
+	else
+	{
+		error_char = strerror(cmd - 6);
+		write(1, error_char, ft_strlen(error_char));
+	}
 }
 
 void	ms_pipes_test_printer_find_symbol(int symbol)
@@ -96,12 +110,43 @@ void	ms_pipes_test_printer_find_symbol(int symbol)
 		write(1, "DOLLAR", 6);
 }
 
+void	ms_test_printer_find_error(int error)
+{
+	char	*error_char;
+
+	if (error == NO_ERROR)
+		write(1, "NO_ERROR\n", 9);
+	else if (error == BAD_CMD)
+		write(1, "BAD_CMD\n", 8);
+	else if (error == BAD_PIPE)
+		write(1, "BAD_PIPE\n", 9);
+	else if (error == BAD_QUOTE)
+		write(1, "BAD_QUOTE\n", 10);
+	else if (error == EMPTY_ARG)
+		write(1, "EMPTY_ARG\n", 10);
+	else if (error == TOO_MANY_ARGUMENT)
+		write(1, "TOO_MANY_ARGUMENT\n", 18);
+	else if (error == BAD_PARAM)
+		write(1, "BAD_PARAM\n", 10);
+	else
+	{
+		error_char = strerror(error - 6);
+		write(1, error_char, ft_strlen(error_char));
+	}
+}
+
 void	ms_pipe_test_printer(t_pipes *full_line)
 {
 	int			is_done;
 	t_params	*tp_params;
 
 	is_done = 0;
+	if (full_line->error != NO_ERROR)
+	{
+		write(1, "Error found: ", 13);
+		ms_test_printer_find_error(full_line->error);
+		return ;
+	}
 	while (is_done != 1)
 	{
 		if (full_line->command == NULL)
@@ -117,6 +162,7 @@ void	ms_pipe_test_printer(t_pipes *full_line)
 			write(1, &(char){full_line->command->has_option + '0'}, 1);
 			write(1, "\n", 1);
 			write(1, &(char){full_line->command->error + '0'}, 1);
+			write(1, "\n", 1);
 			ms_pipes_test_printer_find_error(full_line->command->error);
 			write(1, "\n", 1);
 			write(1, "params:", 7);

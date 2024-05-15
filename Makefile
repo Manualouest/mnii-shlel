@@ -1,3 +1,5 @@
+# valgrind --suppressions=ms.supp --leak-check=full --show-leak-kinds=all ./minishell
+
 NAME = minishell
 
 CC_FLAGS = -Wall -Werror -Wextra -g -I$(INCLUDES)
@@ -9,11 +11,20 @@ LIBFT_A = $(INCLUDES)libft/libft.a
 
 SRC_DIR = src/
 SRC_NAME = tokeniser_main_test.c
+
+SRC_NAME +=	parsing/ms_parsing_pre_execheck_main.c\
+			parsing/ms_cd_pre_execheck.c\
+			parsing/ms_unset_pre_execheck.c\
+			parsing/ms_exit_pre_execheck.c
+
 SRC_NAME +=	tokeniser/ms_tokeniser_cmd.c\
 			tokeniser/ms_tokeniser_main.c\
 			tokeniser/ms_tokeniser_params.c\
 			tokeniser/ms_tokeniser_utils.c\
-			tokeniser/ms_tokeniser_free.c
+			tokeniser/ms_tokeniser_free.c\
+			tokeniser/ms_tokeniser_env_modifs.c
+
+
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 
 OBJ_DIR = obj/

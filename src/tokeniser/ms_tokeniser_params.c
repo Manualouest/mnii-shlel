@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_params.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:13:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/04/26 22:21:47 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/15 02:40:27 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,8 @@ char	*ms_get_next_param(char *line, int *main_index, int quote)
 	{
 		if ((quote == 0 && ((ms_is_symbol(line[i]) && line[i] != '<'
 						&& line[i] != '>') || (i > start
-						&& (ms_is_not_symbol(line[i - 1])
-							!= ms_is_not_symbol(line[i])
+						&& (!ms_is_symbol(line[i - 1])
+							!= !ms_is_symbol(line[i])
 							|| ms_is_symbol(line[i - 1])))))
 			|| (quote == 1 && line[i] == "'"[0])
 			|| (quote == 2 && ((line[i] == '"' || line[i] == '$')

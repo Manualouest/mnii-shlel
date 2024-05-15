@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_cmd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:11:46 by mbirou            #+#    #+#             */
-/*   Updated: 2024/04/26 22:45:05 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/15 06:19:04 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,19 +60,60 @@ int	ms_find_command(char *line, int *i, t_command *struct_command)
 	return (cmd);
 }
 
+int	ms_skip_echo_param(char *line, int *main_index)
+{
+	int	i;
+
+	i = *main_index + 1;
+	while (line[i] && line[i] == 'n')
+	{
+		write(1, &line[i], 1);
+		i ++;
+	}
+	if (line[i] && line[i] != ' ')
+		return (0);
+	*main_index = i;
+	return (1);
+}
+
+int	ms_check_for_echo_params(char *line, int *main_index)
+{
+	int	i;
+	int	has_params;
+
+	i = *main_index - 1;
+	has_params = 0;
+	while (line[++i])
+	{
+		if (line[i] == '-')
+		{
+			if (ms_skip_echo_param(line, &i) == 0)
+				break ;
+			else
+				has_params = 1;
+		}
+		else if (line[i] != ' ')
+			break ;
+	}
+	if (has_params)
+	{
+		while (line[i] && line[i] != ' ')
+			i --;
+		*main_index = i - 2;
+	}
+	return (has_params);
+}
+
 void	ms_init_cmd(t_command *command, char *line, int *i)
 {
 	command->builtins = ms_find_command(line, i, command);
 	command->params = malloc(sizeof(*command->params));
 	command->params->quote_level = 0;
 	command->has_option = 0;
-	if (command->builtins == ECHO && line[*i] != 0
-		&& line[*i + 1] != 0 && line[*i + 1] == '-'
-		&& line[*i + 2] != 0 && line[*i + 2] == 'n'
-		&& ((line[*i + 3] != 0 && line[*i + 3] == ' ') || line[*i + 3] == 0))
+	if (command->builtins == ECHO && ms_check_for_echo_params(line, i))
 	{
 		command->has_option = 1;
 		*i = *i + 3;
 	}
-	command->error = 0;
+	command->error = NO_ERROR;
 }
