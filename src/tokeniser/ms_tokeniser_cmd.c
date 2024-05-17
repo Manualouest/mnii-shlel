@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_cmd.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:11:46 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/15 06:19:04 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/17 17:04:35 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,24 +96,27 @@ int	ms_check_for_echo_params(char *line, int *main_index)
 			break ;
 	}
 	if (has_params)
-	{
-		while (line[i] && line[i] != ' ')
-			i --;
-		*main_index = i - 2;
-	}
+		*main_index = i;
 	return (has_params);
 }
 
 void	ms_init_cmd(t_command *command, char *line, int *i)
 {
+	int	tp_i;
+
 	command->builtins = ms_find_command(line, i, command);
 	command->params = malloc(sizeof(*command->params));
 	command->params->quote_level = 0;
 	command->has_option = 0;
 	if (command->builtins == ECHO && ms_check_for_echo_params(line, i))
-	{
 		command->has_option = 1;
-		*i = *i + 3;
+	else
+	{
+		tp_i = *i;
+		while (line[tp_i] == ' ')
+			tp_i ++;
+		*i = tp_i;
 	}
 	command->error = NO_ERROR;
+	command->cmd_errno = 0;
 }

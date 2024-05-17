@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_params.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:13:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/15 02:40:27 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/17 16:31:08 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,14 +83,12 @@ void	ms_setupd_params_text_and_symbol(t_params *params, char *item)
 	ms_setup_params_quote_level(params, item);
 }
 
-char	*ms_get_next_param(char *line, int *main_index, int quote)
+char	*ms_get_next_param(char *line, int *main_index, int quote, int start)
 {
-	int		start;
 	int		i;
 
 	i = *main_index;
-	start = i;
-	while (line[i])
+	while (line && i <= (int)ft_strlen(line) && line[i])
 	{
 		if ((quote == 0 && ((ms_is_symbol(line[i]) && line[i] != '<'
 						&& line[i] != '>') || (i > start
@@ -105,8 +103,9 @@ char	*ms_get_next_param(char *line, int *main_index, int quote)
 			break ;
 		i ++;
 	}
-	if (((line[i] == "'"[0] || line[i] == '"' || line[i] == '$') && i == start)
-		|| (i == start + 1 && line[i - 1] == line[i]))
+	if (i <= (int)ft_strlen(line) && (((line[i] == "'"[0] || line[i] == '"'
+					|| line[i] == '$') && i == start) || (i == start + 1
+				&& line[i - 1] == line[i])))
 		i ++;
 	*main_index = i;
 	return (ft_substr(line, start, (i - start)));
@@ -117,7 +116,7 @@ void	ms_fill_params(t_command *cmd, t_params *params, char *line, int *i)
 	char		*item;
 	t_params	*previous;
 
-	item = ms_get_next_param(line, i, params->quote_level);
+	item = ms_get_next_param(line, i, params->quote_level, *i);
 	if (ft_strncmp(item, "|", 1) == 0 || ms_is_line_done(line, *i, item) == 1)
 	{
 		free(item);
@@ -134,7 +133,7 @@ void	ms_fill_params(t_command *cmd, t_params *params, char *line, int *i)
 		params->next->quote_level = params->quote_level;
 		params = params->next;
 		free(item);
-		item = ms_get_next_param(line, i, params->quote_level);
+		item = ms_get_next_param(line, i, params->quote_level, *i);
 	}
 	free(previous->next);
 	previous->next = NULL;

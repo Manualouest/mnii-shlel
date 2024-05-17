@@ -39,13 +39,20 @@ typedef enum e_cmd_errors
 	BAD_QUOTE,
 	EMPTY_ARG,
 	TOO_MANY_ARGUMENT,
-	BAD_PARAM
+	BAD_PARAM,
+	BAD_INPUT,
+	BAD_HEREDOC,
+	BAD_REDIRECT,
+	BAD_APPEND
 }	t_cmd_errors;
 
 typedef	struct	s_pipes
 {
 	struct s_command	*command;
 	struct s_pipes		*right;
+	int					id;
+	int					infile;
+	int					outfile;
 	t_cmd_errors		error;
 }						t_pipes;
 
@@ -56,6 +63,7 @@ typedef struct s_command
 	int				has_option;
 	struct s_params	*params;
 	t_cmd_errors	error;
+	int				cmd_errno;
 }					t_command;
 
 typedef struct s_params

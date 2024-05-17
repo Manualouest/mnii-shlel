@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokeniser_main_test.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/15 06:23:33 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/17 19:06:47 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,16 @@ int	main()
 	}
 	write(1, "~", 1);
 	write(1, path, ft_strlen(path));
+	
 	a = readline(" what_da_shell $ ");
+	
+	// a = malloc(sizeof(char) * 5);
+	// a[0] = 'e';
+	// a[1] = 'c';
+	// a[2] = 'h';
+	// a[3] = 'o';
+	// a[4] = 0;
+
 	if (a && a != NULL)
 	{
 		full_line = ms_tokeniser_main(a);
@@ -64,28 +73,35 @@ void	ms_pipes_test_printer_find_cmd(int cmd)
 		write(1, ": EXIT", 6);
 }
 
-void	ms_pipes_test_printer_find_error(int cmd)
+void	ms_pipes_test_printer_find_error(int cmd, int cmd_errno)
 {
 	char	*error_char;
 
-	if (cmd == 0)
+	if (cmd == NO_ERROR && cmd_errno == 0)
 		write(1, ": NO_ERROR", 10);
-	else if (cmd == 1)
+	else if (cmd == BAD_CMD)
 		write(1, ": BAD_CMD", 9);
-	else if (cmd == 2)
+	else if (cmd == BAD_PIPE)
 		write(1, ": BAD_PIPE", 10);
-	else if (cmd == 3)
+	else if (cmd == BAD_QUOTE)
 		write(1, ": BAD_QUOTE", 11);
-	else if (cmd == 4)
+	else if (cmd == EMPTY_ARG)
 		write(1, ": EMPTY_ARG", 11);
-	else if (cmd == 5)
+	else if (cmd == TOO_MANY_ARGUMENT)
 		write(1, ": TOO_MANY_ARGUMENT", 19);
-	else if (cmd == 6)
+	else if (cmd == BAD_PARAM)
 		write(1, ": BAD_PARAM", 11);
-		
+	else if (cmd == BAD_INPUT)
+		write(1, ": BAD_INPUT", 11);
+	else if (cmd == BAD_HEREDOC)
+		write(1, ": BAD_HEREDOC", 13);
+	else if (cmd == BAD_REDIRECT)
+		write(1, ": BAD_REDIRECT", 14);
+	else if (cmd == BAD_APPEND)
+		write(1, ": BAD_APPEND", 12);
 	else
 	{
-		error_char = strerror(cmd - 6);
+		error_char = strerror(cmd_errno);
 		write(1, error_char, ft_strlen(error_char));
 	}
 }
@@ -110,11 +126,11 @@ void	ms_pipes_test_printer_find_symbol(int symbol)
 		write(1, "DOLLAR", 6);
 }
 
-void	ms_test_printer_find_error(int error)
+void	ms_test_printer_find_error(int error, int cmd_errno)
 {
 	char	*error_char;
 
-	if (error == NO_ERROR)
+	if (error == NO_ERROR && cmd_errno == 0)
 		write(1, "NO_ERROR\n", 9);
 	else if (error == BAD_CMD)
 		write(1, "BAD_CMD\n", 8);
@@ -128,9 +144,17 @@ void	ms_test_printer_find_error(int error)
 		write(1, "TOO_MANY_ARGUMENT\n", 18);
 	else if (error == BAD_PARAM)
 		write(1, "BAD_PARAM\n", 10);
+	else if (error == BAD_INPUT)
+		write(1, "BAD_INPUT\n", 10);
+	else if (error == BAD_HEREDOC)
+		write(1, "BAD_HEREDOC\n", 12);
+	else if (error == BAD_REDIRECT)
+		write(1, "BAD_REDIRECT\n", 13);
+	else if (error == BAD_APPEND)
+		write(1, "BAD_APPEND\n", 11);
 	else
 	{
-		error_char = strerror(error - 6);
+		error_char = strerror(cmd_errno);
 		write(1, error_char, ft_strlen(error_char));
 	}
 }
@@ -144,7 +168,7 @@ void	ms_pipe_test_printer(t_pipes *full_line)
 	if (full_line->error != NO_ERROR)
 	{
 		write(1, "Error found: ", 13);
-		ms_test_printer_find_error(full_line->error);
+		ms_test_printer_find_error(full_line->error, 0);
 		return ;
 	}
 	while (is_done != 1)
@@ -163,7 +187,7 @@ void	ms_pipe_test_printer(t_pipes *full_line)
 			write(1, "\n", 1);
 			write(1, &(char){full_line->command->error + '0'}, 1);
 			write(1, "\n", 1);
-			ms_pipes_test_printer_find_error(full_line->command->error);
+			ms_pipes_test_printer_find_error(full_line->command->error, full_line->command->cmd_errno);
 			write(1, "\n", 1);
 			write(1, "params:", 7);
 			if (full_line->command->params)

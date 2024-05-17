@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_utils.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 19:19:20 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/15 02:39:56 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/17 16:16:13 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	ms_is_line_done(char *line, int i, char *item)
 {
-	while (line[i] != 0)
+	while (i <= (int)ft_strlen(line) && line[i] != 0)
 	{
 		if (line[i] != ' ')
 			return (0);
@@ -30,7 +30,7 @@ void	ms_head_to_next_pipe(char *line, int *main_index)
 	int	i;
 
 	i = *main_index;
-	while (line[i] && line[i] != '|')
+	while (i <= (int)ft_strlen(line) && line[i] && line[i] != '|')
 		i ++;
 	*main_index = i + 1;
 }

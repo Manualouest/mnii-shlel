@@ -15,7 +15,8 @@ SRC_NAME = tokeniser_main_test.c
 SRC_NAME +=	parsing/ms_parsing_pre_execheck_main.c\
 			parsing/ms_cd_pre_execheck.c\
 			parsing/ms_unset_pre_execheck.c\
-			parsing/ms_exit_pre_execheck.c
+			parsing/ms_exit_pre_execheck.c\
+			parsing/ms_params_pre_execheck.c
 
 SRC_NAME +=	tokeniser/ms_tokeniser_cmd.c\
 			tokeniser/ms_tokeniser_main.c\
@@ -31,6 +32,7 @@ OBJ_DIR = obj/
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ = $(patsubst %, $(OBJ_DIR)%, $(OBJ_NAME))
 $(OBJ_DIR)%.o:$(SRC_DIR)%.c
+	@mkdir -p $(dir $@)
 	cc $(CC_FLAGS) $< -c -o $@
 
 $(NAME): $(OBJ)
@@ -39,7 +41,7 @@ $(NAME): $(OBJ)
 
 clean:
 	@make clean -C $(LIBFT_FOLDER)
-	rm -f $(OBJ)
+	rm -rf $(OBJ_DIR)
 
 fclean: clean
 	@make fclean -C $(LIBFT_FOLDER)

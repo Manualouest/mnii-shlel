@@ -1,27 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parsing.h                                          :+:      :+:    :+:   */
+/*   ms_params_pre_execheck.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/15 00:03:14 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/17 16:57:42 by mbirou           ###   ########.fr       */
+/*   Created: 2024/05/17 17:42:49 by mbirou            #+#    #+#             */
+/*   Updated: 2024/05/17 17:52:21 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSING_H
-# define PARSING_H
+#include <parsing.h>
 
-# include <string.h>
+// void	ms_params_pre_parsing(t_command *command)
+// {
+// 	t_params		*cpy_params;
+// 	t_cmd_errors	error_found;
 
-# include <mnii_shlel.h>
+// 	cpy_params = t_command->params;
+// 	error_found = NO_ERROR;
+// 	while (cpy_params != NULL)
+// 	{
+// 		if (cpy_params->quote_level == 0)
+// 		{
 
-void	ms_parsing_main(t_pipes *main);
-void	ms_cd_pre_parsing(t_command *command);
-void	ms_unset_pre_parsing(t_command *command);
-void	ms_exit_pre_parsing(t_command *command);
-
-char	*ms_create_proper_file_path(t_command *command);
-
-#endif
+// 		}
+// 		cpy_params = cpy_params->next
+// 	}
+// }

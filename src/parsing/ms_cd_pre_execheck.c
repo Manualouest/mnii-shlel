@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_cd_pre_execheck.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 04:01:12 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/15 06:12:03 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/17 17:55:36 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	ms_check_syntax(t_command *command)
 	while (tp_params)
 	{
 		i = -1;
-		while (tp_params->text[++i])
+		while (tp_params->type == STRING && tp_params->text[++i])
 			if (tp_params->text[i] == ' ' && i > 0)
 				return (TOO_MANY_ARGUMENT);
 		tp_params = tp_params->next;
@@ -40,7 +40,7 @@ char	*ms_recreate_dir_path(t_command *command)
 	tp_params = command->params;
 	full_path = NULL;
 	tp_path = NULL;
-	while (tp_params != NULL)
+	while (tp_params != NULL && tp_params->type == STRING)
 	{
 		tp_path = malloc((ft_strlen(full_path)
 					+ ft_strlen(tp_params->text) + 1) * sizeof(char));
@@ -60,6 +60,25 @@ char	*ms_recreate_dir_path(t_command *command)
 	return (full_path);
 }
 
+char	*ms_create_proper_file_path(t_command *command)
+{
+	char	*full_path;
+	char	*trimmed_path;
+	int		i;
+
+	full_path = ms_recreate_dir_path(command);
+	i = 0;
+	while (full_path && full_path[i] && full_path[i] == ' ')
+		i ++;
+	if (i != 0)
+	{
+		trimmed_path = ft_substr(full_path, i, ft_strlen(full_path) - i);
+		free(full_path);
+		return (trimmed_path);
+	}
+	return (full_path);
+}
+
 void	ms_cd_pre_parsing(t_command *command)
 {
 	DIR		*open_test;
@@ -69,10 +88,10 @@ void	ms_cd_pre_parsing(t_command *command)
 	syntax_error = ms_check_syntax(command);
 	if (syntax_error == 0)
 		command->error = syntax_error;
-	full_path = ms_recreate_dir_path(command);
-	open_test = opendir(&full_path[1]);
+	full_path = ms_create_proper_file_path(command);
+	open_test = opendir(full_path);
 	free(full_path);
 	if (open_test == NULL)
-		command->error = errno + 6;
+		command->cmd_errno = errno;
 	closedir(open_test);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_env_modifs.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 02:24:56 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/15 03:54:47 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/17 18:02:12 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,22 @@ void	ms_redo_next_param(t_params *param)
 	param->text = tp_char;
 }
 
+void	ms_remove_last_useless_space(t_params *param)
+{
+	char	*tp_char;
+	int		i;
+
+	i = ft_strlen(param->text) - 1;
+	while (param->text && param->text[i] && param->text[i] == ' ')
+		i --;
+	if (i != (int)ft_strlen(param->text) - 1)
+	{
+		tp_char = ft_substr(param->text, 0, i + 1);
+		free(param->text);
+		param->text = tp_char;
+	}
+}
+
 void	ms_make_env_easier(t_params *main_params)
 {
 	t_params	*copy_params;
@@ -66,6 +82,8 @@ void	ms_make_env_easier(t_params *main_params)
 			ms_redo_next_param(tp_params);
 			copy_params->next->next = tp_params;
 		}
+		if (copy_params->next == NULL && copy_params->type == STRING)
+			ms_remove_last_useless_space(copy_params);
 		copy_params = copy_params->next;
 	}
 }

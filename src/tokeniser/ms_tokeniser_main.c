@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_main.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:06:19 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/15 05:11:35 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/17 15:41:57 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,9 @@ void	ms_fill_pipes_main(t_pipes *pipes, char *line)
 	i = 0;
 	while (pipes != NULL)
 	{
+		pipes->id = 0;
+		pipes->infile = 0;
+		pipes->outfile = 0;
 		ms_init_cmd(pipes->command, line, &i);
 		ms_fill_params(pipes->command, pipes->command->params, line, &i);
 		ms_make_env_easier(pipes->command->params);
