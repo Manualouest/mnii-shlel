@@ -14,6 +14,11 @@ SRC_NAME +=	env_handler/ms_env_var.c \
 			env_handler/ms_env_utils_1.c \
 			env_handler/ms_env_utils_2.c \
 			env_handler/ms_env_builtins.c
+SRC_NAME += commands/ms_exit.c \
+			commands/ms_echo.c \
+			commands/ms_cd.c
+SRC_NAME += execution/ms_exec.c
+
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 
 OBJ_DIR = obj/

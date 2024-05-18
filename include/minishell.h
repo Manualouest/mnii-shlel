@@ -18,6 +18,7 @@
 
 # include <ms_env_handler.h>
 # include <ms_error.h>
+# include <ms_execution.h>
 
 # include <stdlib.h>
 # include <unistd.h>
@@ -41,5 +42,8 @@ void	builtin_env(t_env_handler *env);
 int		builtin_export(t_env_handler *env, t_env_str *params);
 void 	builtin_pwd(void);
 int		builtin_unset(t_env_handler *env, char **names);
+void	builtin_exit(int exit_no);
+void	ms_echo(char *params[]);
+void	ms_cd(char *param, t_env_handler *env);
 
 #endif

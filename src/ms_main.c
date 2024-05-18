@@ -6,7 +6,7 @@
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/26 01:13:16 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/04/26 14:16:01 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,40 +15,27 @@
 static char *setup_prompt(char *dir);
 static char	*read_term(void);
 
-int	main(int argc, char **argv, char **envp)
+void	free_tab(void ***tab)
+{
+	int i;
+
+	i = 0;
+	if (!tab || !tab[i])
+		return ;
+	while (tab[i])
+		free(tab[i++]);
+	free(tab);
+}
+
+int	main(int argc, char *argv[], char *envp[])
 {
     (void)argc, (void)argv;
-
 	char *input;
-	t_env_handler	*env;
-
-	env = setup_env_struct(envp);
-
-	t_env_str send[5];
-	send[0] = ms_string_to_env("ArmureValkyrie", 6);
-	send[1] = ms_string_to_env("JoeBidenAmong us Cheese", 8);
-	send[2] = ms_string_to_env("ArmureValkyrie", 6);
-	send[3] = ms_string_to_env("ArmureRanger", 6);
-	send[4].name = NULL;
-
-	char *tab[3];
-	tab[0] = "JoeBiden";
-	tab[1] = "Armure";
-	tab[2] = NULL;
-	builtin_export(env, send);
-	builtin_unset(env, tab);
-	builtin_export(env, NULL);
-
-	envclear(&env, free);
-
-	return (0);
-
 
 	input = (char *)1;
 	while (input != NULL)
 	{
 		input = read_term();
-		printf("\033[0;0minput is: %s\n", input);
 		free(input);
 	}
 	rl_clear_history();
@@ -58,15 +45,16 @@ static char *read_term(void)
 {
 	char	*prompt;
 	char	*path;
-	char	*user;
+	char	*input;
 
 	path = getcwd(NULL, 64);
 	prompt = setup_prompt(path);
 	free(path);
-	user = readline(prompt);
+	input = readline(prompt);
+	printf("\033[0;0m");
 	free(prompt);
-	add_history(user);
-	return (user);
+	add_history(input);
+	return (input);
 }
 
 static char *setup_prompt(char *dir)
