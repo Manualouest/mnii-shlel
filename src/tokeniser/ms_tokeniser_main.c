@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:06:19 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/17 15:41:57 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/19 18:29:45 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,16 +88,18 @@ void	ms_fill_pipes_main(t_pipes *pipes, char *line)
 		pipes->outfile = 0;
 		ms_init_cmd(pipes->command, line, &i);
 		ms_fill_params(pipes->command, pipes->command->params, line, &i);
-		ms_make_env_easier(pipes->command->params);
+		ms_make_env_easier(pipes->command->params, pipes->command);
+		trim_redirect_spaces(pipes->command);
 		if (ms_am_i_at_the_next_pipe(line, i) == 0)
 			ms_head_to_next_pipe(line, &i);
 		pipes = pipes->right;
 	}
 }
 
-t_pipes	*ms_tokeniser_main(char *line)
+t_cmd	*ms_tokeniser_main(char *line)
 {
 	t_pipes	*main;
+	t_cmd	*cmd;
 	int		nb_pipes;
 
 	main = malloc(sizeof(*main));
@@ -108,5 +110,8 @@ t_pipes	*ms_tokeniser_main(char *line)
 	ms_init_pipes(main, nb_pipes);
 	ms_fill_pipes_main(main, line);
 	ms_parsing_main(main);
-	return (main);
+	cmd = malloc(sizeof(*cmd));
+	ms_translate_to_cmd(cmd, main);
+	ms_pipes_free_main(main);
+	return (cmd);
 }

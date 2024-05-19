@@ -23,8 +23,11 @@ SRC_NAME +=	tokeniser/ms_tokeniser_cmd.c\
 			tokeniser/ms_tokeniser_params.c\
 			tokeniser/ms_tokeniser_utils.c\
 			tokeniser/ms_tokeniser_free.c\
-			tokeniser/ms_tokeniser_env_modifs.c
+			tokeniser/ms_tokeniser_env_modifs.c\
+			tokeniser/ms_tokeniser_redirect_cleaner.c
 
+SRC_NAME +=	structure_translator/ms_structure_translator_main.c\
+			structure_translator/ms_cmd_free.c
 
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 

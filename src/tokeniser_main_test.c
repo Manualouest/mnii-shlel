@@ -6,13 +6,14 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/17 19:06:47 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/19 17:53:59 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
 
 void	ms_pipe_test_printer(t_pipes *full_line);
+void	ms_cmd_test_printer(t_cmd *full_line);
 
 int	main()
 {
@@ -20,7 +21,7 @@ int	main()
 	char	*a;
 	char	*path;
 	int		size;
-	t_pipes	*full_line;
+	t_cmd	*full_line;
 
 	size = 2147483647;
 	path = malloc(sizeof(char) * size);
@@ -45,8 +46,9 @@ int	main()
 	if (a && a != NULL)
 	{
 		full_line = ms_tokeniser_main(a);
-		ms_pipe_test_printer(full_line);
-		ms_pipes_free_main(full_line);
+		ms_cmd_test_printer(full_line);
+		ms_free_cmd(full_line);
+		// ms_pipe_test_printer(full_line);
 	}
 	free(path);
 	free(a);
@@ -206,10 +208,10 @@ void	ms_pipe_test_printer(t_pipes *full_line)
 						write(1, "STRING", 6);
 					write(1, "\n", 1);
 					write(1, "		text: |", 9);
-					if (tp_params->type == 1)
-						write(1, tp_params->text, ft_strlen(tp_params->text));
-					else
-						write(1, "NULL", 4);
+					// if (tp_params->type == 1)
+					write(1, tp_params->text, ft_strlen(tp_params->text));
+					// else
+						// write(1, "NULL", 4);
 					write(1, "|\n", 2);
 					write(1, "		symbol: ", 10);
 					ms_pipes_test_printer_find_symbol(tp_params->symbol);
@@ -232,5 +234,43 @@ void	ms_pipe_test_printer(t_pipes *full_line)
 			write(1, "right = pipe\n", 13);
 			full_line = full_line->right;
 		}
+	}
+}
+
+
+
+void	ms_cmd_test_printer(t_cmd *full_line)
+{
+	t_cmd	*cmd;
+	int		i;
+
+	cmd = full_line;
+	while (cmd != NULL)
+	{
+		write(1, "____________________________\n\n", 29);
+		write(1, "	fd_in: ", 8);
+		ft_putnbr_fd(cmd->fd_in, 1);
+		write(1, "\n", 1);
+		write(1, "	fd_out: ", 9);
+		ft_putnbr_fd(cmd->fd_out, 1);
+		write(1, "\n", 1);
+		write(1, "	error", 6);
+		ms_pipes_test_printer_find_error(cmd->error_id, 0);
+		write(1, "\n", 1);
+		write(1, "	line: ", 7);
+		i = -1;
+		while (cmd->args[++i])
+		{
+			write(1, " |", 2);
+			write(1, cmd->args[i], ft_strlen(cmd->args[i]));
+			write(1, "|", 1);
+		}
+		write(1, "\n", 1);
+		write(1, "	pid: ", 6);
+		ft_putnbr_fd(cmd->pid, 1);
+		write(1, "\n", 1);
+		if (cmd->next == NULL)
+			write(1, "____________________________\n\n", 29);
+		cmd = cmd->next;
 	}
 }

@@ -7,7 +7,7 @@ typedef enum e_type
 	STRING
 }	t_type;
 
-typedef enum e_cmd
+typedef enum e_builtins
 {
 	NO_CMD,
 	ECHO,
@@ -17,7 +17,7 @@ typedef enum e_cmd
 	UNSET,
 	ENV,
 	EXIT
-}	t_cmd;
+}	t_builtins;
 
 typedef enum e_symbols
 {
@@ -58,7 +58,7 @@ typedef	struct	s_pipes
 
 typedef struct s_command
 {
-	t_cmd			builtins;
+	t_builtins		builtins;
 	char			*cmd;
 	int				has_option;
 	struct s_params	*params;
@@ -74,5 +74,15 @@ typedef struct s_params
 	int				quote_level;
 	struct s_params	*next;
 }				t_params;
+
+typedef struct	s_cmd
+{
+	int				fd_in;
+	int				fd_out;
+	t_cmd_errors	error_id;
+	char			**args;
+	pid_t			pid;
+	struct s_cmd	*next;
+}					t_cmd;
 
 #endif

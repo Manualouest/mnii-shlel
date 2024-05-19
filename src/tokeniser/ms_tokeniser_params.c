@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:13:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/17 16:31:08 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/18 18:51:16 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,8 @@ void	ms_setupd_params_text_and_symbol(t_params *params, char *item)
 	params->symbol = NO_SYMBOL;
 	if (params->type == 0)
 		params->symbol = ms_get_right_symbol(item);
-	else
-	{
-		params->text = malloc(sizeof(char) * (ft_strlen(item)) + 1);
-		ft_strlcpy(params->text, item, ft_strlen(item) + 1);
-	}
+	params->text = malloc(sizeof(char) * (ft_strlen(item)) + 1);
+	ft_strlcpy(params->text, item, ft_strlen(item) + 1);
 	ms_setup_params_quote_level(params, item);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 06:30:13 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/17 18:41:23 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/19 19:50:08 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,30 +15,47 @@
 static int	ms_is_there_multiple_parameters(t_params *params)
 {
 	t_params	*cpy_params;
-	t_params	*prev_param;
 	int			i;
 
 	cpy_params = params;
-	prev_param = NULL;
 	while (cpy_params != NULL)
 	{
 		if (cpy_params->type == STRING && cpy_params->quote_level == 0)
 		{
 			i = -1;
 			while (cpy_params->text[++i])
-				if (cpy_params->text[i] == ' '
-					&& !((i == 0 || i == (int)ft_strlen(cpy_params->text) - 1)
-						&& ((prev_param && prev_param->symbol >= INPUT
-								&& prev_param->symbol <= APPEND)
-							|| (cpy_params->next
-								&& cpy_params->next->symbol >= INPUT
-								&& cpy_params->next->symbol <= APPEND))))
+				if (cpy_params->text[i] == ' ')
 					return (1);
 		}
-		prev_param = cpy_params;
 		cpy_params = cpy_params->next;
 	}
 	return (0);
+}
+
+void	ms_check_for_bad_param(t_command *command)
+{
+	t_params	*param;
+	t_params	*prev_param;
+	int			i;
+
+	param = command->params;
+	prev_param = NULL;
+	while (param != NULL)
+	{
+		if (param->type == STRING
+			&& !((prev_param && prev_param->symbol >= INPUT
+					&& prev_param->symbol <= APPEND)
+				|| (param->next && param->next->symbol >= INPUT
+					&& param->next->symbol <= APPEND)))
+		{
+			i = -1;
+			while (param->text && param->text[++i])
+				if (!ft_isdigit(param->text[i]))
+					command->error = BAD_PARAM;
+		}
+		prev_param = param;
+		param = param->next;
+	}
 }
 
 void	ms_exit_pre_parsing(t_command *command)
@@ -58,8 +75,6 @@ void	ms_exit_pre_parsing(t_command *command)
 		if (command->params->text[i] == ' '
 			&& command->params->text[i + 1] != 0)
 			command->error = TOO_MANY_ARGUMENT;
-		if (!ft_isdigit(command->params->text[i])
-			&& command->params->text[i] != ' ')
-			command->error = BAD_PARAM;
 	}
+	ms_check_for_bad_param(command);
 }

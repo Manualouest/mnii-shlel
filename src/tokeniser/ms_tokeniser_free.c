@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 22:20:59 by mbirou            #+#    #+#             */
-/*   Updated: 2024/04/26 22:49:47 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/19 17:58:14 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,7 @@ void	ms_pipes_free_main(t_pipes *pipes)
 			{
 				while (pipes->command->params != NULL)
 				{
-					if (pipes->command->params->type == STRING)
-						free(pipes->command->params->text);
+					free(pipes->command->params->text);
 					tmp_params = pipes->command->params->next;
 					free(pipes->command->params);
 					pipes->command->params = tmp_params;
