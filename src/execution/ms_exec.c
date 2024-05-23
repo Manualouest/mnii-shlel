@@ -37,7 +37,6 @@ void	ms_exec(t_cmd *to_exec, char **envp, t_env_handler *path)
 	edge[0] = open("infile", O_RDONLY);
 	edge[1] = open("outfile", O_WRONLY);
 	ms_exec_redirectupdate(cmd, edge[0], edge[1]);
-//	cmd_iter(cmd, print_cmd);
 	while (cmd)
 	{
 		exec_cmd(cmd, envp, path);

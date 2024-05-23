@@ -19,7 +19,8 @@ SRC_NAME += commands/ms_exit.c \
 			commands/ms_cd.c
 SRC_NAME += execution/ms_exec.c \
 			execution/ms_exec_utils.c \
-			execution/ms_exec_initfds.c
+			execution/ms_exec_initfds.c \
+			execution/ms_heredoc.c
 
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 
