@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 02:24:56 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/19 19:46:24 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/23 18:59:36 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,43 +45,71 @@ void	ms_redo_next_param(t_params *param)
 	param->text = tp_char;
 }
 
-static void	ms_do_env_modif(t_params *copy_params)
+static void	ms_setup_next(t_params *copy_params, t_params *prev)
 {
-	t_params	*tp_params;
+	t_params	*tp_param;
 
-	if (copy_params->symbol == DOLLAR && copy_params->next->type == STRING
-		&& copy_params->quote_level % 2 == 0
-		&& ms_is_it_worth_modifying_params(copy_params->next->text))
+	if (ft_strlen(copy_params->text) !=
+		(size_t)ms_get_len_of_env(copy_params->text))
+		ms_redo_next_param(copy_params);
+	else
 	{
-		tp_params = copy_params->next;
-		copy_params->next = NULL;
-		copy_params->next = malloc(sizeof(*copy_params->next));
-		copy_params->next->symbol = NO_SYMBOL;
-		copy_params->next->quote_level = tp_params->quote_level;
-		copy_params->next->type = STRING;
-		copy_params->next->text = ft_substr(tp_params->text, 0,
-				ms_get_len_of_env(tp_params->text));
-		ms_redo_next_param(tp_params);
-		copy_params->next->next = tp_params;
+		if (copy_params->next)
+		{
+			tp_param = copy_params->next;
+			free(prev->next);
+			prev->next = tp_param;
+			free(copy_params->text);
+			free(copy_params);
+		}
+		else
+			prev->next = NULL;
 	}
 }
 
-void	ms_make_env_easier(t_params *main_params, t_command *command)
+static void	ms_do_env_modif(t_params *copy_params, t_params *prev,
+			t_env_handler *env)
 {
-	t_params	*copy_params;
-	t_params	*tp_params;
+	t_env_handler	*tp_env;
+	char			*env_name;
+
+	if (prev && prev->symbol == DOLLAR && copy_params->type == STRING
+		&& copy_params->quote_level % 2 == 0)
+		// && ms_is_it_worth_modifying_params(copy_params->text))
+	{
+		prev->symbol = NO_SYMBOL;
+		prev->quote_level = copy_params->quote_level;
+		prev->type = STRING;
+		env_name = ft_substr(copy_params->text, 0,
+			ms_get_len_of_env(copy_params->text));
+		tp_env = env_find(env, env_name);
+		free(env_name);
+		free(prev->text);
+		prev->text = ft_strdup(tp_env->info.content);
+		ms_setup_next(copy_params, prev);
+	}
+}
+
+void	ms_make_env_easier(t_params *main_params, t_command *command, char **envp)
+{
+	t_params		*copy_params;
+	t_params		*tp_params;
+	// t_params		*next_param;
+	t_env_handler	*env;
 
 	copy_params = main_params;
 	tp_params = NULL;
+	env = setup_env_struct(envp);
 	while (copy_params != NULL)
 	{
-		ms_do_env_modif(copy_params);
-		if (copy_params->next == NULL && copy_params->type == STRING)
+		ms_do_env_modif(copy_params, tp_params, env);
+		if (copy_params->next == NULL && copy_params)
 		{
 			ms_trim_spaces(copy_params, 1, tp_params, command);
-			return ;
+			break ;
 		}
 		tp_params = copy_params;
 		copy_params = copy_params->next;
 	}
+	envclear(&env, free);
 }

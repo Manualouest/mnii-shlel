@@ -29,6 +29,11 @@ SRC_NAME +=	tokeniser/ms_tokeniser_cmd.c\
 SRC_NAME +=	structure_translator/ms_structure_translator_main.c\
 			structure_translator/ms_cmd_free.c
 
+SRC_NAME += env_handler/ms_env_builtins.c\
+			env_handler/ms_env_utils_1.c\
+			env_handler/ms_env_utils_2.c\
+			env_handler/ms_env_var.c
+
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 
 OBJ_DIR = obj/

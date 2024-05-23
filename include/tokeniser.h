@@ -5,7 +5,7 @@
 # include <mnii_shlel.h>
 
 // ms_tokeniser_main.c
-t_cmd	*ms_tokeniser_main(char *line);
+t_cmd	*ms_tokeniser_main(char *line, char **envp);
 
 // ms_tokeniser_cmd.c
 void	ms_init_cmd(t_command *command, char *line, int *i);
@@ -24,7 +24,8 @@ int		ms_is_symbol(char c);
 void	ms_pipes_free_main(t_pipes *pipes);
 
 // ms_tokeniser_env_modifs.c
-void	ms_make_env_easier(t_params *main_params, t_command *command);
+void	ms_make_env_easier(t_params *main_params, t_command *command,
+			char **envp);
 
 // ms_tokeniser_redirect_cleaner.c
 void	trim_redirect_spaces(t_command *command);

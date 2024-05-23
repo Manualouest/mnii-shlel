@@ -6,52 +6,54 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/19 17:53:59 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/23 18:01:58 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <tokeniser.h>
+#include <mnii_shlel.h>
+# include <signal.h>
 
 void	ms_pipe_test_printer(t_pipes *full_line);
 void	ms_cmd_test_printer(t_cmd *full_line);
 
-int	main()
+
+void	ms_sig_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		write(1, "\n", 1);
+		rl_on_new_line();
+		rl_redisplay();
+		rl_replace_line("", 0);
+	}
+}
+
+int	main(int argc, char **argv, char **envp)
 {
 	
-	char	*a;
-	char	*path;
-	int		size;
-	t_cmd	*full_line;
+	char				*a;
+	t_cmd				*full_line;
 
-	size = 2147483647;
-	path = malloc(sizeof(char) * size);
-	path = getcwd(path, size);
-	if (!path)
+	signal(SIGINT, ms_sig_handler);
+	signal(SIGQUIT, SIG_IGN);
+	(void)argc;
+	(void)argv;
+	while (1 == 1)
 	{
-		write(1, "path is too long\n", 17);
-		exit(0);
+		a = readline(" what_da_shell $ ");
+		if (a && a != NULL)
+		{
+			full_line = ms_tokeniser_main(a, envp);
+			ms_cmd_test_printer(full_line);
+			ms_free_cmd(full_line);
+			// ms_pipe_test_printer(full_line);
+		}
+		else
+			break ;
+			// exit(0);
+		if (a)
+			free(a);
 	}
-	write(1, "~", 1);
-	write(1, path, ft_strlen(path));
-	
-	a = readline(" what_da_shell $ ");
-	
-	// a = malloc(sizeof(char) * 5);
-	// a[0] = 'e';
-	// a[1] = 'c';
-	// a[2] = 'h';
-	// a[3] = 'o';
-	// a[4] = 0;
-
-	if (a && a != NULL)
-	{
-		full_line = ms_tokeniser_main(a);
-		ms_cmd_test_printer(full_line);
-		ms_free_cmd(full_line);
-		// ms_pipe_test_printer(full_line);
-	}
-	free(path);
-	free(a);
 	return (0);
 }
 

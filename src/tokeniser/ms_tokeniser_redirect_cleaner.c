@@ -6,11 +6,27 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 16:23:21 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/19 19:47:01 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/23 18:51:56 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
+
+void	ms_trim_get_start_lenght(int *start, int *length, int way,
+			t_params *param)
+{
+	int	s;
+	int	l;
+
+	s = *start;
+	l = *length;
+	while (param->text[s] && param->text[s] == ' ' && s <= l && way == 10)
+		s += way / 10;
+	while (l > 0 && param->text[l - 1] && param->text[l - 1] == ' ' && s == 0)
+		l -= way % 10;
+	*start = s;
+	*length = l;
+}
 
 void	ms_trim_spaces(t_params *param, int way, t_params *prev_param,
 			t_command *command)
@@ -21,15 +37,13 @@ void	ms_trim_spaces(t_params *param, int way, t_params *prev_param,
 
 	s = 0;
 	l = (int)ft_strlen(param->text);
-	while (param->text[s] && param->text[s] == ' ' && s <= l && way == 10)
-		s += way / 10;
-	while (l > 0 && param->text[l - 1] && param->text[l - 1] == ' ' && s == 0)
-		l -= way % 10;
+	ms_trim_get_start_lenght(&s, &l, way, param);
 	if (s < l)
 	{
 		tp_char = ft_substr(param->text, s, l);
 		free(param->text);
 		param->text = tp_char;
+		free(tp_char);
 	}
 	else
 	{
