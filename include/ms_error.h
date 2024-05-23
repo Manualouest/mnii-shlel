@@ -13,14 +13,6 @@
 #ifndef MS_ERROR_H
 # define MS_ERROR_H
 
-typedef int t_bool;
-
-# define TRUE 1
-# define FALSE 0
-
-typedef enum e_error
-{
-	INVALID_PARAMETERS = -1,
-} t_error;
+void	free_tab(void **tab);
 
 #endif

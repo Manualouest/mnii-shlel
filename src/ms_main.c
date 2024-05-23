@@ -15,7 +15,7 @@
 static char *setup_prompt(char *dir);
 static char	*read_term(void);
 
-void	free_tab(void ***tab)
+void	free_tab(void **tab)
 {
 	int i;
 
@@ -27,18 +27,50 @@ void	free_tab(void ***tab)
 	free(tab);
 }
 
+static t_cmd *lololol(char **pipes)
+{
+	char **cmd;
+	t_cmd *joseph = NULL;
+	t_cmd *joestar = NULL;
+	int i = 0;
+
+	while (pipes[i]){
+		cmd = ft_split(pipes[i], ' ');
+		joseph = cmd_new(cmd);
+		cmd_add_back(&joestar, joseph);
+		i++;
+	}
+	return (joestar);
+}
+
+
+
 int	main(int argc, char *argv[], char *envp[])
 {
     (void)argc, (void)argv;
-	char *input;
 
-	input = (char *)1;
-	while (input != NULL)
+	t_env_handler	*env;
+	char	**content;
+	char	*input = NULL;
+	t_cmd	*cmd;
+
+	env = setup_env_struct(envp);
+	while (1)
 	{
 		input = read_term();
+		if (!input)
+			break ;
+		content = ft_split(input, '|');
+		cmd = lololol(content);
+
 		free(input);
+		free_tab((void **)content);
+		ms_exec(cmd, envp, env_find(env, "PATH"));
+		cmd_clear(&cmd, free_tab);
 	}
+	envclear(&env, free);
 	rl_clear_history();
+	return 0;
 }
 
 static char *read_term(void)
@@ -51,7 +83,6 @@ static char *read_term(void)
 	prompt = setup_prompt(path);
 	free(path);
 	input = readline(prompt);
-	printf("\033[0;0m");
 	free(prompt);
 	add_history(input);
 	return (input);

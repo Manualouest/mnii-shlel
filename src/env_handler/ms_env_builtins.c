@@ -45,7 +45,7 @@ int	builtin_export(t_env_handler *env, t_env_str *params)
 		return (EXIT_SUCCESS);
 	}
 	if (!env || !params || !params[0].name)
-		return (INVALID_PARAMETERS);
+		return (-1);
 	while (params[++i].name)
 	{
 		dup = env_find(env, params[i].name);
@@ -63,7 +63,7 @@ int	builtin_export(t_env_handler *env, t_env_str *params)
 
 static void	export_no_args(t_env_handler *env)
 {
-	printf("declare -x %s=%s\n", env->info.name, env->info.content);
+	printf("declare -x %s=\"%s\"\n", env->info.name, env->info.content);
 }
 
 int	builtin_unset(t_env_handler *env, char **names)

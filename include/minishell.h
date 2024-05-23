@@ -28,6 +28,7 @@
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <sys/ioctl.h>
+# include <sys/wait.h>
 # include <signal.h>
 # include <dirent.h>
 # include <string.h>
@@ -36,7 +37,7 @@
 # include <errno.h>
 
 # define PROMPT_CONST "\033[1;31mmnii \033[1;35mshlel:"
-# define PROMPT_USER " \033[1;36m\n$  "
+# define PROMPT_USER " \033[1;36m\n$\033[0;0m  "
 
 void	builtin_env(t_env_handler *env);
 int		builtin_export(t_env_handler *env, t_env_str *params);
