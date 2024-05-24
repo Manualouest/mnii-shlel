@@ -12,25 +12,25 @@
 
 #include <minishell.h>
 
-static void exec_cmd(t_cmd *cmd, char **envp, t_env_handler *path);
+static void	exec_cmd(t_cmd *cmd, char **envp, t_env_handler *path);
 static void	correct_args(t_cmd *cmd, char *replace);
 static void	get_path(t_cmd *cmd, t_env_handler *path);
 
-void print_cmd(t_cmd *cmd)
-{
-	printf("- %s\n", cmd->args[0]);
-	int i = 1;
-	printf("\targs:");
-	while (cmd->args[i])
-		printf(" %s", cmd->args[i++]);
-	printf("\n\tfd_in: %d\n", cmd->fd_in);
-	printf("\tfd_out: %d\n", cmd->fd_out);
-}
+//void	print_cmd(t_cmd *cmd)
+//{
+//	printf("- %s\n", cmd->args[0]);
+//	int i = 1;
+//	printf("\targs:");
+//	while (cmd->args[i])
+//		printf(" %s", cmd->args[i++]);
+//	printf("\n\tfd_in: %d\n", cmd->fd_in);
+//	printf("\tfd_out: %d\n", cmd->fd_out);
+//}
 
 void	ms_exec(t_cmd *to_exec, char **envp, t_env_handler *path)
 {
-	t_cmd *cmd;
-	int	edge[2];
+	t_cmd	*cmd;
+	int		edge[2];
 
 	cmd = to_exec;
 	cmd_iter(cmd, ms_exec_initfds);
@@ -48,7 +48,7 @@ void	ms_exec(t_cmd *to_exec, char **envp, t_env_handler *path)
 	waitpid(-1, NULL, 0);
 }
 
-static void exec_cmd(t_cmd *cmd, char **envp, t_env_handler *path)
+static void	exec_cmd(t_cmd *cmd, char **envp, t_env_handler *path)
 {
 	if (!cmd)
 		return ;
@@ -88,7 +88,7 @@ static void	get_path(t_cmd *cmd, t_env_handler *path)
 
 static void	correct_args(t_cmd *cmd, char *replace)
 {
-	char *tmp;
+	char	*tmp;
 
 	tmp = NULL;
 	if (replace)

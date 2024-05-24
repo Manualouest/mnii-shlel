@@ -41,7 +41,7 @@
 
 void	builtin_env(t_env_handler *env);
 int		builtin_export(t_env_handler *env, t_env_str *params);
-void 	builtin_pwd(void);
+void	builtin_pwd(void);
 int		builtin_unset(t_env_handler *env, char **names);
 void	builtin_exit(int exit_no);
 void	ms_echo(char *params[]);

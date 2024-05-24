@@ -13,12 +13,12 @@
 #include <minishell.h>
 
 static void	export_no_args(t_env_handler *env);
-static void unset_delete(t_env_handler *env, t_env_handler *del);
+static void	unset_delete(t_env_handler *env, t_env_handler *del);
 
-void builtin_pwd(void)
+void	builtin_pwd(void)
 {
-	char    *path;
-	int     i;
+	char	*path;
+	int		i;
 
 	i = 0;
 	path = NULL;
@@ -38,14 +38,13 @@ int	builtin_export(t_env_handler *env, t_env_str *params)
 	t_env_handler	*dup;
 
 	i = -1;
-	tmp = NULL;
 	if (params == NULL && env != NULL)
 	{
 		enviter(env, export_no_args);
 		return (EXIT_SUCCESS);
 	}
 	if (!env || !params || !params[0].name)
-		return (-1);
+		return (EXIT_FAILURE);
 	while (params[++i].name)
 	{
 		dup = env_find(env, params[i].name);
@@ -92,7 +91,7 @@ int	builtin_unset(t_env_handler *env, char **names)
 	return (EXIT_SUCCESS);
 }
 
-static void unset_delete(t_env_handler *env, t_env_handler *del)
+static void	unset_delete(t_env_handler *env, t_env_handler *del)
 {
 	t_env_handler	*tmp;
 

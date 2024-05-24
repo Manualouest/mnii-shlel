@@ -13,7 +13,7 @@
 #ifndef MS_ENV_HANDLER_H
 # define MS_ENV_HANDLER_H
 
-typedef int t_bool;
+typedef int	t_bool;
 
 /**
  * @attention The string for name and content must be the same!
@@ -24,7 +24,7 @@ typedef struct s_env_str
 {
 	char	*name;
 	char	*content;
-} t_env_str;
+}	t_env_str;
 
 typedef struct s_env_handler
 {
@@ -43,6 +43,6 @@ void			enviter(t_env_handler *env, void (*f)(t_env_handler *));
 t_env_str		ms_string_to_env(char *info, int sep);
 t_env_handler	*env_find(t_env_handler *env, char *name);
 t_env_handler	*env_replace(t_env_handler **env, t_env_handler *new,
-							  t_env_handler *old);
+					t_env_handler *old);
 
 #endif

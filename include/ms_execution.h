@@ -19,7 +19,7 @@ typedef struct s_cmd
 {
 	int				fd_in;
 	int				fd_out;
-	char            **args;
+	char			**args;
 	pid_t			pid;
 	struct s_cmd	*next;
 }	t_cmd;
@@ -32,7 +32,7 @@ char	**ms_heredoc(char *limiter);
 t_cmd	*cmd_new(char **content);
 void	cmd_add_back(t_cmd **cmd, t_cmd *new);
 void	cmd_clear(t_cmd **cmd, void (*del)(void **));
-void	cmd_iter(t_cmd *cmd, void(*f)(t_cmd *));
+void	cmd_iter(t_cmd *cmd, void (*f)(t_cmd *));
 
 void	ms_exec_initfds(t_cmd *cmd);
 void	ms_exec_redirectupdate(t_cmd *cmd, int infile, int outfile);

@@ -12,8 +12,8 @@
 
 #include <minishell.h>
 
-static t_env_str extract_env_name(char *var);
-static void	print_env(t_env_handler *env);
+static t_env_str	extract_env_name(char *var);
+static void			print_env(t_env_handler *env);
 
 t_env_handler	*setup_env_struct(char **envp)
 {
@@ -34,7 +34,7 @@ t_env_handler	*setup_env_struct(char **envp)
 	return (lst);
 }
 
-static t_env_str extract_env_name(char *var)
+static t_env_str	extract_env_name(char *var)
 {
 	int			i;
 	t_env_str	ret;
@@ -54,7 +54,7 @@ static t_env_str extract_env_name(char *var)
 	return (ret);
 }
 
-void builtin_env(t_env_handler *env)
+void	builtin_env(t_env_handler *env)
 {
 	enviter(env, print_env);
 }

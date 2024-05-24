@@ -12,11 +12,11 @@
 
 #include <minishell.h>
 
-static bool print_str(char *str);
+static bool	print_str(char *str);
 
 void	ms_echo(char *params[])
 {
-	int 	i;
+	int		i;
 	t_bool	with_endl;
 
 	i = 0;
@@ -27,13 +27,12 @@ void	ms_echo(char *params[])
 		with_endl *= print_str(params[i++]);
 	if (with_endl)
 		printf("\n");
-	return ;
 }
 
-static bool print_str(char *str)
+static bool	print_str(char *str)
 {
 	int	i;
-	int j;
+	int	j;
 
 	i = 0;
 	j = 0;

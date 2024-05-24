@@ -12,9 +12,9 @@
 
 #include <minishell.h>
 
-static char **heredoc_lst_to_tab(t_list *lst);
+static char	**heredoc_lst_to_tab(t_list *lst);
 
-char **ms_heredoc(char *limiter)
+char	**ms_heredoc(char *limiter)
 {
 	t_list	*tab;
 	char	**ret;
@@ -35,7 +35,7 @@ char **ms_heredoc(char *limiter)
 	return (ret);
 }
 
-static char **heredoc_lst_to_tab(t_list *lst)
+static char	**heredoc_lst_to_tab(t_list *lst)
 {
 	t_list	*tmp;
 	char	**tab;

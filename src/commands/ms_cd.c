@@ -34,20 +34,21 @@ static void	update_oldpwd(t_env_handler *env)
 	currpwd = env_find(env, "PWD");
 	work = ft_calloc(ft_strlen(currpwd->info.content) + 7, sizeof(char));
 	ft_strlcpy(work, "OLDPWD", 7);
-	ft_strlcat(work, currpwd->info.content, 7 + ft_strlen(currpwd->info.content));
+	ft_strlcat(work, currpwd->info.content,
+		7 + ft_strlen(currpwd->info.content));
 	tmp = env_new(ms_string_to_env(work, 6));
 	free(work);
 	env_replace(&env, tmp, oldpwd);
 	envdelone(oldpwd, free);
 }
 
-static void update_pwd(t_env_handler *env)
+static void	update_pwd(t_env_handler *env)
 {
 	t_env_handler	*old_pwd;
 	t_env_handler	*new_pwd;
 	char			*work;
-	char    		*path;
-	int     		i;
+	char			*path;
+	int				i;
 
 	i = 0;
 	path = NULL;

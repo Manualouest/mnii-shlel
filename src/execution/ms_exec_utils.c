@@ -14,7 +14,7 @@
 
 t_cmd	*cmd_new(char **content)
 {
-	t_cmd 	*node;
+	t_cmd	*node;
 
 	node = malloc(sizeof(*node));
 	if (!node)
@@ -52,7 +52,7 @@ void	cmd_clear(t_cmd **cmd, void (*del)(void **))
 	*cmd = NULL;
 }
 
-void	cmd_iter(t_cmd *cmd, void(*f)(t_cmd *))
+void	cmd_iter(t_cmd *cmd, void (*f)(t_cmd *))
 {
 	if (!cmd)
 		return ;
@@ -63,7 +63,7 @@ void	cmd_iter(t_cmd *cmd, void(*f)(t_cmd *))
 char	**ms_format_envp(t_env_handler *env)
 {
 	t_env_handler	*tmp;
-	size_t 			size;
+	size_t			size;
 	char			**tab;
 	int				i;
 
@@ -82,7 +82,7 @@ char	**ms_format_envp(t_env_handler *env)
 		tab[i - 1] = ft_calloc(size, sizeof(char));
 		ft_strlcpy(tab[i - 1], tmp->info.name, ft_strlen(tmp->info.name) + 1);
 		ft_strlcat(tab[i - 1], "=", ft_strlen(tab[i - 1]) + 2);
-		ft_strlcat(tab[i - 1], tmp->info.content, ft_strlen(tab[i - 1]) + ft_strlen(tmp->info.content) + 1);
+		ft_strlcat(tab[i - 1], tmp->info.content, size);
 		tmp = tmp->next;
 		i--;
 	}
