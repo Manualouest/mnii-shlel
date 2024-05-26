@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:11:10 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/19 19:50:42 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/26 21:47:49 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,32 @@ static int	ms_get_nb_param(t_params *main_params)
 	return (i);
 }
 
+static void	ms_copy_without_end_space(char **list, char *text, int size)
+{
+	int	i;
+
+	if (text && text[size - 1] == ' ')
+	{
+		i = 0;
+		free(list[0]);
+		while (size > 1 && text[size] && text[size] == ' ')
+			size --;
+		list[0] = malloc(sizeof(char) * (size + 1));
+		list[0][size] = 0;
+		while (i < size - 1 && text[i])
+		{
+			if (size == 0)
+				break ;
+			list[0][i] = text[i];
+			i++;
+		}
+		if (size != 0)
+			list[0][i] = 0;
+	}
+	else
+		ft_strlcpy(list[0], text, ft_strlen(text) + 1);
+}
+
 static char	**ms_translate_params(t_params *main_params, char *cmd)
 {
 	int			len;
@@ -53,7 +79,11 @@ static char	**ms_translate_params(t_params *main_params, char *cmd)
 	while (param != NULL && ++i <= len)
 	{
 		args[i] = malloc(sizeof(char) * (ft_strlen(param->text) + 1));
-		ft_strlcpy(args[i], param->text, ft_strlen(param->text) + 1);
+		if (param->next != NULL)
+			ft_strlcpy(args[i], param->text, ft_strlen(param->text) + 1);
+		else
+			ms_copy_without_end_space(&args[i], param->text,
+				ft_strlen(param->text));
 		param = param->next;
 	}
 	write(1, "\n", 1);

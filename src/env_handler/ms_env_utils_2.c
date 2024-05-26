@@ -6,13 +6,13 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 00:50:26 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/23 16:14:08 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/24 17:39:00 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ms_env_handler.h>
+#include <mnii_shlel.h>
 
-static char *str_to_envstr_dup(char *info, int sep);
+static char	*str_to_envstr_dup(char *info, int sep);
 
 t_env_handler	*env_find(t_env_handler *env, char *name)
 {
@@ -24,7 +24,7 @@ t_env_handler	*env_find(t_env_handler *env, char *name)
 }
 
 t_env_handler	*env_replace(t_env_handler **env, t_env_handler *new,
-							  t_env_handler *old)
+							t_env_handler *old)
 {
 	t_env_handler	*tmp;
 
@@ -40,7 +40,7 @@ t_env_handler	*env_replace(t_env_handler **env, t_env_handler *new,
 	return (tmp);
 }
 
-t_env_str ms_string_to_env(char *info, int sep)
+t_env_str	ms_string_to_env(char *info, int sep)
 {
 	t_env_str	ret;
 	char		*work;
@@ -52,7 +52,7 @@ t_env_str ms_string_to_env(char *info, int sep)
 	return (ret);
 }
 
-static char *str_to_envstr_dup(char *info, int sep)
+static char	*str_to_envstr_dup(char *info, int sep)
 {
 	size_t	i;
 	char	*dup;
@@ -66,4 +66,3 @@ static char *str_to_envstr_dup(char *info, int sep)
 	ft_strlcpy(&dup[sep + 1], &info[sep], i - sep);
 	return (dup);
 }
-

@@ -6,14 +6,12 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:08:02 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/23 16:13:53 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/24 17:39:16 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MS_ENV_HANDLER_H
 # define MS_ENV_HANDLER_H
-
-#include <mnii_shlel.h>
 
 typedef int t_bool;
 

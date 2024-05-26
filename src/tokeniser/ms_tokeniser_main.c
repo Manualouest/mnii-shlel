@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:06:19 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/23 16:01:32 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/26 19:27:11 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	ms_fill_pipes_main(t_pipes *pipes, char *line, char **envp)
 		pipes->outfile = 0;
 		ms_init_cmd(pipes->command, line, &i);
 		ms_fill_params(pipes->command, pipes->command->params, line, &i);
-		ms_make_env_easier(pipes->command->params, pipes->command, envp);
+		ms_make_env_easier(pipes->command->params, envp);
 		trim_redirect_spaces(pipes->command);
 		if (ms_am_i_at_the_next_pipe(line, i) == 0)
 			ms_head_to_next_pipe(line, &i);

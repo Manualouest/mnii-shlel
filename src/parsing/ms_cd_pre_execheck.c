@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 04:01:12 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/17 17:55:36 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/24 20:42:09 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,13 +85,18 @@ void	ms_cd_pre_parsing(t_command *command)
 	char	*full_path;
 	int		syntax_error;
 
+	open_test = NULL;
 	syntax_error = ms_check_syntax(command);
-	if (syntax_error == 0)
+	if (syntax_error != 0)
 		command->error = syntax_error;
 	full_path = ms_create_proper_file_path(command);
-	open_test = opendir(full_path);
+	if (full_path)
+		open_test = opendir(full_path);
+	else
+		command->error = EMPTY_ARG;
 	free(full_path);
 	if (open_test == NULL)
 		command->cmd_errno = errno;
-	closedir(open_test);
+	else
+		closedir(open_test);
 }

@@ -17,6 +17,11 @@
 # include <dirent.h>
 # include <signal.h>
 # include <errno.h>
+# include <termios.h>
+
+# define HEREDOC_PROMPT "\033[1;36mheredco > \033[0;0m"
+
+extern int g_signal;
 
 # include <libft.h>
 # include <get_next_line_bonus.h>

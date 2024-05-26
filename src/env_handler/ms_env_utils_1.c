@@ -6,11 +6,11 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:56:56 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/23 16:14:17 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/24 17:38:58 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ms_env_handler.h>
+#include <mnii_shlel.h>
 
 t_env_handler	*env_new(t_env_str content)
 {

@@ -6,14 +6,14 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:07:29 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/23 17:55:53 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/24 17:39:06 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <ms_env_handler.h>
+#include <mnii_shlel.h>
 
-static t_env_str extract_env_name(char *var);
-static void	print_env(t_env_handler *env);
+static t_env_str	extract_env_name(char *var);
+static void			print_env(t_env_handler *env);
 
 t_env_handler	*setup_env_struct(char **envp)
 {
@@ -34,14 +34,14 @@ t_env_handler	*setup_env_struct(char **envp)
 	return (lst);
 }
 
-static t_env_str extract_env_name(char *var)
+static t_env_str	extract_env_name(char *var)
 {
 	int			i;
 	t_env_str	ret;
 	char		*work;
 
 	i = -1;
-	work = ft_strdup(var);
+	work = strdup(var);
 	while (work[++i])
 	{
 		if (work[i] != '=')
@@ -54,7 +54,7 @@ static t_env_str extract_env_name(char *var)
 	return (ret);
 }
 
-void builtin_env(t_env_handler *env)
+void	builtin_env(t_env_handler *env)
 {
 	enviter(env, print_env);
 }

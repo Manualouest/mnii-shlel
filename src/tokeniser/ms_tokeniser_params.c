@@ -6,37 +6,16 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:13:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/23 19:02:22 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/26 23:22:05 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
 
-int	ms_get_right_symbol(char *item)
-{
-	int	symbol;
-
-	if (ft_strncmp(item, "'", 1) == 0)
-		symbol = QUOTE;
-	else if (item[0] == '"')
-		symbol = DOUBLE_QUOTE;
-	else if (ft_strncmp(item, "<<", 2) == 0)
-		symbol = HEREDOC;
-	else if (ft_strncmp(item, "<", 1) == 0)
-		symbol = INPUT;
-	else if (ft_strncmp(item, ">>", 2) == 0)
-		symbol = APPEND;
-	else if (ft_strncmp(item, ">", 1) == 0)
-		symbol = REDIRECT;
-	else if (ft_strncmp(item, "$", 1) == 0)
-		symbol = DOLLAR;
-	else
-		symbol = NO_SYMBOL;
-	return (symbol);
-}
-
 void	ms_setup_params_quote_level(t_params *params, char *item)
 {
+	if (params->quote_level == 4)
+		return ;
 	if (params->symbol == QUOTE || (params->quote_level == 1
 			&& item[0] == "'"[0]))
 	{
@@ -55,7 +34,7 @@ void	ms_setup_params_quote_level(t_params *params, char *item)
 	}
 }
 
-void	ms_setupd_params_text_and_symbol(t_params *params, char *item)
+t_params	*ms_setup_params_text_and_symbol(t_params *params, char *item)
 {
 	if (params->quote_level % 2 == 0 && ((ft_strlen(item) == 1
 				&& ms_is_symbol(item[0])) || (ft_strlen(item) == 2
@@ -78,6 +57,10 @@ void	ms_setupd_params_text_and_symbol(t_params *params, char *item)
 	params->text = malloc(sizeof(char) * (ft_strlen(item)) + 1);
 	ft_strlcpy(params->text, item, ft_strlen(item) + 1);
 	ms_setup_params_quote_level(params, item);
+	params->next = malloc(sizeof(*params->next));
+	params->next->text = NULL;
+	params->next->quote_level = params->quote_level;
+	return (params);
 }
 
 char	*ms_get_next_param(char *line, int *main_index, int quote, int start)
@@ -93,10 +76,11 @@ char	*ms_get_next_param(char *line, int *main_index, int quote, int start)
 							!= !ms_is_symbol(line[i])
 							|| ms_is_symbol(line[i - 1])))))
 			|| (quote == 1 && line[i] == "'"[0])
-			|| (quote == 2 && ((line[i] == '"' || line[i] == '$')
+			|| (quote % 2 == 0 && ((line[i] == '"' || line[i] == '$')
 					|| (i == start + 1 && line[i - 1] == '$')))
 			|| (quote == 0 && ((i > start && line[i] == '|')
-					|| (i == start + 1 && line[i - 1] == '|'))))
+					|| (i == start + 1 && line[i - 1] == '|')))
+			|| (quote == 4 && i > 0 && line[i] == "'"[0]))
 			break ;
 		i ++;
 	}
@@ -108,31 +92,42 @@ char	*ms_get_next_param(char *line, int *main_index, int quote, int start)
 	return (ft_substr(line, start, (i - start)));
 }
 
+int	ms_fill_checker(t_command *cmd, t_params *params, char *line, char *item)
+{
+	if (item && line && (ft_strncmp(item, "|", 1) == 0
+			|| ms_is_line_done(line, 0, item) == 1))
+	{
+		free(item);
+		free(params);
+		cmd->params = NULL;
+		return (0);
+	}
+	return (1);
+}
+
 void	ms_fill_params(t_command *cmd, t_params *params, char *line, int *i)
 {
 	char		*item;
 	t_params	*previous;
 
 	item = ms_get_next_param(line, i, params->quote_level, *i);
-	if (ft_strncmp(item, "|", 1) == 0 || ms_is_line_done(line, *i, item) == 1)
-	{
-		free(item);
-		free(params);
-		cmd->params = NULL;
+	if (!ms_fill_checker(cmd, params, &line[*i], item))
 		return ;
-	}
 	while (!(ft_strncmp(item, "|", 1) == 0 && ft_strlen(item) == 1)
-		&& ms_is_line_done(line, *i, item) == 0)
+		&& ms_is_line_done(line, *i, item) == 0
+		&& ft_strncmp(item, "<<", 2) != 0)
 	{
-		ms_setupd_params_text_and_symbol(params, item);
-		params->next = malloc(sizeof(*params->next));
-		previous = params;
-		params->next->quote_level = params->quote_level;
-		params = params->next;
+		previous = ms_setup_params_text_and_symbol(params, item);
+		params = previous->next;
 		free(item);
 		item = ms_get_next_param(line, i, params->quote_level, *i);
 	}
-	free(previous->next);
-	previous->next = NULL;
+	if (ft_strncmp(item, "<<", 2) == 0)
+		ms_launch_heredoc(cmd, params, line, i);
+	else
+	{
+		free(previous->next);
+		previous->next = NULL;
+	}
 	free(item);
 }

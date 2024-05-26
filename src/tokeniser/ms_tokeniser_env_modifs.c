@@ -6,109 +6,78 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/15 02:24:56 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/23 18:59:36 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/26 22:10:44 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
 
-int	ms_get_len_of_env(char *param)
+static char	*ms_get_env_content(t_params *prev, t_params *param)
 {
-	int	len;
-
-	len = 0;
-	while (param[len] && ((ms_is_symbol(param[len]) == ms_is_symbol(param[0])
-				&& param[len] != ' ')))
-		len ++;
-	if (param[len] && len == 0 && param[0] == ' ')
-		len ++;
-	return (len);
-}
-
-int	ms_is_it_worth_modifying_params(char *param)
-{
-	if (!param || ft_strlen(param) == (size_t)ms_get_len_of_env(param))
-		return (0);
-	return (1);
-}
-
-void	ms_redo_next_param(t_params *param)
-{
-	int		start;
-	int		len;
 	char	*tp_char;
+	char	*param_replace;
+	int		len;
 
-	start = ms_get_len_of_env(param->text);
-	len = ft_strlen(param->text) - start;
-	tp_char = ft_substr(param->text, start, len);
+	len = -1;
+	while (param->text[++len] && param->text[len] != ' ')
+		;
+	tp_char = ft_substr(param->text, 0, len);
+	if (len < (int)ft_strlen(param->text))
+	{
+		param_replace = ft_substr(param->text, len, ft_strlen(param->text));
+		free(param->text);
+		param->text = param_replace;
+		return (tp_char);
+	}
 	free(param->text);
-	param->text = tp_char;
+	prev->next = param->next;
+	free(param);
+	return (tp_char);
 }
 
-static void	ms_setup_next(t_params *copy_params, t_params *prev)
+static void	ms_replace_env(t_params *param, t_params *next_param,
+			t_env_handler	*env)
 {
-	t_params	*tp_param;
+	char	*env_name;
+	int		env_len;
 
-	if (ft_strlen(copy_params->text) !=
-		(size_t)ms_get_len_of_env(copy_params->text))
-		ms_redo_next_param(copy_params);
-	else
+	param->type = STRING;
+	free(param->text);
+	env_name = ms_get_env_content(param, next_param);
+	write(1, env_name, ft_strlen(env_name));
+	if (env_name[0] != '?' && env_find(env, env_name))
+		env_len = ft_strlen(env_find(env, env_name)->info.content) + 1;
+	else if (env_name[0] != '?')
+		env_len = 0;
+	if (env_name[0] != '?' && env_len > 0)
 	{
-		if (copy_params->next)
-		{
-			tp_param = copy_params->next;
-			free(prev->next);
-			prev->next = tp_param;
-			free(copy_params->text);
-			free(copy_params);
-		}
-		else
-			prev->next = NULL;
+		param->text = malloc(sizeof(char) * env_len);
+		ft_strlcpy(param->text, (env_find(env, env_name))->info.content,
+			env_len);
 	}
+	else if (env_name[0] != '?')
+		param->text = NULL;
+	if (env_name[0] == '?')
+		param->text = ft_itoa(g_signal);
+	free(env_name);
+	param->symbol = NO_SYMBOL;
 }
 
-static void	ms_do_env_modif(t_params *copy_params, t_params *prev,
-			t_env_handler *env)
-{
-	t_env_handler	*tp_env;
-	char			*env_name;
-
-	if (prev && prev->symbol == DOLLAR && copy_params->type == STRING
-		&& copy_params->quote_level % 2 == 0)
-		// && ms_is_it_worth_modifying_params(copy_params->text))
-	{
-		prev->symbol = NO_SYMBOL;
-		prev->quote_level = copy_params->quote_level;
-		prev->type = STRING;
-		env_name = ft_substr(copy_params->text, 0,
-			ms_get_len_of_env(copy_params->text));
-		tp_env = env_find(env, env_name);
-		free(env_name);
-		free(prev->text);
-		prev->text = ft_strdup(tp_env->info.content);
-		ms_setup_next(copy_params, prev);
-	}
-}
-
-void	ms_make_env_easier(t_params *main_params, t_command *command, char **envp)
+void	ms_make_env_easier(t_params *main_params, char **envp)
 {
 	t_params		*copy_params;
 	t_params		*tp_params;
-	// t_params		*next_param;
 	t_env_handler	*env;
 
+	env = setup_env_struct(envp);
 	copy_params = main_params;
 	tp_params = NULL;
-	env = setup_env_struct(envp);
 	while (copy_params != NULL)
 	{
-		ms_do_env_modif(copy_params, tp_params, env);
-		if (copy_params->next == NULL && copy_params)
-		{
-			ms_trim_spaces(copy_params, 1, tp_params, command);
-			break ;
-		}
-		tp_params = copy_params;
+		if (copy_params->symbol == DOLLAR && copy_params->next
+			&& copy_params->next->type == STRING
+			&& copy_params->next->text)
+			ms_replace_env(copy_params, copy_params->next, env);
 		copy_params = copy_params->next;
 	}
 	envclear(&env, free);

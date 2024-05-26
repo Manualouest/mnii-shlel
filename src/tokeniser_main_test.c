@@ -6,16 +6,18 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/23 18:01:58 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/26 22:04:40 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mnii_shlel.h>
-# include <signal.h>
+
+// clear; valgrind --show-leak-kinds=all --leak-check=full --suppressions=ms.supp ./minishell
 
 void	ms_pipe_test_printer(t_pipes *full_line);
 void	ms_cmd_test_printer(t_cmd *full_line);
 
+int	g_signal = 0;
 
 void	ms_sig_handler(int sig)
 {
@@ -25,6 +27,7 @@ void	ms_sig_handler(int sig)
 		rl_on_new_line();
 		rl_redisplay();
 		rl_replace_line("", 0);
+		g_signal = 130;
 	}
 }
 
@@ -35,7 +38,7 @@ int	main(int argc, char **argv, char **envp)
 	t_cmd				*full_line;
 
 	signal(SIGINT, ms_sig_handler);
-	signal(SIGQUIT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
 	(void)argc;
 	(void)argv;
 	while (1 == 1)
@@ -53,6 +56,7 @@ int	main(int argc, char **argv, char **envp)
 			// exit(0);
 		if (a)
 			free(a);
+		g_signal = 0;
 	}
 	return (0);
 }

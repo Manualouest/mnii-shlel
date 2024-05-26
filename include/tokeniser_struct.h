@@ -10,7 +10,7 @@ typedef enum e_type
 typedef enum e_builtins
 {
 	NO_CMD,
-	ECHO,
+	ECHO_BLT,
 	CD,
 	PWD,
 	EXPORT,

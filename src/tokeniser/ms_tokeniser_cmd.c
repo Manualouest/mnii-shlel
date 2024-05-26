@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:11:46 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/17 17:04:35 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/26 16:25:08 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	ms_find_command(char *line, int *i, t_command *struct_command)
 
 	command = ms_get_next_item(line, i);
 	if (ft_strncmp(command, "echo", 4) == 0)
-		cmd = ECHO;
+		cmd = ECHO_BLT;
 	else if (ft_strncmp(command, "cd", 2) == 0)
 		cmd = CD;
 	else if (ft_strncmp(command, "pwd", 3) == 0)
@@ -106,9 +106,10 @@ void	ms_init_cmd(t_command *command, char *line, int *i)
 
 	command->builtins = ms_find_command(line, i, command);
 	command->params = malloc(sizeof(*command->params));
+	command->params->text = NULL;
 	command->params->quote_level = 0;
 	command->has_option = 0;
-	if (command->builtins == ECHO && ms_check_for_echo_params(line, i))
+	if (command->builtins == ECHO_BLT && ms_check_for_echo_params(line, i))
 		command->has_option = 1;
 	else
 	{
