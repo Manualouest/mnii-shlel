@@ -21,7 +21,7 @@ void	ms_cd(char *param, t_env_handler *env)
 	{
 		if (env_find(env, "HOME") == NULL)
 			return ;
-		ms_cd(env_find(env, "HOME")->info.content);
+		ms_cd(env_find(env, "HOME")->info.content, env);
 		return ;
 	}
 	if (chdir(param) != 0)

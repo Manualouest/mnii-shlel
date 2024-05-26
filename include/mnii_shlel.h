@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHLEL_H
-# define MINISHLEL_H
+#ifndef MNII_SHLEL_H
+# define MNII_SHLEL_H
 
 # include <libft.h>
 # include <get_next_line_bonus.h>

@@ -56,7 +56,6 @@ static void	exec_cmd(t_cmd *cmd, char **envp, t_env_handler *path)
 	if (cmd->pid == 0)
 	{
 		get_path(cmd, path);
-		print_cmd(cmd);
 		dup2(cmd->fd_in, STDIN_FILENO);
 		dup2(cmd->fd_out, STDOUT_FILENO);
 		ms_exec_closefds(cmd);
