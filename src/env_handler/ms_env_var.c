@@ -12,8 +12,8 @@
 
 #include <mnii_shlel.h>
 
+static void			sort_envp(char **envp);
 static t_env_str	extract_env_name(char *var);
-static void			print_env(t_env_handler *env);
 
 t_env_handler	*setup_env_struct(char **envp)
 {
@@ -22,6 +22,7 @@ t_env_handler	*setup_env_struct(char **envp)
 	t_env_handler	*lst;
 
 	i = 0;
+	sort_envp(envp);
 	while (envp[i])
 	{
 		tmp = extract_env_name(envp[i]);
@@ -54,12 +55,36 @@ static t_env_str	extract_env_name(char *var)
 	return (ret);
 }
 
-void	builtin_env(t_env_handler *env)
+static void	sort_envp(char **envp)
 {
-	enviter(env, print_env);
+	size_t	len;
+	int		i;
+	char	*tmp;
+
+	i = 0;
+	while (envp[i] && envp[i + 1])
+	{
+//		printf("%d : %s\n\t%d : %s\n", i, envp[i], i + 1, envp[i + 1]);
+		len = ft_strlen(envp[i]);
+		if (len < ft_strlen(envp[i + 1]))
+			len = ft_strlen(envp[i + 1]);
+		if (ft_strncmp(envp[i], envp[i + 1], len) > 0)
+		{
+			tmp = envp[i];
+			envp[i] = envp[i + 1];
+			envp[i + 1] = tmp;
+			i = 0;
+		}
+		else
+			i++;
+	}
 }
 
-static void	print_env(t_env_handler *env)
+void	builtin_env(t_env_handler *env)
 {
-	printf("%s=%s\n", env->info.name, env->info.content);
+	while (env)
+	{
+		printf("%s=%s\n", env->info.name, env->info.content);
+		env = env->next;
+	}
 }
