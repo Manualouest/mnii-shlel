@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishlel.h>
+#include <mnii_shlel.h>
 
 static char	**heredoc_lst_to_tab(t_list *lst);
 

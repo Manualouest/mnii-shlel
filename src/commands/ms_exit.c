@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishlel.h>
+#include <mnii_shlel.h>
 
 void	builtin_exit(int exit_no)
 {

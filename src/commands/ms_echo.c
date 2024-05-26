@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishlel.h>
+#include <mnii_shlel.h>
 
 static bool	print_str(char *str);
 

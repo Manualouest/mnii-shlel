@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishlel.h>
+#include <mnii_shlel.h>
 
 static void	update_oldpwd(t_env_handler *env);
 static void	update_pwd(t_env_handler *env);

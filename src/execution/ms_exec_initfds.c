@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishlel.h>
+#include <mnii_shlel.h>
 
 void	ms_exec_initfds(t_cmd *cmd)
 {

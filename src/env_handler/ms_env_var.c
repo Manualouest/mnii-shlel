@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishlel.h>
+#include <mnii_shlel.h>
 
 static t_env_str	extract_env_name(char *var);
 static void			print_env(t_env_handler *env);

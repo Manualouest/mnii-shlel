@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishlel.h>
+#include <mnii_shlel.h>
 
 static void	exec_cmd(t_cmd *cmd, char **envp, t_env_handler *path);
 static void	correct_args(t_cmd *cmd, char *replace);
