@@ -14,5 +14,6 @@
 # define MS_ERROR_H
 
 void	free_tab(void **tab);
+void	error_log(char *msg);
 
 #endif

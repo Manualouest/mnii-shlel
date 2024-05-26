@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <minishlel.h>
 
 static bool	print_str(char *str);
 

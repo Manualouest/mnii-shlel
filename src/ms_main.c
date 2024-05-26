@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <minishlel.h>
 
 static char *setup_prompt(char *dir);
 static char	*read_term(void);
@@ -27,31 +27,19 @@ void	free_tab(void **tab)
 	free(tab);
 }
 
-//static t_cmd *lololol(char **pipes)
-//{
-//	char **cmd;
-//	t_cmd *joseph = NULL;
-//	t_cmd *joestar = NULL;
-//	int i = 0;
-//
-//	while (pipes[i]){
-//		cmd = ft_split(pipes[i], ' ');
-//		joseph = cmd_new(cmd);
-//		cmd_add_back(&joestar, joseph);
-//		i++;
-//	}
-//	return (joestar);
-//}
+void	error_log(char *msg)
+{
+	write(STDERR_FILENO, "\033[1;31m", 7);
+	write(STDERR_FILENO, msg, ft_strlen(msg));
+	write(STDERR_FILENO, "\033[0m", 4);
+}
 
 int	main(int argc, char *argv[], char *envp[])
 {
     (void)argc, (void)argv;
 
 	t_env_handler	*env;
-	char	**content = NULL;
-	char	**heredoc;
 	char	*input = NULL;
-//	t_cmd	*cmd;
 
 	env = setup_env_struct(envp);
 	while (1)
@@ -59,20 +47,10 @@ int	main(int argc, char *argv[], char *envp[])
 		input = read_term();
 		if (!input)
 			break ;
-//		content = ft_split(input, '|');
-//		cmd = lololol(content);
-//
-//		free(input);
-//		free_tab((void **)content);
-//		ms_exec(cmd, envp, env_find(env, "PATH"));
-//		cmd_clear(&cmd, free_tab);
+		free(input);
 	}
 	envclear(&env, free);
 	rl_clear_history();
-	for (int i = 0; content[i]; ++i) {
-		printf("%d = %s\n", i, content[i]);
-	}
-	free_tab((void **)content);
 	return 0;
 }
 

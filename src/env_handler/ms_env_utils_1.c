@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <minishlel.h>
 
 t_env_handler	*env_new(t_env_str content)
 {

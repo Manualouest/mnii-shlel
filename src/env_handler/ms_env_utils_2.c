@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <minishlel.h>
 
 static char	*str_to_envstr_dup(char *info, int sep);
 

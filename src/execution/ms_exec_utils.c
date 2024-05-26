@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <minishlel.h>
 
 t_cmd	*cmd_new(char **content)
 {

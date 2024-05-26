@@ -10,13 +10,20 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <minishlel.h>
 
 static void	update_oldpwd(t_env_handler *env);
 static void	update_pwd(t_env_handler *env);
 
 void	ms_cd(char *param, t_env_handler *env)
 {
+	if (!*param)
+	{
+		if (env_find(env, "HOME") == NULL)
+			return ;
+		ms_cd(env_find(env, "HOME")->info.content);
+		return ;
+	}
 	if (chdir(param) != 0)
 		return ;
 	update_oldpwd(env);

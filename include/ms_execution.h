@@ -29,6 +29,8 @@ char	**ms_format_envp(t_env_handler *env);
 
 char	**ms_heredoc(char *limiter);
 
+# define HEREDOC_WARNING "mnii shlel: warning: here-document delimited by EOF"
+
 t_cmd	*cmd_new(char **content);
 void	cmd_add_back(t_cmd **cmd, t_cmd *new);
 void	cmd_clear(t_cmd **cmd, void (*del)(void **));

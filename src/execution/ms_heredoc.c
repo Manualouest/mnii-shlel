@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <minishlel.h>
 
 static char	**heredoc_lst_to_tab(t_list *lst);
 
@@ -29,6 +29,8 @@ char	**ms_heredoc(char *limiter)
 	}
 	if (input)
 		free(input);
+	else
+		error_log("mnii shlel: warning: heredoc has terminated with 'EOF'");
 	input = NULL;
 	ft_lstadd_back(&tab, ft_lstnew(input));
 	ret = heredoc_lst_to_tab(tab);
