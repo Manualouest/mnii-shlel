@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_env_var.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 18:07:29 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/26 13:10:39 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/05/27 12:17:55 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,6 @@ static void	sort_envp(char **envp)
 	i = 0;
 	while (envp[i] && envp[i + 1])
 	{
-//		printf("%d : %s\n\t%d : %s\n", i, envp[i], i + 1, envp[i + 1]);
 		len = ft_strlen(envp[i]);
 		if (len < ft_strlen(envp[i + 1]))
 			len = ft_strlen(envp[i + 1]);

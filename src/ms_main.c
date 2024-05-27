@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/27 11:46:34 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/27 12:18:51 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,12 @@ int	main(int argc, char *argv[], char *envp[])
     (void)argc, (void)argv;
 
 	t_env_handler	*env;
-	char			*input = NULL;
+	char			*input;
 	t_cmd			*cmd;
 
 	signal(SIGINT, ms_sig_handler);
 	signal(SIGQUIT, SIG_IGN);
+	input = NULL;
 	env = setup_env_struct(envp);
 	while (1)
 	{
@@ -58,6 +59,7 @@ int	main(int argc, char *argv[], char *envp[])
 		free(input);
 		g_signal = 0;
 	}
+	builtin_export(env, NULL);
 	envclear(&env, free);
 	rl_clear_history();
 	return 0;

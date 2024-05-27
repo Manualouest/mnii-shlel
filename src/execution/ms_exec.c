@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:33:15 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/18 14:33:15 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/05/27 12:15:32 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ void	ms_exec(t_cmd *to_exec, char **envp, t_env_handler *path)
 
 	cmd = to_exec;
 	cmd_iter(cmd, ms_exec_initfds);
-	edge[0] = open("infile", O_RDONLY);
-	edge[1] = open("outfile", O_WRONLY);
+	edge[0] = open("infile", O_RDONLY | O_CREAT);
+	edge[1] = open("outfile", O_WRONLY | O_CREAT);
 	ms_exec_redirectupdate(cmd, edge[0], edge[1]);
 	while (cmd)
 	{
