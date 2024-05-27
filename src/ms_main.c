@@ -1,52 +1,81 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ms_main.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/23 18:20:33 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/05/27 11:46:34 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <minishell.h>
+#include <mnii_shlel.h>
+
+int g_signal = 0;
 
 static char *setup_prompt(char *dir);
 static char	*read_term(void);
 
-int	main(int argc, char **argv, char **envp)
+void	free_tab(void **tab)
 {
-	char *input;
-	(void)argc, (void)argv;
+	int i;
 
-	setup_env_struct(envp);
-	return (0);
+	i = 0;
+	if (!tab || !tab[i])
+		return ;
+	while (tab[i])
+		free(tab[i++]);
+	free(tab);
+}
 
+void	error_log(char *msg)
+{
+	write(STDERR_FILENO, "\033[1;31m", 7);
+	write(STDERR_FILENO, msg, ft_strlen(msg));
+	write(STDERR_FILENO, "\033[0m", 4);
+}
 
-	input = (char *)1;
-	while (input != NULL)
+int	main(int argc, char *argv[], char *envp[])
+{
+    (void)argc, (void)argv;
+
+	t_env_handler	*env;
+	char			*input = NULL;
+	t_cmd			*cmd;
+
+	signal(SIGINT, ms_sig_handler);
+	signal(SIGQUIT, SIG_IGN);
+	env = setup_env_struct(envp);
+	while (1)
 	{
 		input = read_term();
-		printf("\033[0;0minput is: %s\n", input);
+		if (!input)
+			break ;
+		cmd = ms_tokeniser_main(input, envp);
+		ms_exec(cmd, envp, env_find(env, "PATH"));
+		ms_free_cmd(cmd);
 		free(input);
+		g_signal = 0;
 	}
+	envclear(&env, free);
 	rl_clear_history();
+	return 0;
 }
 
 static char *read_term(void)
 {
 	char	*prompt;
 	char	*path;
-	char	*user;
+	char	*input;
 
 	path = getcwd(NULL, 64);
 	prompt = setup_prompt(path);
 	free(path);
-	user = readline(prompt);
+	input = readline(prompt);
 	free(prompt);
-	add_history(user);
-	return (user);
+	add_history(input);
+	return (input);
 }
 
 static char *setup_prompt(char *dir)
