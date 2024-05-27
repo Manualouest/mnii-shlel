@@ -49,6 +49,7 @@ int	main(int argc, char *argv[], char *envp[])
 			break ;
 		free(input);
 	}
+	builtin_export(env, NULL);
 	envclear(&env, free);
 	rl_clear_history();
 	return 0;

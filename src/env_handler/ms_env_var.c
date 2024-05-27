@@ -64,7 +64,6 @@ static void	sort_envp(char **envp)
 	i = 0;
 	while (envp[i] && envp[i + 1])
 	{
-//		printf("%d : %s\n\t%d : %s\n", i, envp[i], i + 1, envp[i + 1]);
 		len = ft_strlen(envp[i]);
 		if (len < ft_strlen(envp[i + 1]))
 			len = ft_strlen(envp[i + 1]);
