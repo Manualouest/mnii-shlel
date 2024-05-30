@@ -46,4 +46,7 @@ void		ms_free_cmd(t_cmd *cmd);
 void		ms_launch_heredoc(t_command *cmd, t_params *params,
 				char *line, int *main_index);
 
+// ms_tokeniser_trimmer.c
+void		ms_cut_spaces(t_command *cmd, t_params *param);
+
 #endif

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: mscheman <mscheman@student.42.fr>          +#+  +:+       +#+         #
+#    By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/11/01 14:21:30 by mscheman          #+#    #+#              #
-#    Updated: 2024/03/12 00:55:29 by mscheman         ###   ########.fr        #
+#    Updated: 2024/05/30 01:14:43 by mbirou           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,7 +74,7 @@ GNL_OBJ =	get_next_line_bonus.o \
 
 NAME = libft.a
 
-COMPIL_FLAGS += -Wall -Wextra -Werror -c
+COMPIL_FLAGS += -Wall -Wextra -Werror -c -g
 
 %.o:%.c
 	cc $(CC_FLAGS) $< -c -o $@

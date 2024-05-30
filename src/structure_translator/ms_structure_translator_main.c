@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:11:10 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/26 21:47:49 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/29 23:40:27 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,8 @@ void	ms_translate_to_cmd(t_cmd *cmd, t_pipes *main)
 	cpy_cmd = cmd;
 	while (cpy_pipe != NULL)
 	{
-		cpy_cmd->fd_in = 0;
-		cpy_cmd->fd_out = 0;
+		cpy_cmd->fd_out = -1;
+		cpy_cmd->fd_in = -1;
 		if (cpy_pipe->error != NO_ERROR)
 			cpy_cmd->error_id = cpy_pipe->error;
 		else
@@ -112,6 +112,7 @@ void	ms_translate_to_cmd(t_cmd *cmd, t_pipes *main)
 			cpy_cmd->next = malloc(sizeof(*cpy_cmd));
 		else
 			cpy_cmd->next = NULL;
+		ms_redirect_handler(cpy_cmd);
 		if (cpy_cmd->next)
 			cpy_cmd = cpy_cmd->next;
 		cpy_pipe = cpy_pipe->right;
