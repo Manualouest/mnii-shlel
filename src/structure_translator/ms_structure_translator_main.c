@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:11:10 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/29 23:40:27 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/01 16:43:52 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	ms_copy_without_end_space(char **list, char *text, int size)
 {
 	int	i;
 
-	if (text && text[size - 1] == ' ')
+	if (size > 0 && text && text[size - 1] == ' ')
 	{
 		i = 0;
 		free(list[0]);
@@ -59,6 +59,8 @@ static void	ms_copy_without_end_space(char **list, char *text, int size)
 		if (size != 0)
 			list[0][i] = 0;
 	}
+	else if (size <= 0)
+		list[0] = 0;
 	else
 		ft_strlcpy(list[0], text, ft_strlen(text) + 1);
 }

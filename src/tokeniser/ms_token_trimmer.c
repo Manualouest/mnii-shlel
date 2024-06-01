@@ -6,13 +6,14 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 17:29:10 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/27 17:33:44 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/01 20:27:03 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
 
-static void	ms_trimmer(t_params *param, t_params *tp_param, int *len, int *last_len)
+static void	ms_trimmer(t_params *param, t_params *tp_param, int *len,
+				int *last_len)
 {
 	char	*tp_char;
 
@@ -54,10 +55,15 @@ void	ms_cut_spaces(t_command *cmd, t_params *param)
 		{
 			len = ft_strlen(param->text);
 			last_len = len;
-			while(--len >= 0 && param->text[len])
+			while (--len >= 0 && param->text[len])
 				ms_trimmer(param, tp_param, &len, &last_len);
 		}
 		param = param->next;
 	}
 	param = cmd->params;
+}
+
+void	ms_quote_remover(t_command *cmd, t_params *params, int i)
+{
+	
 }

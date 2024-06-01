@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/26 22:04:40 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/01 19:49:36 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,10 +249,14 @@ void	ms_cmd_test_printer(t_cmd *full_line)
 {
 	t_cmd	*cmd;
 	int		i;
+	char	*heredoc;
 
 	cmd = full_line;
 	while (cmd != NULL)
 	{
+
+		heredoc = ms_launch_heredoc(cmd);
+
 		write(1, "____________________________\n\n", 29);
 		write(1, "	fd_in: ", 8);
 		ft_putnbr_fd(cmd->fd_in, 1);
@@ -277,6 +281,9 @@ void	ms_cmd_test_printer(t_cmd *full_line)
 		write(1, "\n", 1);
 		if (cmd->next == NULL)
 			write(1, "____________________________\n\n", 29);
+
+		ms_remove_heredoc(-1, heredoc);
+
 		cmd = cmd->next;
 	}
 }
