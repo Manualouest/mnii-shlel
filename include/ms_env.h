@@ -1,27 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   envp_worker.c                                      :+:      :+:    :+:   */
+/*   ms_env.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/01 17:20:59 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/01 17:20:59 by mscheman         ###   ########.fr       */
+/*   Created: 2024/05/04 18:48:06 by mscheman          #+#    #+#             */
+/*   Updated: 2024/05/04 18:56:34 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <mnii_shlel.h>
+#ifndef MS_ENV_H
+# define MS_ENV_H
 
-char	*envp_find(char **envp, char *name)
-{
-	int	i;
+int		tablen(char **tab);
+char	**tab_append(char **tab, char *add, int pos);
+void	tab_replace(char **tab, char *old, char *new);
+char	**tab_clone(char **tab);
+char	*envp_find(char **envp, char *name);
 
-	i = 0;
-	while (envp[i])
-	{
-		if (ft_strncmp(envp[i], name, ft_strlen(name)) == 0)
-			return (&envp[i][ft_strlen(name) + 1]);
-		i++;
-	}
-	return (NULL);
-}
+#endif
