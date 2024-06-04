@@ -78,12 +78,3 @@ static void	sort_envp(char **envp)
 			i++;
 	}
 }
-
-void	builtin_env(t_env_handler *env)
-{
-	while (env)
-	{
-		printf("%s=%s\n", env->info.name, env->info.content);
-		env = env->next;
-	}
-}

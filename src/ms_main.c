@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/27 12:18:51 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/28 15:09:41 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int g_signal = 0;
 
-static char *setup_prompt(char *dir);
+static char *setup_prompt(void);
 static char	*read_term(void);
 
 void	free_tab(void **tab)
@@ -54,12 +54,11 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!input)
 			break ;
 		cmd = ms_tokeniser_main(input, envp);
-		ms_exec(cmd, envp, env_find(env, "PATH"));
+		ms_exec(cmd, env, env_find(env, "PATH"));
 		ms_free_cmd(cmd);
 		free(input);
 		g_signal = 0;
 	}
-	builtin_export(env, NULL);
 	envclear(&env, free);
 	rl_clear_history();
 	return 0;
@@ -68,31 +67,22 @@ int	main(int argc, char *argv[], char *envp[])
 static char *read_term(void)
 {
 	char	*prompt;
-	char	*path;
 	char	*input;
 
-	path = getcwd(NULL, 64);
-	prompt = setup_prompt(path);
-	free(path);
+	prompt = setup_prompt();
 	input = readline(prompt);
 	free(prompt);
 	add_history(input);
 	return (input);
 }
 
-static char *setup_prompt(char *dir)
+static char *setup_prompt(void)
 {
 	size_t	malloc_size;
 	char	*work;
 
-	if (dir == NULL)
-		dir = ft_strdup("whree tf are u???");
-	malloc_size = ft_strlen(PROMPT_CONST) + ft_strlen(PROMPT_USER);
-	malloc_size += ft_strlen(dir) + ft_strlen("\033[1;32m") + 1;
+	malloc_size = ft_strlen(PROMPT_CONST) + ft_strlen(PROMPT_USER) + 1;
 	work = malloc(sizeof(char) * malloc_size);
-	ft_strlcpy(work, PROMPT_CONST, ft_strlen(PROMPT_CONST) + 1);
-	ft_strlcat(work, " \033[1;32m", malloc_size);
-	ft_strlcat(work, dir, malloc_size);
-	ft_strlcat(work, PROMPT_USER, malloc_size);
+	ft_strlcpy(work, PROMPT_CONST""PROMPT_USER, malloc_size);
 	return (work);
 }

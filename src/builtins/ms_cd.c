@@ -15,13 +15,13 @@
 static void	update_oldpwd(t_env_handler *env);
 static void	update_pwd(t_env_handler *env);
 
-void	ms_cd(char *param, t_env_handler *env)
+void	builtin_cd(char **param, char **envp)
 {
 	if (!*param)
 	{
 		if (env_find(env, "HOME") == NULL)
 			return ;
-		ms_cd(env_find(env, "HOME")->info.content, env);
+		builtin_cd(env_find(env, "HOME")->info.content, env);
 		return ;
 	}
 	if (chdir(param) != 0)

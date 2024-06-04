@@ -14,7 +14,7 @@
 
 static bool	print_str(char *str);
 
-void	ms_echo(char *params[])
+void	builtin_echo(char *params[])
 {
 	int		i;
 	t_bool	with_endl;

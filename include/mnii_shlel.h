@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:32:41 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/27 11:44:42 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/28 15:09:12 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,18 @@
 # include <ms_env_handler.h>
 # include <ms_error.h>
 # include <ms_execution.h>
+# include <ms_builtins.h>
 
 extern int g_signal;
 
-# define PROMPT_CONST "\033[1;31mmnii \033[1;35mshlel:"
-# define PROMPT_USER " \033[1;36m\n$\033[0;0m  "
-# define HEREDOC_PROMPT "\033[1;36mheredco > \033[0;0m"
+# define RED "\033[1;31m"
+# define PNK "\033[1;35m"
+# define CYA "\033[1;36m"
+# define WHT "\033[0;0m"
 
-
-void	builtin_env(t_env_handler *env);
-int		builtin_export(t_env_handler *env, t_env_str *params);
-void	builtin_pwd(void);
-int		builtin_unset(t_env_handler *env, char **names);
-void	builtin_exit(int exit_no);
-void	ms_echo(char *params[]);
-void	ms_cd(char *param, t_env_handler *env);
+# define PROMPT_CONST RED"mnii"PNK"shlel"
+# define PROMPT_USER CYA"$ "WHT
+# define HEREDOC_PROMPT CYA"mheredco > "WHT
 
 void	ms_sig_handler(int sig);
 

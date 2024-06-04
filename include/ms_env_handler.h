@@ -15,11 +15,6 @@
 
 typedef int	t_bool;
 
-/**
- * @attention The string for name and content must be the same!
- * @example The string of name must be "name\0content\0" and therefore
- * content is just name[strlen(name) + 1]
- */
 typedef struct s_env_str
 {
 	char	*name;

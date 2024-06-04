@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/23 14:15:43 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/26 23:22:06 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/28 14:36:54 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,10 @@ void	ms_fill_params_heredoc(t_command *cmd, t_params *params, char **doc,
 	write(1, "\n", 1);
 	while (params)
 	{
-		write(1, &(char){params->quote_level + '0'}, 1);
-		write(1, ": ", 2);
-		write(1, params->text, ft_strlen(params->text));
-		write(1, "\n", 1);
+//		write(1, &(char){params->quote_level + '0'}, 1);
+//		write(1, ": ", 2);
+//		write(1, params->text, ft_strlen(params->text));
+//		write(1, "\n", 1);
 		params = params->next;
 	}
 	params = cmd->params;

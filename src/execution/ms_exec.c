@@ -6,49 +6,39 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:33:15 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/27 12:15:32 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/05/28 15:10:50 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mnii_shlel.h>
 
-static void	exec_cmd(t_cmd *cmd, char **envp, t_env_handler *path);
+static void	exec_cmd(t_cmd *cmd, char **envp, char *path);
+static void	get_path(t_cmd *cmd, char *path);
 static void	correct_args(t_cmd *cmd, char *replace);
-static void	get_path(t_cmd *cmd, t_env_handler *path);
 
-//void	print_cmd(t_cmd *cmd)
-//{
-//	printf("- %s\n", cmd->args[0]);
-//	int i = 1;
-//	printf("\targs:");
-//	while (cmd->args[i])
-//		printf(" %s", cmd->args[i++]);
-//	printf("\n\tfd_in: %d\n", cmd->fd_in);
-//	printf("\tfd_out: %d\n", cmd->fd_out);
-//}
-
-void	ms_exec(t_cmd *to_exec, char **envp, t_env_handler *path)
+void	ms_exec(t_cmd *to_exec, t_env_handler *env)
 {
-	t_cmd	*cmd;
 	int		edge[2];
+	char	**clone_env;
 
-	cmd = to_exec;
-	cmd_iter(cmd, ms_exec_initfds);
+	clone_env = ms_format_envp(env);
+	cmd_iter(to_exec, ms_exec_initfds);
 	edge[0] = open("infile", O_RDONLY | O_CREAT);
-	edge[1] = open("outfile", O_WRONLY | O_CREAT);
-	ms_exec_redirectupdate(cmd, edge[0], edge[1]);
-	while (cmd)
+	edge[1] = open("outfile", O_WRONLY);
+	ms_exec_redirectupdate(to_exec, edge[0], edge[1]);
+	while (to_exec)
 	{
-		exec_cmd(cmd, envp, path);
-		close(cmd->fd_in);
-		close(cmd->fd_out);
-		cmd = cmd->next;
+		exec_cmd(to_exec, clone_env, envp_find(clone_env, "PATH"));
+		close(to_exec->fd_in);
+		close(to_exec->fd_out);
+		to_exec = to_exec->next;
 	}
 	ms_exec_closefds(to_exec);
 	waitpid(-1, NULL, 0);
+	free_tab((void **)clone_env);
 }
 
-static void	exec_cmd(t_cmd *cmd, char **envp, t_env_handler *path)
+static void	exec_cmd(t_cmd *cmd, char **envp, char *path)
 {
 	if (!cmd)
 		return ;
@@ -60,17 +50,19 @@ static void	exec_cmd(t_cmd *cmd, char **envp, t_env_handler *path)
 		dup2(cmd->fd_out, STDOUT_FILENO);
 		ms_exec_closefds(cmd);
 		execve(cmd->args[0], cmd->args, envp);
+		error_log("bowo\n");
+		exit(EXIT_FAILURE);
 	}
 }
 
-static void	get_path(t_cmd *cmd, t_env_handler *path)
+static void	get_path(t_cmd *cmd, char *path)
 {
 	char	**split_path;
 	char	*work;
 	int		i;
 
 	correct_args(cmd, NULL);
-	split_path = ft_split(path->info.content, ':');
+	split_path = ft_split(path, ':');
 	i = 0;
 	while (split_path[i])
 	{
@@ -96,7 +88,7 @@ static void	correct_args(t_cmd *cmd, char *replace)
 		cmd->args[0] = replace;
 		return ;
 	}
-	if (cmd->args[0][0] == '/')
+	if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
 		return ;
 	tmp = ft_calloc(sizeof(char), (ft_strlen(cmd->args[0]) + 2));
 	tmp[0] = '/';

@@ -12,7 +12,7 @@
 
 #include <mnii_shlel.h>
 
-static char	*str_to_envstr_dup(char *info, int sep);
+static char	*str_insert(char *info, int sep);
 
 t_env_handler	*env_find(t_env_handler *env, char *name)
 {
@@ -45,14 +45,14 @@ t_env_str	ms_string_to_env(char *info, int sep)
 	t_env_str	ret;
 	char		*work;
 
-	work = str_to_envstr_dup(info, sep);
+	work = str_insert(info, sep);
 	work[sep] = 0;
 	ret.name = work;
 	ret.content = &work[sep + 1];
 	return (ret);
 }
 
-static char	*str_to_envstr_dup(char *info, int sep)
+static char	*str_insert(char *info, int sep)
 {
 	size_t	i;
 	char	*dup;

@@ -1,20 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_exit.c                                          :+:      :+:    :+:   */
+/*   ms_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/26 21:32:54 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/27 11:39:25 by mbirou           ###   ########.fr       */
+/*   Created: 2024/05/01 17:00:59 by mscheman          #+#    #+#             */
+/*   Updated: 2024/05/01 17:00:59 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mnii_shlel.h>
 
-void	builtin_exit(int exit_no)
+void	builtin_env(t_env_handler *env)
 {
-	printf("exit\n");
-	g_signal = exit_no;
-	exit(exit_no);
+	while (env)
+	{
+		printf("%s=%s\n", env->info.name, env->info.content);
+		env = env->next;
+	}
 }

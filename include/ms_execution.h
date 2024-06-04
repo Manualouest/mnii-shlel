@@ -13,11 +13,9 @@
 #ifndef MS_EXECUTION_H
 # define MS_EXECUTION_H
 
-# include <mnii_shlel.h>
-
 # define HEREDOC_WARNING "mnii shlel: warning: here-document delimited by EOF"
 
-void	ms_exec(t_cmd *to_exec, char **envp, t_env_handler *path);
+void	ms_exec(t_cmd *to_exec, t_env_handler *env);
 char	**ms_format_envp(t_env_handler *env);
 
 t_cmd	*cmd_new(char **content);
