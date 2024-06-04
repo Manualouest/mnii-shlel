@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:11:10 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/27 17:44:09 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/04 18:17:13 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	ms_copy_without_end_space(char **list, char *text, int size)
 {
 	int	i;
 
-	if (text && text[size - 1] == ' ')
+	if (size > 0 && text && text[size - 1] == ' ')
 	{
 		i = 0;
 		free(list[0]);
@@ -56,9 +56,9 @@ static void	ms_copy_without_end_space(char **list, char *text, int size)
 			list[0][i] = text[i];
 			i++;
 		}
-		if (size != 0)
-			list[0][i] = 0;
 	}
+	else if (size <= 0)
+		list[0] = 0;
 	else
 		ft_strlcpy(list[0], text, ft_strlen(text) + 1);
 }
@@ -83,7 +83,7 @@ static char	**ms_translate_params(t_params *main_params, char *cmd)
 			ft_strlcpy(args[i], param->text, ft_strlen(param->text) + 1);
 		else
 			ms_copy_without_end_space(&args[i], param->text,
-				ft_strlen(param->text));
+				ft_strlen(param->text) - 1);
 		param = param->next;
 	}
 	write(1, "\n", 1);
@@ -100,6 +100,7 @@ void	ms_translate_to_cmd(t_cmd *cmd, t_pipes *main)
 	while (cpy_pipe != NULL)
 	{
 		cpy_cmd->fd_out = -1;
+		cpy_cmd->fd_in = -1;
 		if (cpy_pipe->error != NO_ERROR)
 			cpy_cmd->error_id = cpy_pipe->error;
 		else
@@ -112,7 +113,6 @@ void	ms_translate_to_cmd(t_cmd *cmd, t_pipes *main)
 		else
 			cpy_cmd->next = NULL;
 		ms_redirect_handler(cpy_cmd);
-		cpy_cmd->fd_in = 0;
 		if (cpy_cmd->next)
 			cpy_cmd = cpy_cmd->next;
 		cpy_pipe = cpy_pipe->right;

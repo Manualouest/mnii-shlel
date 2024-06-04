@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exec_initfds.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 20:19:53 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/20 20:19:53 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/06/01 17:03:38 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

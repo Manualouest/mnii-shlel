@@ -6,11 +6,13 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/27 17:28:07 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/01 17:01:13 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mnii_shlel.h>
+
+// clear; valgrind --show-leak-kinds=all --leak-check=full --suppressions=ms.supp ./minishell
 
 int g_signal = 0;
 
