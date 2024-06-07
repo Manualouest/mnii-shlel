@@ -17,50 +17,54 @@ int g_signal = 0;
 static char *setup_prompt(void);
 static char	*read_term(void);
 
-void	free_tab(void **tab)
-{
-	int i;
-
-	i = 0;
-	if (!tab || !tab[i])
-		return ;
-	while (tab[i])
-		free(tab[i++]);
-	free(tab);
-}
-
 void	error_log(char *msg)
 {
 	write(STDERR_FILENO, "\033[1;31m", 7);
 	write(STDERR_FILENO, msg, ft_strlen(msg));
+	write(STDERR_FILENO, "\n", 1);
 	write(STDERR_FILENO, "\033[0m", 4);
 }
 
 int	main(int argc, char *argv[], char *envp[])
 {
+	char	**ms_env;
+	char	*input;
+	char	**work;
+//	t_cmd	cmd;
+
     (void)argc, (void)argv;
-
-	t_env_handler	*env;
-	char			*input;
-	t_cmd			*cmd;
-
 	signal(SIGINT, ms_sig_handler);
 	signal(SIGQUIT, SIG_IGN);
-	input = NULL;
-	env = setup_env_struct(envp);
+	ms_env = tab_clone(envp);
 	while (1)
 	{
 		input = read_term();
 		if (!input)
 			break ;
-		cmd = ms_tokeniser_main(input, envp);
-		ms_exec(cmd, env, env_find(env, "PATH"));
-		ms_free_cmd(cmd);
+		work = ft_split(input, ' ');
+		if (strncmp(work[0], "cd", 2) == 0)
+			builtin_cd(tablen(work), work, ms_env);
+		if (strncmp(work[0], "echo", 4) == 0)
+			builtin_echo(work);
+		if (strncmp(work[0], "env", 4) == 0)
+			builtin_env(ms_env);
+		if (strncmp(work[0], "pwd", 3) == 0)
+			builtin_pwd();
+		if (strncmp(work[0], "exit", 4) == 0)
+			builtin_exit(tablen(work), work, ms_env);
+		if (strncmp(work[0], "unset", 5) == 0)
+			builtin_unset(tablen(work), work, &ms_env);
+		if (strncmp(work[0], "export", 5) == 0)
+			builtin_export(tablen(work), work, &ms_env);
+		free_tab((void **)work);
+//		cmd = ms_tokeniser_main(input, ms_env);
+//		ms_exec(cmd, ms_env, cmd->next != NULL);
+//		ms_free_cmd(cmd);
 		free(input);
 		g_signal = 0;
 	}
-	envclear(&env, free);
 	rl_clear_history();
+	free_tab((void **)ms_env);
 	return 0;
 }
 

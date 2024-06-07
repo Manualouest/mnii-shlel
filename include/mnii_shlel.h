@@ -36,24 +36,22 @@
 # include <tokeniser_struct.h>
 # include <tokeniser.h>
 # include <parsing.h>
-# include <ms_env_handler.h>
-
-# include <ms_env_handler.h>
-# include <ms_error.h>
 # include <ms_execution.h>
 # include <ms_builtins.h>
+# include <ms_env.h>
 
 extern int g_signal;
 
 # define RED "\033[1;31m"
-# define PNK "\033[1;35m"
+# define PRP "\033[1;35m"
 # define CYA "\033[1;36m"
 # define WHT "\033[0;0m"
 
-# define PROMPT_CONST RED"mnii"PNK"shlel"
+# define PROMPT_CONST RED"mnii"PRP"shlel"
 # define PROMPT_USER CYA"$ "WHT
 # define HEREDOC_PROMPT CYA"mheredco > "WHT
 
+void	error_log(char *msg);
 void	ms_sig_handler(int sig);
 
 #endif

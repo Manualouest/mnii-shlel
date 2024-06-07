@@ -12,9 +12,47 @@
 
 #include <mnii_shlel.h>
 
-void	builtin_exit(int exit_no)
+static int	check(int argc, char **argv);
+
+int	builtin_exit(int argc, char **argv, char **envp)
 {
+	int	error_code;
+
+	error_code = check(argc, argv);
 	printf("exit\n");
-	g_signal = exit_no;
-	exit(exit_no);
+	if (error_code == -1)
+		return (EXIT_FAILURE);
+	else if (error_code == 1)
+		g_signal = 2;
+	else if (argv[1])
+		g_signal = ft_atoi(argv[1]);
+	else
+		g_signal = 0;
+	free_tab((void **)argv);
+	free_tab((void **)envp);
+	exit(g_signal);
+}
+
+static int	check(int argc, char **argv)
+{
+	int	i;
+
+	if (argc == 1)
+		return (EXIT_SUCCESS);
+	if (argc > 2)
+	{
+		error_log("too many arguments");
+		return (-1);
+	}
+	i = 0;
+	while (argv[1][i])
+	{
+		if (ft_isdigit(argv[1][i]) != 1)
+		{
+			error_log("numeric argument required");
+			return (EXIT_FAILURE);
+		}
+		i++;
+	}
+	return (EXIT_SUCCESS);
 }

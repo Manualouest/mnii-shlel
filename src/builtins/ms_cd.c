@@ -12,50 +12,62 @@
 
 #include <mnii_shlel.h>
 
-static void	update_oldpwd(t_env_handler *env);
-static void	update_pwd(t_env_handler *env);
+static void	check(int argc, char **envp);
+static void	error(int error);
+static char	*get_pwd(void);
+static void	update_envp(char **argv, char **envp, char *curr_pwd);
 
-void	builtin_cd(char **param, char **envp)
+int	builtin_cd(int argc, char **argv, char **envp)
 {
-	if (!*param)
+	char	*curr_pwd;
+
+	check(argc, envp);
+	curr_pwd = get_pwd();
+	if (argc == 1)
+		chdir(&envp_find(envp, "HOME")[6]);
+	else if (chdir(argv[1]) != 0)
 	{
-		if (env_find(env, "HOME") == NULL)
-			return ;
-		builtin_cd(env_find(env, "HOME")->info.content, env);
-		return ;
+		error(errno);
+		free(curr_pwd);
+		return (EXIT_FAILURE);
 	}
-	if (chdir(param) != 0)
-		return ;
-	update_oldpwd(env);
-	update_pwd(env);
+	update_envp(argv, envp, curr_pwd);
+	free(curr_pwd);
+	return (EXIT_SUCCESS);
 }
 
-static void	update_oldpwd(t_env_handler *env)
+static void	check(int argc, char **envp)
 {
-	t_env_handler	*oldpwd;
-	t_env_handler	*currpwd;
-	t_env_handler	*tmp;
-	char			*work;
-
-	oldpwd = env_find(env, "OLDPWD");
-	currpwd = env_find(env, "PWD");
-	work = ft_calloc(ft_strlen(currpwd->info.content) + 7, sizeof(char));
-	ft_strlcpy(work, "OLDPWD", 7);
-	ft_strlcat(work, currpwd->info.content,
-		7 + ft_strlen(currpwd->info.content));
-	tmp = env_new(ms_string_to_env(work, 6));
-	free(work);
-	env_replace(&env, tmp, oldpwd);
-	envdelone(oldpwd, free);
+	if (argc > 2)
+	{
+		error(-1);
+		exit(EXIT_FAILURE);
+	}
+	if (argc == 1 && !envp_find(envp, "HOME"))
+	{
+		error(-2);
+		exit(EXIT_FAILURE);
+	}
 }
 
-static void	update_pwd(t_env_handler *env)
+static void	error(int error)
 {
-	t_env_handler	*old_pwd;
-	t_env_handler	*new_pwd;
-	char			*work;
-	char			*path;
-	int				i;
+	if (error == -1)
+		error_log("too many arguments");
+	if (error == -2)
+		error_log("cannot find HOME");
+	if (error == ENOTDIR)
+		error_log("path is not a directory");
+	if (error == ENOENT)
+		error_log("directory not found");
+	if (error == EACCES)
+		error_log("permission denied");
+}
+
+static char	*get_pwd(void)
+{
+	char	*path;
+	int		i;
 
 	i = 0;
 	path = NULL;
@@ -64,13 +76,25 @@ static void	update_pwd(t_env_handler *env)
 		i++;
 		path = getcwd(NULL, i);
 	}
-	work = ft_calloc(ft_strlen(path) + 4 + 1, sizeof(char));
-	ft_strlcpy(work, "PWD", 4);
-	ft_strlcat(work, path, ft_strlen(path) + 4 + 1);
-	new_pwd = env_new(ms_string_to_env(work, 3));
-	old_pwd = env_find(env, "PWD");
-	env_replace(&env, new_pwd, old_pwd);
-	envdelone(old_pwd, free);
-	free(path);
-	free(work);
+	return (path);
+}
+
+static void	update_envp(char **argv, char **envp, char *curr_pwd)
+{
+	char	*tmp;
+
+	if (envp_find(envp, "PWD"))
+	{
+		tmp = malloc(sizeof(char) * (ft_strlen(argv[1]) + 5));
+		ft_strlcpy(tmp, "PWD=", 5);
+		ft_strlcat(tmp, argv[1], ft_strlen(argv[1]) + 5);
+		tab_replace(envp, envp_find(envp, "PWD"), tmp);
+	}
+	if (envp_find(envp, "OLDPWD"))
+	{
+		tmp = malloc(sizeof(char) * (ft_strlen(curr_pwd) + 8));
+		ft_strlcpy(tmp, "OLDPWD=", 8);
+		ft_strlcat(tmp, argv[1], ft_strlen(curr_pwd) + 8);
+		tab_replace(envp, envp_find(envp, "OLDPWD"), tmp);
+	}
 }

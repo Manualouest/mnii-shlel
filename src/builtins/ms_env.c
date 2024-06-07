@@ -12,11 +12,20 @@
 
 #include <mnii_shlel.h>
 
-void	builtin_env(t_env_handler *env)
+int	builtin_env(char **envp)
 {
-	while (env)
+	int	i;
+
+	i = 0;
+	while (envp[i])
 	{
-		printf("%s=%s\n", env->info.name, env->info.content);
-		env = env->next;
+		if (!ft_strctn(envp[i], "="))
+		{
+			i++;
+			continue ;
+		}
+			printf("%s\n", envp[i]);
+		i++;
 	}
+	return (EXIT_SUCCESS);
 }

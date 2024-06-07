@@ -12,40 +12,62 @@
 
 #include <mnii_shlel.h>
 
-static void	unset_delete(t_env_handler *env, t_env_handler *del);
+static int	count_removed(char **envp, char **to_remove);
+static bool	is_contained(char *str, char **tab);
 
-int	builtin_unset(t_env_handler *env, char **names)
+int	builtin_unset(int argc, char **argv, char ***envp)
 {
-	int				i;
-	t_bool			success;
-	t_env_handler	*old;
+	int		i;
+	int		j;
+	int		m_size;
+	char	**dup;
 
+	if (argc == 1)
+		return (EXIT_SUCCESS);
+	m_size = tablen((*envp)) + 1;
+	m_size -= count_removed((*envp), &argv[1]);
+	dup = malloc(sizeof(char *) * m_size);
 	i = 0;
-	old = NULL;
-	success = true;
-	if (!names || !*names)
-		return (EXIT_FAILURE);
-	while (names[i])
+	j = 0;
+	while ((*envp)[i + 1])
 	{
-		old = env_find(env, names[i]);
-		if (!old)
-			success = false;
-		else
-		{
-			unset_delete(env, old);
-			envdelone(old, free);
-		}
+		if (is_contained((*envp)[i], &argv[1]) == true)
+			i++;
+		dup[j] = ft_strdup((*envp)[i]);
 		i++;
+		j++;
 	}
+	dup[j] = NULL;
+	free_tab((void **)(*envp));
+	(*envp) = dup;
 	return (EXIT_SUCCESS);
 }
 
-static void	unset_delete(t_env_handler *env, t_env_handler *del)
+static int	count_removed(char **envp, char **to_remove)
 {
-	t_env_handler	*tmp;
+	int	i;
+	int count;
 
-	tmp = env;
-	while (tmp->next != del)
-		tmp = tmp->next;
-	tmp->next = del->next;
+	i = 0;
+	count = 0;
+	while (envp[i])
+	{
+		count += is_contained(envp[i], to_remove);
+		i++;
+	}
+	return (count);
+}
+
+static bool	is_contained(char *str, char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+	{
+		if (ft_strncmp(str, tab[i], ft_strlen(str) + 1) == '=')
+			return (true);
+		i++;
+	}
+	return (false);
 }

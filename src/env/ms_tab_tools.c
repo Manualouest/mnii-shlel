@@ -30,15 +30,17 @@ char	**tab_append(char **tab, char *add, int pos)
 	i = 0;
 	if (pos == -1)
 		pos = tablen(tab);
-	dup = malloc(sizeof(char *) * (tablen(tab) + 1));
+	dup = malloc(sizeof(char *) * (tablen(tab) + 2));
 	while (tab[i])
 	{
 		if (i == pos)
 			dup[i] = add;
 		else
-			dup[i + (pos > i)] = tab[i];
+			dup[i] = tab[i - (i > pos)];
 		i++;
 	}
+	dup[i] = tab[i - 1];
+	dup[i + 1] = NULL;
 	free(tab);
 	return (dup);
 }
@@ -97,6 +99,9 @@ void	free_tab(void **tab)
 	if (!tab || !tab[i])
 		return ;
 	while (tab[i])
-		free(tab[i++]);
+	{
+		free(tab[i]);
+		i++;
+	}
 	free(tab);
 }

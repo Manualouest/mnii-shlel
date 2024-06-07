@@ -12,7 +12,7 @@
 
 #include <mnii_shlel.h>
 
-void	builtin_pwd(void)
+int	builtin_pwd(void)
 {
 	char	*path;
 	int		i;
@@ -26,4 +26,5 @@ void	builtin_pwd(void)
 	}
 	printf("%s\n", path);
 	free(path);
+	return (EXIT_FAILURE);
 }

@@ -16,26 +16,22 @@ static void	exec_cmd(t_cmd *cmd, char **envp, char *path);
 static void	get_path(t_cmd *cmd, char *path);
 static void	correct_args(t_cmd *cmd, char *replace);
 
-void	ms_exec(t_cmd *to_exec, t_env_handler *env)
+void	ms_exec(t_cmd *to_exec, char **env, bool is_pipe)
 {
-	int		edge[2];
-	char	**clone_env;
-
-	clone_env = ms_format_envp(env);
+	if (is_pipe)
+		env = tab_clone(env);
 	cmd_iter(to_exec, ms_exec_initfds);
-	edge[0] = open("infile", O_RDONLY | O_CREAT);
-	edge[1] = open("outfile", O_WRONLY);
-	ms_exec_redirectupdate(to_exec, edge[0], edge[1]);
 	while (to_exec)
 	{
-		exec_cmd(to_exec, clone_env, envp_find(clone_env, "PATH"));
+		exec_cmd(to_exec, env, envp_find(env, "PATH"));
 		close(to_exec->fd_in);
 		close(to_exec->fd_out);
 		to_exec = to_exec->next;
 	}
 	ms_exec_closefds(to_exec);
 	waitpid(-1, NULL, 0);
-	free_tab((void **)clone_env);
+	if (is_pipe)
+		free_tab((void **)env);
 }
 
 static void	exec_cmd(t_cmd *cmd, char **envp, char *path)

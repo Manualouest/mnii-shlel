@@ -15,8 +15,7 @@
 
 # define HEREDOC_WARNING "mnii shlel: warning: here-document delimited by EOF"
 
-void	ms_exec(t_cmd *to_exec, t_env_handler *env);
-char	**ms_format_envp(t_env_handler *env);
+void	ms_exec(t_cmd *to_exec, char **env, bool is_pipe);
 
 t_cmd	*cmd_new(char **content);
 void	cmd_add_back(t_cmd **cmd, t_cmd *new);

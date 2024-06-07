@@ -19,25 +19,24 @@ void	ms_exec_initfds(t_cmd *cmd)
 	if (cmd->next == NULL)
 		return ;
 	pipe(pipes_fd);
-	printf("Opened pipe with entry %d and exit %d\n", pipes_fd[0], pipes_fd[1]);
-	cmd->fd_out = pipes_fd[1];
-	cmd->next->fd_in = pipes_fd[0];
-}
-
-void	ms_exec_redirectupdate(t_cmd *cmd, int infile, int outfile)
-{
-	cmd->fd_in = infile;
-	while (cmd->next != NULL)
-		cmd = cmd->next;
-	cmd->fd_out = outfile;
+	if (cmd->fd_out == STDOUT_FILENO)
+		cmd->fd_out = pipes_fd[1];
+	else
+		close(pipes_fd[1]);
+	if (cmd->next->fd_in == STDIN_FILENO)
+		cmd->next->fd_in = pipes_fd[0];
+	else
+		close(pipes_fd[0]);
 }
 
 void	ms_exec_closefds(t_cmd *cmd)
 {
 	while (cmd != NULL)
 	{
-		close(cmd->fd_in);
-		close(cmd->fd_out);
+		if (cmd->fd_in != STDIN_FILENO)
+			close(cmd->fd_in);
+		if (cmd->fd_out != STDOUT_FILENO)
+			close(cmd->fd_out);
 		cmd = cmd->next;
 	}
 }

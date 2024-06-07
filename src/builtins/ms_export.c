@@ -12,38 +12,98 @@
 
 #include <mnii_shlel.h>
 
-static void	export_no_args(t_env_handler *env);
+static void	add_to_envp(char ***envp, char *to_add);
+static char *find_similar(char **tab, char *cmp);
+static int	check_args(const char *input);
+static bool	is_validchar(char c);
 
-int	builtin_export(t_env_handler *env, t_env_str *params)
+int	builtin_export(int argc, char **argv, char ***envp)
 {
-	int				i;
-	t_env_handler	*tmp;
-	t_env_handler	*dup;
+	int	i;
+	int	ret;
 
-	i = -1;
-	if (params == NULL && env != NULL)
+	i = 0;
+	ret = 0;
+	if (argc == 1)
 	{
-		enviter(env, export_no_args);
+		builtin_export_noargs(*envp);
 		return (EXIT_SUCCESS);
 	}
-	if (!env || !params || !params[0].name)
-		return (EXIT_FAILURE);
-	while (params[++i].name)
+	while (argv[++i])
 	{
-		dup = env_find(env, params[i].name);
-		tmp = env_new((t_env_str){params[i].name, params[i].content});
-		if (!dup)
-			envadd_back(&env, tmp);
-		else
+		if (!ft_strncmp("_=", argv[i], 2) || !ft_strncmp("_", argv[i], 2))
+			continue ;
+		if (check_args(argv[i]))
 		{
-			env_replace(&env, tmp, dup);
-			envdelone(dup, free);
+			ret++;
+			error_log("cannot export this variable");
+			continue ;
 		}
+		add_to_envp(envp, ft_strdup(argv[i]));
+	}
+	if (ret != 0)
+		ret = EXIT_FAILURE;
+	return (ret);
+}
+
+static void	add_to_envp(char ***envp, char *to_add)
+{
+	char	*old;
+
+	old = find_similar(*envp, to_add);
+	if (!old)
+		*envp = tab_append(*envp, to_add, 0);
+	else
+		tab_replace(*envp, old, to_add);
+}
+
+static char *find_similar(char **tab, char *cmp)
+{
+	int	i;
+	int	len;
+	int	comp;
+
+	i = 0;
+	if (envp_find(tab, cmp))
+		return (envp_find(tab, cmp));
+	len = 0;
+	while (cmp[len])
+	{
+		if (!cmp[len] || cmp[len] == '=')
+			break ;
+		len++;
+	}
+	if (cmp[len] == '=')
+		len--;
+	while (tab[i])
+	{
+		comp = ft_strncmp(tab[i], cmp, len);
+		if (comp == '=' || comp == '=' * -1 || comp == 0)
+			return (tab[i]);
+		i++;
+	}
+	return (NULL);
+}
+
+static int	check_args(const char *input)
+{
+	int	i;
+
+	if (input[0] != '_' && !ft_isalpha(input[0]))
+		return (EXIT_FAILURE);
+	i = 1;
+	while (input[i] && input[i] != '=')
+	{
+		if (!is_validchar(input[i]))
+			return (EXIT_FAILURE);
+		i++;
 	}
 	return (EXIT_SUCCESS);
 }
 
-static void	export_no_args(t_env_handler *env)
+static bool	is_validchar(char c)
 {
-	printf("declare -x %s=\"%s\"\n", env->info.name, env->info.content);
+	if (ft_isalnum(c) || c == '_' || c == '=')
+		return (true);
+	return (false);
 }

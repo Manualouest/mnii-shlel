@@ -18,5 +18,6 @@ char	**tab_append(char **tab, char *add, int pos);
 void	tab_replace(char **tab, char *old, char *new);
 char	**tab_clone(char **tab);
 char	*envp_find(char **envp, char *name);
+void	free_tab(void **tab);
 
 #endif
