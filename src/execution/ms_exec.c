@@ -12,83 +12,42 @@
 
 #include <mnii_shlel.h>
 
-static void	exec_cmd(t_cmd *cmd, char **envp, char *path);
-static void	get_path(t_cmd *cmd, char *path);
-static void	correct_args(t_cmd *cmd, char *replace);
-
 void	ms_exec(t_cmd *to_exec, char **env, bool is_pipe)
 {
+	int	status;
+
 	if (is_pipe)
-		env = tab_clone(env);
-	cmd_iter(to_exec, ms_exec_initfds);
-	while (to_exec)
 	{
-		exec_cmd(to_exec, env, envp_find(env, "PATH"));
-		close(to_exec->fd_in);
-		close(to_exec->fd_out);
-		to_exec = to_exec->next;
+		ms_exec_pipe(to_exec, tab_clone(env));
+		return ;
 	}
-	ms_exec_closefds(to_exec);
-	waitpid(-1, NULL, 0);
-	if (is_pipe)
-		free_tab((void **)env);
+	if (ms_exec_builtin(to_exec, env) != -1)
+		return ;
+	child_exec(to_exec, env);
+	waitpid(-1, &status, 0);
+	if (WIFEXITED(status))
+		g_signal = WEXITSTATUS(status);
 }
 
-static void	exec_cmd(t_cmd *cmd, char **envp, char *path)
+void	child_exec(t_cmd *to_exec, char **env)
 {
-	if (!cmd)
-		return ;
-	cmd->pid = fork();
-	if (cmd->pid == 0)
+	to_exec->pid = fork();
+	if (to_exec->pid < -1)
+		error_log("fork failed");
+	if (to_exec->pid == 0)
 	{
-		get_path(cmd, path);
-		dup2(cmd->fd_in, STDIN_FILENO);
-		dup2(cmd->fd_out, STDOUT_FILENO);
-		ms_exec_closefds(cmd);
-		execve(cmd->args[0], cmd->args, envp);
-		error_log("bowo\n");
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+		ms_child_getpath(to_exec, envp_find(env, "PATH"));
+		if (dup2(to_exec->fd_in , STDIN_FILENO) == -1)
+			error_log("fd_in");
+		if (dup2(to_exec->fd_out , STDOUT_FILENO) == -1)
+			error_log("fd_out");
+		ms_exec_closefds(to_exec);
+		execve(to_exec->args[0], to_exec->args, env);
+		cmd_clear(&to_exec, free_tab);
+		free_tab((void **)env);
+		error_log("bozo");
 		exit(EXIT_FAILURE);
 	}
-}
-
-static void	get_path(t_cmd *cmd, char *path)
-{
-	char	**split_path;
-	char	*work;
-	int		i;
-
-	correct_args(cmd, NULL);
-	split_path = ft_split(path, ':');
-	i = 0;
-	while (split_path[i])
-	{
-		work = ft_strjoin(split_path[i], cmd->args[0]);
-		if (!access(work, X_OK))
-			break ;
-		free(work);
-		work = NULL;
-		i++;
-	}
-	correct_args(cmd, work);
-	free_tab((void **)split_path);
-}
-
-static void	correct_args(t_cmd *cmd, char *replace)
-{
-	char	*tmp;
-
-	tmp = NULL;
-	if (replace)
-	{
-		free(cmd->args[0]);
-		cmd->args[0] = replace;
-		return ;
-	}
-	if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
-		return ;
-	tmp = ft_calloc(sizeof(char), (ft_strlen(cmd->args[0]) + 2));
-	tmp[0] = '/';
-	ft_strlcat(tmp, cmd->args[0], ft_strlen(cmd->args[0]) + 2);
-	free(cmd->args[0]);
-	cmd->args[0] = tmp;
 }

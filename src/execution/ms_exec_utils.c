@@ -19,6 +19,8 @@ t_cmd	*cmd_new(char **content)
 	node = malloc(sizeof(*node));
 	if (!node)
 		return (0);
+	node->fd_in = STDIN_FILENO;
+	node->fd_out = STDOUT_FILENO;
 	node->args = content;
 	node->next = 0;
 	return (node);
@@ -60,31 +62,3 @@ void	cmd_iter(t_cmd *cmd, void (*f)(t_cmd *))
 	cmd_iter(cmd->next, f);
 }
 
-char	**ms_format_envp(t_env_handler *env)
-{
-	t_env_handler	*tmp;
-	size_t			size;
-	char			**tab;
-	int				i;
-
-	tmp = env;
-	i = 0;
-	while (tmp)
-	{
-		tmp = tmp->next;
-		i++;
-	}
-	tab = ft_calloc(i + 1, sizeof(char *));
-	tmp = env;
-	while (tmp)
-	{
-		size = ft_strlen(tmp->info.name) + ft_strlen(tmp->info.content) + 2;
-		tab[i - 1] = ft_calloc(size, sizeof(char));
-		ft_strlcpy(tab[i - 1], tmp->info.name, ft_strlen(tmp->info.name) + 1);
-		ft_strlcat(tab[i - 1], "=", ft_strlen(tab[i - 1]) + 2);
-		ft_strlcat(tab[i - 1], tmp->info.content, size);
-		tmp = tmp->next;
-		i--;
-	}
-	return (tab);
-}
