@@ -37,6 +37,7 @@ SRC_NAME += builtins/ms_cd.c \
 			builtins/ms_export_noarg.c
 SRC_NAME += env/ms_tab_tools.c
 SRC_NAME += execution/ms_exec.c \
+			execution/ms_exec_pipe.c \
 			execution/ms_exec_utils.c \
 			execution/ms_exec_initfds.c \
 			execution/ms_exec_builtins.c
