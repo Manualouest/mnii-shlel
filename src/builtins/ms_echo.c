@@ -3,41 +3,37 @@
 /*                                                        :::      ::::::::   */
 /*   ms_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mscheman <mscheman@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/26 21:33:36 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/26 21:33:36 by mscheman         ###   ########.fr       */
+/*   Updated: 2024/06/10 18:15:13 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mnii_shlel.h>
 
-static bool	print_str(char *str);
-
-void	ms_echo(char *params[])
+int	builtin_echo(char **argv)
 {
+	bool	print_endl;
 	int		i;
-	t_bool	with_endl;
 
-	i = 0;
-	with_endl = true;
-	if (!params || !*params)
-		return ;
-	while (params[i])
-		with_endl *= print_str(params[i++]);
-	if (with_endl)
+	if (!argv || !argv[1])
+	{
 		printf("\n");
-}
-
-static bool	print_str(char *str)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	if (strcmp(str, "-n") == 0)
-		return (false);
-	printf("%s ", str);
-	return (true);
+		return (EXIT_SUCCESS);
+	}
+	print_endl = (ft_strncmp(argv[1], "-n", 2) == 0);
+	i = print_endl;
+	while (true)
+	{
+		i++;
+		if (!argv[i])
+			break ;
+		printf("%s", argv[i]);
+		if (argv[i + 1])
+			printf(" ");
+	}
+	if (!print_endl)
+		printf("\n");
+	return (EXIT_SUCCESS);
 }

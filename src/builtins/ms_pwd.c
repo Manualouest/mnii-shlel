@@ -1,19 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_error.h                                         :+:      :+:    :+:   */
+/*   ms_pwd.ct.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mscheman <mscheman@student.42angouleme.f>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/25 20:21:41 by mscheman          #+#    #+#             */
-/*   Updated: 2024/04/25 23:15:47 by mscheman         ###   ########.fr       */
+/*   Created: 2024/05/01 17:07:15 by mscheman          #+#    #+#             */
+/*   Updated: 2024/05/01 17:07:15 by mscheman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MS_ERROR_H
-# define MS_ERROR_H
+#include <mnii_shlel.h>
 
-void	free_tab(void **tab);
-void	error_log(char *msg);
+int	builtin_pwd(void)
+{
+	char	*path;
+	int		i;
 
-#endif
+	i = 0;
+	path = NULL;
+	while (path == NULL)
+	{
+		i++;
+		path = getcwd(NULL, i);
+	}
+	printf("%s\n", path);
+	free(path);
+	return (EXIT_FAILURE);
+}
