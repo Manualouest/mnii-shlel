@@ -18,17 +18,20 @@ void	ms_exec(t_cmd *to_exec, char **env, bool is_pipe)
 {
 	int	status;
 
+	signal(SIGINT, SIG_IGN);
 	if (is_pipe)
 	{
 		ms_exec_pipe(to_exec, tab_clone(env));
+		signal(SIGINT, ms_sig_handler);
 		return ;
 	}
 	if (ms_exec_builtin(to_exec, env) != -1)
 		return ;
 	child_exec(to_exec, env);
-	waitpid(-1, &status, 0);
+	waitpid(to_exec->pid, &status, 0);
 	if (WIFEXITED(status))
 		g_signal = WEXITSTATUS(status);
+	signal(SIGINT, ms_sig_handler);
 }
 
 void	child_exec(t_cmd *to_exec, char **env)
