@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 18:11:10 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/10 18:20:33 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/12 13:55:19 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,18 @@ static char	**ms_translate_params(t_params *main_params, char *cmd)
 	return (args);
 }
 
+void	ms_setup_first(t_cmd *cmd)
+{
+	t_cmd *cpy;
+
+	cpy = cmd;
+	while (cpy)
+	{
+		cpy->first = cmd;
+		cpy = cpy->next;
+	}
+}
+
 void	ms_translate_to_cmd(t_cmd *cmd, t_pipes *main)
 {
 	t_pipes	*cpy_pipe;
@@ -109,7 +121,6 @@ void	ms_translate_to_cmd(t_cmd *cmd, t_pipes *main)
 			cpy_cmd->error_id = cpy_pipe->command->error;
 		cpy_cmd->args = ms_translate_params(cpy_pipe->command->params,
 				ms_get_command(cpy_pipe->command));
-		cpy_cmd->pid = 0;
 		if (cpy_pipe->right)
 			cpy_cmd->next = malloc(sizeof(*cpy_cmd));
 		else
@@ -119,4 +130,5 @@ void	ms_translate_to_cmd(t_cmd *cmd, t_pipes *main)
 			cpy_cmd = cpy_cmd->next;
 		cpy_pipe = cpy_pipe->right;
 	}
+	ms_setup_first(cmd);
 }

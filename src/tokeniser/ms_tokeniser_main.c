@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:06:19 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/04 18:26:46 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/12 14:31:32 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,7 @@ t_cmd	*ms_tokeniser_main(char *line, char **envp)
 	nb_pipes = ms_check_for_pipes(line);
 	ms_init_pipes(main, nb_pipes);
 	ms_fill_pipes_main(main, line, envp);
-	ms_parsing_main(main);
+	// ms_parsing_main(main);
 	cmd = malloc(sizeof(*cmd));
 	ms_translate_to_cmd(cmd, main);
 	ms_pipes_free_main(main);
