@@ -112,7 +112,9 @@ t_cmd	*ms_tokeniser_main(char *line, char **envp)
 	ms_fill_pipes_main(main, line, envp);
 	// ms_parsing_main(main);
 	cmd = malloc(sizeof(*cmd));
+	cmd->next = NULL;
 	ms_translate_to_cmd(cmd, main);
 	ms_pipes_free_main(main);
+	cmd->first = cmd;
 	return (cmd);
 }

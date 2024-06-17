@@ -16,12 +16,12 @@ static int	check(int argc, char **argv);
 
 int	builtin_exit(t_cmd *cmd, int argc, char **argv, char **envp)
 {
-	int	error_code;
+	int		error_code;
+	bool	should_exit;
 
 	error_code = check(argc, argv);
 	if (cmd->first->next == NULL)
 		printf("exit\n");
-	printf("g_signal = %d\n", g_signal);
 	if (error_code == -1)
 		return (EXIT_FAILURE);
 	else if (error_code == 1)
@@ -30,12 +30,13 @@ int	builtin_exit(t_cmd *cmd, int argc, char **argv, char **envp)
 		g_signal = ft_atoi(argv[1]);
 	else
 		g_signal = 0;
-	printf("argv[1] = %s\n", argv[1]);
-	printf("g_signal = %d\n", g_signal);
-	// free_tab((void **)argv);
-	free_tab((void **)envp);
-	ms_free_cmd(cmd);
-	if (cmd->first->next == NULL)
+	should_exit = (cmd->first->next == NULL);
+	if (cmd->next == NULL)
+	{
+		free_tab((void **)envp);
+		ms_free_cmd(cmd->first);
+	}
+	if (should_exit)
 		exit(g_signal);
 	return (g_signal);
 }

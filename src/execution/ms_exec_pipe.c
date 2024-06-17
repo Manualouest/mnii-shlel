@@ -33,7 +33,6 @@ void	ms_exec_pipe(t_cmd *to_exec, char **env)
 	ms_exec_closefds(to_exec);
 	wait_childs(first);
 	cmd_clear(&to_exec, free_tab);
-	free_tab((void **)env);
 }
 
 void	ms_child_getpath(t_cmd *cmd, char *env_path)
@@ -57,9 +56,12 @@ static void	wait_childs(t_cmd *childs)
 
 	while (childs)
 	{
-		waitpid(childs->pid, &status, 0);
-		if (WIFEXITED(status))
-			g_signal = WEXITSTATUS(status);
+		if (!ms_is_builtin(childs))
+		{
+			waitpid(childs->pid, &status, 0);
+			if (WIFEXITED(status))
+				g_signal = WEXITSTATUS(status);
+		}
 		childs = childs->next;
 	}
 }

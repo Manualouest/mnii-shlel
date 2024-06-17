@@ -14,20 +14,20 @@
 
 static int	exec_pipe_builtin(t_cmd *to_exec, char **env);
 
-void	ms_exec(t_cmd *to_exec, char **env, bool is_pipe)
+void	ms_exec(t_cmd *to_exec, char ***env, bool is_pipe)
 {
-	int	status;
+	int		status;
 
 	signal(SIGINT, SIG_IGN);
 	if (is_pipe)
 	{
-		ms_exec_pipe(to_exec, tab_clone(env));
+		ms_exec_pipe(to_exec, *env);
 		signal(SIGINT, ms_sig_handler);
 		return ;
 	}
-	if (ms_exec_builtin(to_exec, env) != -1)
+	if (ms_exec_builtin(to_exec, *env) != -1)
 		return ;
-	child_exec(to_exec, env);
+	child_exec(to_exec, *env);
 	waitpid(to_exec->pid, &status, 0);
 	if (WIFEXITED(status))
 		g_signal = WEXITSTATUS(status);
@@ -36,8 +36,6 @@ void	ms_exec(t_cmd *to_exec, char **env, bool is_pipe)
 
 void	child_exec(t_cmd *to_exec, char **env)
 {
-	int	builtin_ret;
-
 	if (!to_exec)
 		return ;
 	to_exec->pid = fork();
@@ -49,25 +47,35 @@ void	child_exec(t_cmd *to_exec, char **env)
 		signal(SIGQUIT, SIG_DFL);
 		ms_child_getpath(to_exec, envp_find(env, "PATH"));
 		if (dup2(to_exec->fd_in , STDIN_FILENO) == -1)
+		{
 			error_log("fd_in");
+			exit(EXIT_FAILURE);
+		}
 		if (dup2(to_exec->fd_out , STDOUT_FILENO) == -1)
+		{
 			error_log("fd_out");
+			exit(EXIT_FAILURE);
+		}
 		ms_exec_closefds(to_exec);
-		builtin_ret = exec_pipe_builtin(to_exec, env);
-		if (builtin_ret != -1)
-			exit(builtin_ret);
+		if (exec_pipe_builtin(to_exec, env) != -1)
+			return ;
 		execve(to_exec->args[0], to_exec->args, env);
-		cmd_clear(&to_exec, free_tab);
+		ms_free_cmd(to_exec->first);
 		free_tab((void **)env);
-		error_log("bozo");
+		printf("%p", to_exec->first);
+		error_log("bozo\n");
 		exit(EXIT_FAILURE);
 	}
 }
+
+
 
 static int	exec_pipe_builtin(t_cmd *to_exec, char **env)
 {
 	int	ret;
 
 	ret = ms_exec_builtin(to_exec, env);
+	if (ret != -1)
+		g_signal = ret;
 	return (ret);
 }

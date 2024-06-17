@@ -19,18 +19,6 @@ int g_signal = 0;
 static char *setup_prompt(char *dir);
 static char	*read_term(void);
 
-// void	free_tab(void **tab)
-// {
-// 	int i;
-
-// 	i = 0;
-// 	if (!tab || !tab[i])
-// 		return ;
-// 	while (tab[i])
-// 		free(tab[i++]);
-// 	free(tab);
-// }
-
 void	error_log(char *msg)
 {
 	write(STDERR_FILENO, "\033[1;31m", 7);
@@ -56,10 +44,9 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!input)
 			break ;
 		cmd = ms_tokeniser_main(input, ms_env);
-		ms_exec(cmd, ms_env, cmd->next != NULL);
+		ms_exec(cmd, &ms_env, cmd->next != NULL);
 		ms_free_cmd(cmd);
 		free(input);
-		g_signal = 0;
 	}
 	free_tab((void **)ms_env);
 	rl_clear_history();
@@ -72,7 +59,7 @@ static char *read_term(void)
 	char	*path;
 	char	*input;
 
-	path = getcwd(NULL, 64);
+	path = getcwd(NULL, 0);
 	prompt = setup_prompt(path);
 	free(path);
 	input = readline(prompt);

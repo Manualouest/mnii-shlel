@@ -81,6 +81,7 @@ typedef struct	s_cmd
 	int				fd_out;
 	t_cmd_errors	error_id;
 	char			**args;
+	char			**origin_envp;
 	pid_t			pid;
 	struct s_cmd	*next;
 	struct s_cmd	*first;

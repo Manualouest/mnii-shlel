@@ -96,7 +96,7 @@ void	free_tab(void **tab)
 	int i;
 
 	i = 0;
-	if (!tab || !tab[i])
+	if (!tab)
 		return ;
 	while (tab[i])
 	{
