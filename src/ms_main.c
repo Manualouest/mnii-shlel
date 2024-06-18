@@ -6,13 +6,16 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/06/12 13:36:47 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/18 04:18:31 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mnii_shlel.h>
 
 // clear; valgrind --show-leak-kinds=all --leak-check=full --suppressions=ms.supp ./minishell
+void	ms_cmd_test_printer(t_cmd *full_line);
+
+
 
 int g_signal = 0;
 
@@ -44,8 +47,12 @@ int	main(int argc, char *argv[], char *envp[])
 		if (!input)
 			break ;
 		cmd = ms_tokeniser_main(input, ms_env);
-		ms_exec(cmd, &ms_env, cmd->next != NULL);
-		ms_free_cmd(cmd);
+		if (cmd)
+		{
+			ms_cmd_test_printer(cmd);
+			ms_exec(cmd, &ms_env, cmd->next != NULL);
+			ms_free_cmd(cmd);
+		}
 		free(input);
 	}
 	free_tab((void **)ms_env);

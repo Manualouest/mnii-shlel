@@ -1,30 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_params_pre_execheck.c                           :+:      :+:    :+:   */
+/*   ms_redirect_append_setup.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/17 17:42:49 by mbirou            #+#    #+#             */
-/*   Updated: 2024/05/17 17:52:21 by mbirou           ###   ########.fr       */
+/*   Created: 2024/06/17 22:38:56 by mbirou            #+#    #+#             */
+/*   Updated: 2024/06/18 04:03:02 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <parsing.h>
-
-// void	ms_params_pre_parsing(t_command *command)
+#include <tokeniser.h>
+// ms_input_setup(cmd);
+// int	ms_is_file_real(char *filename)
 // {
-// 	t_params		*cpy_params;
-// 	t_cmd_errors	error_found;
+// 	DIR	*dir;
+// 	int	fd;
 
-// 	cpy_params = t_command->params;
-// 	error_found = NO_ERROR;
-// 	while (cpy_params != NULL)
+// 	dir = opendir(filename);
+// 	if (dir)
 // 	{
-// 		if (cpy_params->quote_level == 0)
-// 		{
-
-// 		}
-// 		cpy_params = cpy_params->next
+// 		closedir(dir);
+// 		return (0);
 // 	}
+// 	fd = open(filename, O_RDONLY);
+// 	if (fd != -1)
+// 	{
+// 		close(fd);
+// 		return (1);
+// 	}
+// 	return (0);
+// }
+
+
+// void	ms_redirect_append_setup(t_cmd *cmd)
+// {
+	
 // }
