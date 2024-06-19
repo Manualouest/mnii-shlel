@@ -123,7 +123,7 @@ void	ms_base_setup(t_cmd *cmd, char *line)
 				ms_free_cmd(cmd);
 			if (!cmd)
 				return ;
-			index ++;
+			index++;
 		}
 		else
 			cpy->next = NULL;

@@ -31,7 +31,7 @@ int	builtin_exit(t_cmd *cmd, int argc, char **argv, char **envp)
 	else
 		g_signal = 0;
 	should_exit = (cmd->first->next == NULL);
-	if (cmd->next == NULL)
+	if (cmd && cmd->next == NULL)
 	{
 		free_tab((void **)envp);
 		ms_free_cmd(cmd->first);

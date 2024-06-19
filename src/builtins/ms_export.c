@@ -52,7 +52,7 @@ static void	add_to_envp(char ***envp, char *to_add)
 
 	old = find_similar(*envp, to_add);
 	if (!old)
-		envp[0] = tab_append(envp[0], to_add, 0);
+		*envp = tab_append(*envp, to_add, 0);
 	else
 		tab_replace(*envp, old, to_add);
 }

@@ -58,7 +58,7 @@ void	child_exec(t_cmd *to_exec, char **env)
 		}
 		ms_exec_closefds(to_exec);
 		if (exec_pipe_builtin(to_exec, env) != -1)
-			return ;
+			exit(g_signal);
 		execve(to_exec->args[0], to_exec->args, env);
 		ms_free_cmd(to_exec->first);
 		free_tab((void **)env);
@@ -67,8 +67,6 @@ void	child_exec(t_cmd *to_exec, char **env)
 		exit(EXIT_FAILURE);
 	}
 }
-
-
 
 static int	exec_pipe_builtin(t_cmd *to_exec, char **env)
 {

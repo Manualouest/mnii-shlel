@@ -9,13 +9,13 @@ LIBFT_FOLDER = $(INCLUDES)libft
 LIBFT_A = $(INCLUDES)libft/libft.a
 
 SRC_DIR = src/
-SRC_NAME = ms_main.c\
+SRC_NAME = ms_main.c \
 			signal_handling.c
 
-SRC_NAME +=	tokeniser/ms_tokeniser_main.c\
-			tokeniser/ms_first_setup.c\
-			tokeniser/ms_setups_utils.c\
-			tokeniser/ms_second_setup.c\
+SRC_NAME +=	tokeniser/ms_tokeniser_main.c \
+			tokeniser/ms_first_setup.c \
+			tokeniser/ms_setups_utils.c \
+			tokeniser/ms_second_setup.c \
 			tokeniser/ms_redirect_append_setup.c
 
 SRC_NAME += builtins/ms_cd.c \
@@ -26,7 +26,9 @@ SRC_NAME += builtins/ms_cd.c \
 			builtins/ms_unset.c \
 			builtins/ms_export.c \
 			builtins/ms_export_noarg.c
+
 SRC_NAME += env/ms_tab_tools.c
+
 SRC_NAME += execution/ms_exec.c \
 			execution/ms_exec_pipe.c \
 			execution/ms_exec_utils.c \
@@ -35,8 +37,6 @@ SRC_NAME += execution/ms_exec.c \
 
 # to remove
 SRC_NAME += tokeniser_main_test.c
-
-
 
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 
