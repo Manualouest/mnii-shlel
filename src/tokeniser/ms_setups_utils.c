@@ -6,7 +6,7 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 21:01:47 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/18 04:08:25 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/19 16:18:11 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,17 @@ char	*ms_tripple_join(char *first, char *second, char *third)
 	free(third);
 	free(f_s_joined);
 	return (full_join);
+}
+
+int	ms_has_dollar(char *arg)
+{
+	int	index;
+
+	index = -1;
+	if (arg[0] == '\'')
+		return (0);
+	while (arg[++index])
+		if (arg[index] == '$')
+			return (1);
+	return (0);
 }

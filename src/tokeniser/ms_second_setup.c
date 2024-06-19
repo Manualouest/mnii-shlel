@@ -6,22 +6,11 @@
 /*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 21:00:56 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/18 04:02:54 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/06/19 17:02:13 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
-
-int	ms_has_dollar(char *arg)
-{
-	int	index;
-
-	index = -1;
-	while (arg[++index])
-		if (arg[index] == '$')
-			return (1);
-	return (0);
-}
 
 char	*ms_setup_env(char *tp_env, char **arg, int env_start, int env_len)
 {
@@ -51,8 +40,11 @@ void	ms_do_env(char **arg, char **envp)
 	env_len = 0;
 	while (arg[0][++index] && arg[0][index] != '$')
 		;
-	while (arg[0][++env_len + index] && ft_isalpha(arg[0][env_len + index]))
-		;
+	while (arg[0][++env_len + index] && arg[0][env_len + index] != ' '
+		&& arg[0][env_len + index] != '$'
+		&& arg[0][env_len + index] != (char)(-1))
+		if (env_len > 1 && arg[0][(env_len - 1) + index] == '?')
+			break ;
 	env_name = ft_substr(arg[0], index + 1, env_len - 1);
 	if (ft_strlen(env_name))
 		env_content = envp_find(envp, env_name);
@@ -66,18 +58,54 @@ void	ms_do_env(char **arg, char **envp)
 	free(env_name);
 }
 
-void	ms_remove_quotes(char **arg)
+void	ms_hide_quotes(t_cmd *cmd, char **arg, char quote)
 {
-	int		len_arg;
-	char	*tp_arg;
+	int		has_pair;
+	int		index;
 
-	len_arg = ft_strlen(arg[0]);
-	if ((arg[0][0] == '\'' || arg[0][0] == '"')
-		&& arg[0][0] == arg[0][len_arg - 1])
+	index = -1;
+	has_pair = 0;
+	while (arg[0][++index])
 	{
-		tp_arg = ft_substr(arg[0], 1, len_arg - 2);
-		free(arg[0]);
-		arg[0] = tp_arg;
+		if (arg[0][index] == quote)
+		{
+			if (has_pair)
+				has_pair --;
+			else
+				has_pair ++;
+			arg[0][index] = (char)(-1);
+		}
+	}
+	if (has_pair)
+		cmd->error_id = BAD_QUOTE;
+}
+
+void	ms_remove_hiders(t_cmd *cmd, int arg_i)
+{
+	char	*tp_char;
+	char	*tp_arg;
+	int		i;
+
+	while (cmd)
+	{
+		arg_i = -1;
+		while (cmd->args[++arg_i])
+		{
+			i = -1;
+			while (cmd->args[arg_i][++i])
+			{
+				if (cmd->args[arg_i][i] == (char)(-1))
+				{
+					tp_char = ft_substr(cmd->args[arg_i], 0, i);
+					tp_arg = ft_strjoin(tp_char, &cmd->args[arg_i][i + 1]);
+					free(tp_char);
+					free(cmd->args[arg_i]);
+					cmd->args[arg_i] = tp_arg;
+					i -= 1;
+				}
+			}
+		}
+		cmd = cmd->next;
 	}
 }
 
@@ -92,20 +120,18 @@ void	ms_setup_round_two(t_cmd *cmd, char **envp)
 		args_index = -1;
 		while (cpy_cmd->args[++args_index])
 		{
-			while (cpy_cmd->args && cpy_cmd->args[args_index][0] != '\''
-				&& ms_has_dollar(cpy_cmd->args[args_index]))
+			if (ms_change_quote_level(cpy_cmd->args[args_index], 0, 0) != 0)
+				ms_hide_quotes(cpy_cmd, &cpy_cmd->args[args_index],
+					cpy_cmd->args[args_index][0]);
+			while (cpy_cmd->args && ms_has_dollar(cpy_cmd->args[args_index]))
 				ms_do_env(&cpy_cmd->args[args_index], envp);
 			if (!cpy_cmd->args)
 			{
 				ms_free_cmd(cmd);
 				return ;
 			}
-			if (cpy_cmd->args[args_index][0] == '\''
-				|| cpy_cmd->args[args_index][0] == '"')
-				ms_remove_quotes(&cpy_cmd->args[args_index]);
 		}
 		cpy_cmd = cpy_cmd->next;
 	}
-	// ms_redirect_append_setup(cmd);
-	// ms_input_setup(cmd);
+	ms_in_out_files_setup(cmd);
 }

@@ -12,24 +12,6 @@
 
 #include <tokeniser.h>
 
-t_cmd	*ms_tokeniser_main(char *line, char **envp)
-{
-	t_cmd	*cmd;
-
-	cmd = ft_calloc(sizeof(t_cmd), 1);
-	if (!cmd)
-		return (NULL);
-	ms_base_setup(cmd, line);
-	if (envp)
-		ms_setup_round_two(cmd, envp);
-	else
-	{
-		ms_free_cmd(cmd);
-		return (NULL);
-	}
-	return (cmd);
-}
-
 void	ms_free_cmd(t_cmd *cmd)
 {
 	int		i;
@@ -50,4 +32,22 @@ void	ms_free_cmd(t_cmd *cmd)
 		cmd = tp_cmd;
 	}
 	cmd = NULL;
+}
+
+t_cmd	*ms_tokeniser_main(char *line, char **envp)
+{
+	t_cmd	*cmd;
+
+	cmd = malloc(sizeof(*cmd));
+	if (!cmd)
+		return (NULL);
+	ms_base_setup(cmd, line);
+	if (cmd && envp)
+		ms_setup_round_two(cmd, envp);
+	else
+	{
+		ms_free_cmd(cmd);
+		return (NULL);
+	}
+	return (cmd);
 }

@@ -83,11 +83,16 @@ char	**tab_clone(char **tab)
 char	*envp_find(char **envp, char *name)
 {
 	int	i;
+	int	name_len;
 
 	i = 0;
 	while (envp[i])
 	{
-		if (ft_strncmp(envp[i], name, ft_strlen(name)) == 0)
+		name_len = -1;
+		while (envp[i] && envp[i][++name_len] && envp[i][name_len] != '=')
+			;
+		if (ft_strncmp(envp[i], name, ft_strlen(name)) == 0
+			&& (int)ft_strlen(name) == name_len)
 			return (envp[i]);
 		i++;
 	}
