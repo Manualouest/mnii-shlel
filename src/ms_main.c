@@ -15,8 +15,6 @@
 // clear; valgrind --show-leak-kinds=all --leak-check=full --suppressions=ms.supp ./minishell
 void	ms_cmd_test_printer(t_cmd *full_line);
 
-
-
 int g_signal = 0;
 
 static char *setup_prompt(char *dir);

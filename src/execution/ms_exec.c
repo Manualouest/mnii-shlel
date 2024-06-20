@@ -45,13 +45,12 @@ void	child_exec(t_cmd *to_exec, char **env)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
-		ms_child_getpath(to_exec, envp_find(env, "PATH"));
-		if (dup2(to_exec->fd_in , STDIN_FILENO) == -1)
+		if (dup2(to_exec->fd_in, STDIN_FILENO) == -1)
 		{
 			error_log("fd_in\n");
 			exit(EXIT_FAILURE);
 		}
-		if (dup2(to_exec->fd_out , STDOUT_FILENO) == -1)
+		if (dup2(to_exec->fd_out, STDOUT_FILENO) == -1)
 		{
 			error_log("fd_out\n");
 			exit(EXIT_FAILURE);
@@ -59,10 +58,12 @@ void	child_exec(t_cmd *to_exec, char **env)
 		ms_exec_closefds(to_exec);
 		if (exec_pipe_builtin(to_exec, env) != -1)
 			exit(g_signal);
+		ms_child_getpath(to_exec, envp_find(env, "PATH"));
 		execve(to_exec->args[0], to_exec->args, env);
+		ms_exec_closefds(to_exec->first);
 		ms_free_cmd(to_exec->first);
 		free_tab((void **)env);
-		error_log("bozo");
+		error_log("bozo\n");
 		exit(EXIT_FAILURE);
 	}
 }
@@ -73,6 +74,11 @@ static int	exec_pipe_builtin(t_cmd *to_exec, char **env)
 
 	ret = ms_exec_builtin(to_exec, env);
 	if (ret != -1)
+	{
 		g_signal = ret;
+		ms_exec_closefds(to_exec->first);
+		ms_free_cmd(to_exec->first);
+		free_tab((void **)env);
+	}
 	return (ret);
 }

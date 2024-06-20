@@ -106,6 +106,7 @@ void	ms_in_out_files_setup(t_cmd *cmd)
 		ms_redirects_setup(cpy_cmd);
 		ms_appends_setup(cpy_cmd);
 		ms_inputs_setup(cpy_cmd);
+		cpy_cmd->first = cmd;
 		cpy_cmd = cpy_cmd->next;
 	}
 }
