@@ -65,7 +65,6 @@ static bool	is_contained(char *str, char **tab)
 	i = 0;
 	while (tab[i])
 	{
-		printf("ft_strncmp(%s, %s, %lu) = %d // %d\n", str, tab[i], ft_strlen(tab[i]) + 1, ft_strncmp(str, tab[i], ft_strlen(tab[i]) + 1), '=');
 		if (ft_strncmp(str, tab[i], ft_strlen(str) + 1) == '=')
 			return (true);
 		i++;
