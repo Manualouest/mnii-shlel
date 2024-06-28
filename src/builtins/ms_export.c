@@ -12,10 +12,10 @@
 
 #include <mnii_shlel.h>
 
-static void	add_to_envp(char ***envp, char *to_add);
-static char *find_similar(char **tab, char *cmp);
 static int	check_args(const char *input);
-static bool	is_validchar(char c);
+static bool	is_valid_char(const char *c);
+static void	select_action(char ***envp, char *to_add);
+static void	make_action(char ***envp, char *to_add, int mode);
 
 int	builtin_export(int argc, char **argv, char ***envp)
 {
@@ -39,69 +39,73 @@ int	builtin_export(int argc, char **argv, char ***envp)
 			error_log("cannot export this variable", '\n');
 			continue ;
 		}
-		add_to_envp(envp, ft_strdup(argv[i]));
+		select_action(envp, argv[i]);
 	}
 	return (ret);
-}
-
-static void	add_to_envp(char ***envp, char *to_add)
-{
-	char	*old;
-
-	old = find_similar(*envp, to_add);
-	if (!old)
-		*envp = tab_append(*envp, to_add, -1);
-	else
-		tab_replace(*envp, old, to_add);
-}
-
-static char *find_similar(char **tab, char *cmp)
-{
-	int	i;
-	int	len;
-	int	comp;
-
-	i = 0;
-	if (envp_find(tab, cmp))
-		return (envp_find(tab, cmp));
-	len = 0;
-	while (cmp[len])
-	{
-		if (!cmp[len] || cmp[len] == '=')
-			break ;
-		len++;
-	}
-	if (cmp[len] == '=')
-		len--;
-	while (tab[i])
-	{
-		comp = ft_strncmp(tab[i], cmp, len);
-		if (comp == '=' || comp == '=' * -1 || comp == 0)
-			return (tab[i]);
-		i++;
-	}
-	return (NULL);
 }
 
 static int	check_args(const char *input)
 {
 	int	i;
 
+	i = 1;
+	if (!input[0])
+		return (EXIT_FAILURE);
 	if (input[0] != '_' && !ft_isalpha(input[0]))
 		return (EXIT_FAILURE);
-	i = 1;
 	while (input[i] && input[i] != '=')
 	{
-		if (!is_validchar(input[i]))
+		if (!is_valid_char(&input[i]))
 			return (EXIT_FAILURE);
 		i++;
 	}
 	return (EXIT_SUCCESS);
 }
 
-static bool	is_validchar(char c)
+static bool	is_valid_char(const char *c)
 {
-	if (ft_isalnum(c) || c == '_' || c == '=')
+	if (ft_isalnum(*c) || (*c) == '_' || (*c) == '=')
+		return (true);
+	if ((*c) == '+' && c[1] == '=')
 		return (true);
 	return (false);
+}
+
+#define ENV_SET 0
+#define ENV_CAT 1
+
+static void	select_action(char ***envp, char *to_add)
+{
+	int		mode;
+	char	*tmp;
+
+	tmp = ft_strchr(to_add, '=');
+	if (!tmp && envp_find(*envp, to_add))
+		return ;
+	if (!tmp && envp_find(*envp, to_add) && tmp[-1] == '+')
+		mode = ENV_CAT;
+	else
+		mode = ENV_SET;
+	make_action(envp, to_add, mode);
+}
+
+static void	make_action(char ***envp, char *to_add, int mode)
+{
+	char	*old;
+	char	*tmp;
+
+	if (mode == ENV_CAT)
+	{
+		old = envp_find(*envp, to_add);
+		tmp = &to_add[ft_strfind(to_add, '=') + 1];
+		tab_replace(*envp, old, ft_strjoin(old, tmp));
+//		free(old);
+		return ;
+	}
+	if (envp_find(*envp, to_add) && ft_strfind(to_add, '=') == -1)
+		return ;
+	if (envp_find(*envp, to_add))
+		tab_replace(*envp, envp_find(*envp, to_add), to_add);
+	else
+		(*envp) = tab_append(*envp, to_add, -1);
 }
