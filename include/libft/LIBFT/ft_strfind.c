@@ -17,6 +17,8 @@ int	ft_strfind(const char *s, char c)
 	int	i;
 
 	i = 0;
+	if (!s)
+		return (-1);
 	while (s[i])
 	{
 		if (s[i] == c)

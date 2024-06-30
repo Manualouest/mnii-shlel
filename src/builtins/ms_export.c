@@ -78,11 +78,14 @@ static void	select_action(char ***envp, char *to_add)
 {
 	int		mode;
 	char	*tmp;
+	char	*similar;
 
 	tmp = ft_strchr(to_add, '=');
-	if (!tmp && envp_find(*envp, to_add))
+	similar =  envp_find_similar(*envp, to_add);
+	if (!tmp && similar)
 		return ;
-	if (!tmp && envp_find(*envp, to_add) && tmp[-1] == '+')
+	if (tmp && tmp[-1] == '+'
+		&& ft_strfind(similar, '=') != -1)
 		mode = ENV_CAT;
 	else
 		mode = ENV_SET;
@@ -93,19 +96,22 @@ static void	make_action(char ***envp, char *to_add, int mode)
 {
 	char	*old;
 	char	*tmp;
+	char	*similar;
 
+	similar = envp_find_similar(*envp, to_add);
 	if (mode == ENV_CAT)
 	{
-		old = envp_find(*envp, to_add);
+		old = similar;
 		tmp = &to_add[ft_strfind(to_add, '=') + 1];
 		tab_replace(*envp, old, ft_strjoin(old, tmp));
-//		free(old);
 		return ;
 	}
-	if (envp_find(*envp, to_add) && ft_strfind(to_add, '=') == -1)
+	to_add = ft_strdup(to_add);
+	if (ft_strfind(to_add, '=') == -1 && similar)
 		return ;
-	if (envp_find(*envp, to_add))
-		tab_replace(*envp, envp_find(*envp, to_add), to_add);
+	export_format_str(to_add);
+	if (similar)
+		tab_replace(*envp, similar, to_add);
 	else
 		(*envp) = tab_append(*envp, to_add, -1);
 }

@@ -91,7 +91,7 @@ char	*envp_find(char **envp, char *name)
 		name_len = 0;
 		while (envp[i][name_len] && envp[i][name_len] != '=')
 			name_len++;
-		if (ft_strncmp(envp[i], name, name_len) == 0
+		if (ft_strncmp(envp[i], name, ft_strlen(name)) == 0
 			&& (int)ft_strlen(name) == name_len)
 			return (envp[i]);
 		i++;

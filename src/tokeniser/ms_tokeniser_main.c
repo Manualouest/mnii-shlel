@@ -21,6 +21,7 @@ void	ms_free_cmd(t_cmd *cmd)
 		free_tab((void **)cmd->args);
 		tp_cmd = cmd->next;
 		free(cmd);
+		cmd = NULL;
 		cmd = tp_cmd;
 	}
 	cmd = NULL;
@@ -107,7 +108,10 @@ t_cmd	*ms_tokeniser_main(char *line, char **envp)
 	if (cmd && envp)
 		ms_setup_round_two(cmd, envp);
 	else
-		cmd = ms_free_cmd(cmd);
+	{
+		ms_free_cmd(cmd);
+		cmd = NULL;
+	}
 	if (!cmd)
 		return (NULL);
 	// ms_clean_delimiters(cmd, envp);
