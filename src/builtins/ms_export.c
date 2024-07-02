@@ -17,29 +17,31 @@ static bool	is_valid_char(const char *c);
 static void	select_action(char ***envp, char *to_add);
 static void	make_action(char ***envp, char *to_add, int mode);
 
-int	builtin_export(int argc, char **argv, char ***envp)
+int	builtin_export(t_cmd *cmd, char ***envp)
 {
-	int	i;
-	int	ret;
+	int		i;
+	int		ret;
+	char	**args;
 
 	i = 0;
 	ret = 0;
-	if (argc == 1)
+	args = cmd->args;
+	if (tablen(cmd->args) == 1)
 	{
-		builtin_export_noargs(*envp);
+		builtin_export_noargs(cmd, *envp);
 		return (EXIT_SUCCESS);
 	}
-	while (argv[++i])
+	while (args[++i])
 	{
-		if (!ft_strncmp("_=", argv[i], 2) || !ft_strncmp("_", argv[i], 2))
+		if (!ft_strncmp("_=", args[i], 2) || !ft_strncmp("_", args[i], 2))
 			continue ;
-		if (check_args(argv[i]))
+		if (check_args(args[i]))
 		{
 			ret++;
 			error_log("cannot export this variable", '\n');
 			continue ;
 		}
-		select_action(envp, argv[i]);
+		select_action(envp, args[i]);
 	}
 	return (ret);
 }
