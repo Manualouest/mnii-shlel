@@ -3,28 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_main.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 18:48:35 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/27 23:00:34 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/07/08 05:26:11 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
 
-void	ms_free_cmd(t_cmd *cmd)
+void	*ms_free_cmd(t_cmd *cmd)
 {
+	int		i;
 	t_cmd	*tp_cmd;
 
 	while (cmd != NULL)
 	{
-		free_tab((void **)cmd->args);
+		i = -1;
+		if (cmd->args)
+		{
+			while (cmd->args[++i] != 0)
+				free(cmd->args[i]);
+			free(cmd->args[i]);
+			free(cmd->args);
+		}
 		tp_cmd = cmd->next;
 		free(cmd);
-		cmd = NULL;
 		cmd = tp_cmd;
 	}
 	cmd = NULL;
+	return (NULL);
 }
 
 int	ms_check_for_bad_pipe(t_cmd *cmd)
@@ -108,11 +116,8 @@ t_cmd	*ms_tokeniser_main(char *line, char **envp)
 	if (cmd && envp)
 		ms_setup_round_two(cmd, envp);
 	else
-	{
-		ms_free_cmd(cmd);
-		cmd = NULL;
-	}
-	if (!cmd)
+		cmd = ms_free_cmd(cmd);
+	if (!cmd || g_signal == 2)
 		return (NULL);
 	// ms_clean_delimiters(cmd, envp);
 	cpy_cmd = cmd;

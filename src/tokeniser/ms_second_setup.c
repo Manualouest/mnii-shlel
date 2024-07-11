@@ -5,150 +5,267 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/13 21:00:56 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/27 14:38:28 by mbirou           ###   ########.fr       */
+/*   Created: 2024/07/04 14:20:40 by mbirou            #+#    #+#             */
+/*   Updated: 2024/07/11 16:08:28 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
 
-char	*ms_setup_env(char *tp_env, char **arg, int env_start, int env_len)
-{
-	char	*env;
-	char	*new_arg;
-	int		index;
-
-	index = -1;
-	while (tp_env && tp_env[++index] && tp_env[index] != '=')
-		;
-	env = ft_substr(tp_env, index + 1, ft_strlen(tp_env));
-	if (ft_strlen(env) == 0)
-	{
-		free(env);
-		env = ft_calloc(sizeof(char), 3);
-		env[0] = (char)(-3);
-		env[1] = (char)(-3);
-	}
-	else
-		env = ms_tripple_join(&(char){-1}, env, &(char){-1}, 10);
-	new_arg = ms_tripple_join(ft_substr(arg[0], 0, env_start),
-			ft_substr(env, 0, ft_strlen(env)),
-			ft_strdup(&arg[0][env_start + env_len]), 111);
-	if (env)
-		free(env);
-	if (arg[0])
-		free(arg[0]);
-	return (new_arg);
-}
-
-int	ms_env_util(char **arg, int *index, int *len)
+int	ms_get_var_start(char *arg, int *var_len)
 {
 	int	quote_level;
+	int	i;
+	int	is_num;
 
 	quote_level = 0;
-	while (arg[0][++*index])
+	i = -1;
+	while (arg[++i])
 	{
-		--*index;
-		while (arg[0][++*index] && arg[0][*index] != '$')
-			quote_level = ms_change_quote_level(arg[0], *index, quote_level);
-		if (quote_level != 1)
-			break ;
+		quote_level = ms_change_quote_level(arg, i, quote_level);
+		// printf("get_var quote: %d(%d, |%c|, %d)\n", quote_level, i, arg[i], (int)arg[i]);
+		if (quote_level % 2 == 0 && arg[i] == '$')
+		{
+			if (!arg[i + 1] || arg[i + 1] == ' ' || (arg[i + 1] < 0 && !ms_change_quote_level(arg, i + 1, quote_level))
+				|| arg[i + 1] == '"' || arg[i + 1] == '\'' || arg[i + 1] == '=')
+				continue ;
+			if (ms_change_quote_level(arg, i + 1, 0) != 0)
+				return (i);
+			is_num = 0;
+			if (ft_isdigit(arg[i + 1]))
+				is_num = 1;
+			while (arg[++*var_len + i] && (!is_num || *var_len != 2
+					|| (is_num && !ft_isdigit(arg[*var_len + i])))
+				&& (ft_isalnum(arg[*var_len + i]) || arg[*var_len + i] == '_'))
+				;
+			return (i);
+		}
 	}
-	if (quote_level == 1)
+	return (-1);
+}
+
+char *ms_get_var(char *arg, int var_pos, int var_len, char **envp)
+{
+	char	*var_name;
+	char	*raw_content;
+	char	*var_content;
+
+	if (var_pos == -1)
+		return (NULL);
+	if (var_len >=0 )
+		var_name = ft_substr(arg, var_pos + 1, var_len);
+	else
+		var_name = ft_calloc(sizeof(char), 1);
+	if (!var_name)
+		return (NULL);
+	// printf("var_name: |%s|\n", var_name);
+	if (var_name[0] == 0)
+		return (var_name);
+	if (var_name[0] == '$')
 	{
-		*index = -1;
-		*len = -1;
+		var_content = ft_itoa(g_signal);
+		free(var_name);
+		return (var_content);
+	}
+	else 
+		raw_content = envp_find(envp, var_name);
+	// printf("raw_content: |%s|\n", raw_content);
+	free(var_name);
+	if (!raw_content)
+	{
+		raw_content = ft_calloc(sizeof(char), 1);
+		return (raw_content);
+	}
+	var_content = ft_strdup(&(ft_strchr(raw_content, '=')[1]));
+	return(var_content);
+}
+
+int	ms_insert(char **arg, char *var_content, int var_pos, int *var_len)
+{
+	char	*arg_start;
+	char	*new_arg;
+	int		content_lenght;
+
+	if (var_pos >= 0)
+		arg_start = ft_substr(arg[0], 0, var_pos);
+	else
+		arg_start = ft_calloc(sizeof(char), 1);
+	if (!arg_start)
 		return (0);
-	}
-	while (arg[0][++*len + *index] && arg[0][*len + *index] != ' '
-		&& arg[0][*len + *index] != '$'
-		&& arg[0][*len + *index] > 0)
-		if (*len > 1 && arg[0][(*len - 1) + *index] == '?')
-			break ;
+	content_lenght = ft_strlen(var_content);
+	if (*var_len > 0)
+		new_arg = ms_tripple_join(arg_start, var_content, &arg[0][var_pos + *var_len + 1], 110);
+	else
+		new_arg = ms_tripple_join(arg_start, var_content, &arg[0][var_pos + 1], 110);
+	*var_len = content_lenght;
+	if (!new_arg)
+		return (0);
+	free(arg[0]);
+	arg[0] = new_arg;
 	return (1);
 }
 
-char	**ms_split_env(char **env, char **args, int env_index, char quote)
+char	ms_get_quote_to_index(char *arg, int pos)
 {
-	char	**cut_env;
-	char	**n_args;
-	int		cut_i;
-	int		args_i;
+	int	i;
+	int	quote_level;
 
-	cut_env = ft_split(env[0], ' ');
-	n_args = ft_calloc(sizeof(char *), tablen(cut_env) + tablen(args) + 1);
-	cut_i = 0;
-	args_i = -1;
-	while (args_i - cut_i < tablen(args) && args[++args_i - cut_i])
-	{
-		if (args_i != env_index)
-			n_args[args_i - (args_i > env_index)] = args[args_i - cut_i];
-		else
-		{
-			free(args[args_i]);
-			cut_i --;
-			while (cut_env[++cut_i] && ++args_i > 0)
-				n_args[args_i - 1] = ms_tripple_join(&quote,
-						&cut_env[cut_i][(cut_env[cut_i][0] < 0)], &quote, 0);
-		}
-	}
-	free_tab((void **)cut_env);
-	free(args);
-	return (n_args);
+	i = -1;
+	quote_level = 0;
+	while(arg[++i] && i <= pos)
+		quote_level = ms_change_quote_level(arg, i, quote_level);
+	if (quote_level == 1)
+		return ((char)(-2));
+	else if (quote_level == 2)
+		return ((char)(-1));
+	return (0);
 }
 
-void	ms_do_env(char **arg, char **envp, char ***args, int env_index)
+char	*ms_replace_str(char *original, char *new)
+{
+	free(original);
+	return (new);
+}
+
+void	ms_test_tab_print(char **tab)
+{
+	int i = -1;
+	printf("tab print:\n");
+	while(tab[++i])
+	{
+		int	ii = -1;
+		printf("	|%s|: ", tab[i]);
+		while (tab[i][++ii])
+		{
+			if (tab[i][ii] < 0)
+			{
+				if (tab[i][ii] == -1)
+					printf("(-1)");
+				else if (tab[i][ii] == -2)
+					printf("(-2)");
+			}
+			printf("|%c|, ", tab[i][ii]);
+		}
+		printf("\n");
+	}
+	printf("\n");
+}
+
+int	ms_do_normal_separation(char ***arg, char *space, char quote, int arg_i)
+{
+	if (quote != 0)
+		arg[0] = tab_append(arg[0], ms_tripple_join(&quote, ft_strdup(&space[1]), &quote, 10), arg_i + 1);
+	else
+		arg[0] = tab_append(arg[0], ft_strdup(&space[1]), arg_i + 1);
+	// ms_test_tab_print(arg[0]);
+	arg[0][arg_i] = ms_replace_str(arg[0][arg_i], ft_substr(arg[0][arg_i], 0, ft_strlen(arg[0][arg_i]) - ft_strlen(space)));
+	// printf("new_arg: |%s|\n", arg[0][arg_i]);
+	if (!arg[0][arg_i])
+		return (0);
+	return (1);
+}
+
+int	ms_insert_spaced(char ***arg, int arg_i, int var_pos, int content_lenght)
+{
+	char	quote;
+	char	*space;
+	char	*tp_space;
+	int		i;
+
+	// ms_test_tab_print(arg[0]);
+	quote = ms_get_quote_to_index(arg[0][arg_i], var_pos);
+	// ms_insert(arg, ft_strdup(var_content), var_pos, var_len);
+	// arg[0] = tab_append(arg[0], ft_strdup(&arg[0][arg_i][var_pos + ft_strlen(var_content)]), arg_i + 1);
+	// ms_test_tab_print(arg[0]);
+	// arg[0][arg_i] = ms_replace_str(arg[0][arg_i], ft_substr(arg[0][arg_i], 0, var_pos + ft_strlen(var_content)));
+	// printf("arg[arg_i]: |%s|\n", arg[0][arg_i]);
+	if (!arg[0][arg_i])
+		return (0);
+	i = 0;
+	space = ft_strchr(&arg[0][arg_i][var_pos], ' ');
+	while (space && ft_strlen(space) > ft_strlen(&arg[0][arg_i][var_pos + content_lenght]))
+	{
+		tp_space = space;
+		space = ft_strchr(&tp_space[1], ' ');
+	}
+	space = tp_space;
+	while (space)
+	{
+		// printf("before: ");
+		// ms_test_tab_print(arg[0]);
+		if (i == 0)
+		{
+			if (quote != 0)
+				arg[0] = tab_append(arg[0], ms_tripple_join(&quote, ft_strdup(&space[1]), "\0", 10), arg_i + 1);
+			else
+				arg[0] = tab_append(arg[0], ft_strdup(&space[1]), arg_i + 1);
+			arg[0][arg_i] = ms_replace_str(arg[0][arg_i], ft_substr(arg[0][arg_i], 0, ft_strlen(arg[0][arg_i]) - ft_strlen(space)));
+		}
+		else
+			ms_do_normal_separation(arg, space, quote, arg_i);
+		space = ft_strrchr(&arg[0][arg_i][var_pos], ' ');
+		// printf("after: ");
+		// ms_test_tab_print(arg[0]);
+		i ++;
+	}
+	arg[0][arg_i] = ms_replace_str(arg[0][arg_i], ft_strjoin(arg[0][arg_i], &quote));
+	// printf("end: ");
+	// ms_test_tab_print(arg[0]);
+	return (1);
+}
+
+int	ms_expand_loop(char ***args, char **envp)
 {
 	int		index;
-	int		env_len;
-	char	*env_name;
-	char	*env_content;
+	int		var_pos;
+	int		var_len;
+	char	*var_content;
 
 	index = -1;
-	env_len = 0;
-	if (!ms_env_util(arg, &index, &env_len))
-		return ;
-	env_name = ft_substr(arg[0], index + 1, env_len - 1);
-	if (env_name[0] == '?')
+	while (args[0][++index])
 	{
-		free(env_name);
-		env_name = ft_itoa(g_signal);
-		env_content = ft_strjoin("=", env_name);
+		if (ms_has_dollar(args[0][index]))
+		{
+			var_len = 0;
+			var_pos = ms_get_var_start(args[0][index], &var_len);
+			var_len -= 1;
+			// printf("var_pos: %d(%c), var_len: %d(%c), arg: |%s|\n", var_pos, args[0][index][var_pos], var_len, args[0][index][var_len], args[0][index]);
+			var_content = ms_get_var(args[0][index], var_pos, var_len, envp);
+			// printf("var_content: |%s|\n", var_content);
+			if (!var_content)
+				return (0);
+			if (ft_strchr(var_content, ' '))
+			{
+				if (ms_insert(&args[0][index], var_content, var_pos, &var_len) && !ms_insert_spaced(args, index, var_pos, var_len))
+					return (0);
+			}
+			else if (!ms_insert(&args[0][index], var_content, var_pos, &var_len))
+				return (0);
+			// printf("check arg: |%s|\n", args[0][index]);
+			if (ms_has_dollar(args[0][index]))
+				index --;
+		}
 	}
-	else
-		env_content = ft_strdup(envp_find(envp, env_name));
-	arg[0] = ms_setup_env(env_content, arg, index, env_len);
-	if (ft_strchr(arg[0], ' ') != 0)
-		args[0] = ms_split_env(arg, args[0], env_index, (char)(-3));
-	free(env_content);
-	free(env_name);
+	return (1);
 }
 
 void	ms_setup_round_two(t_cmd *cmd, char **envp)
 {
-	int		args_i;
 	t_cmd	*cpy_cmd;
 
 	cpy_cmd = cmd;
 	ms_separate_symbols_base(cmd);
 	while (cpy_cmd)
 	{
-		args_i = -1;
 		cpy_cmd->args = ms_remove_empty_chars(cpy_cmd->args);
-		while (cpy_cmd->args[++args_i])
+		if (!ms_expand_loop(&cpy_cmd->args, envp))
 		{
-			while (cpy_cmd->args && ms_has_dollar(cpy_cmd->args[args_i])
-				&& ft_strncmp(cpy_cmd->args[args_i - (args_i > 0)], "<<", 2) != 0)
-				ms_do_env(&cpy_cmd->args[args_i], envp, &cpy_cmd->args,
-					args_i);
-			if (!cpy_cmd->args)
-			{
-				ms_free_cmd(cmd);
-				return ;
-			}
+			ms_handle_errors(NULL, 0, MS_FAIL_STRUCT, NULL);
+			ms_free_cmd(cmd);
+			return ;
 		}
 		cpy_cmd = cpy_cmd->next;
 	}
-	ms_remove_hiders(cmd, -1);
 	ms_in_out_files_setup(cmd, envp);
+	ms_remove_hiders(cmd, -1);
 }

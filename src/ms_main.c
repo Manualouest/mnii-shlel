@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_main.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/06/21 19:50:03 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/07/11 16:15:04 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,12 @@ int	main(int argc, char *argv[], char *envp[])
 		free(input);
 		if (cmd)
 		{
-//		 	ms_cmd_test_printer(cmd);
-			if (cmd->error_id == NO_ERROR)
+		 	// ms_cmd_test_printer(cmd);
+			if (cmd->error_id == NO_ERROR && g_signal == 0)
 				ms_exec(cmd, &ms_env, cmd->next != NULL);
 			ms_free_cmd(cmd);
 		}
-		else
+		else if (g_signal == 0)
 			ms_handle_errors(NULL, -1, MS_FAIL_STRUCT, NULL);
 	}
 	free_tab((void **)ms_env);
