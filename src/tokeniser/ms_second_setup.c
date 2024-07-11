@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 14:20:40 by mbirou            #+#    #+#             */
-/*   Updated: 2024/07/11 16:08:28 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/07/11 17:08:47 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ int	ms_get_var_start(char *arg, int *var_len)
 				continue ;
 			if (ms_change_quote_level(arg, i + 1, 0) != 0)
 				return (i);
+			if (arg[i + 1] == '?')
+			{
+				*var_len = 2;
+				return (i);
+			}
 			is_num = 0;
 			if (ft_isdigit(arg[i + 1]))
 				is_num = 1;
@@ -61,7 +66,7 @@ char *ms_get_var(char *arg, int var_pos, int var_len, char **envp)
 	// printf("var_name: |%s|\n", var_name);
 	if (var_name[0] == 0)
 		return (var_name);
-	if (var_name[0] == '$')
+	if (var_name[0] == '?')
 	{
 		var_content = ft_itoa(g_signal);
 		free(var_name);
