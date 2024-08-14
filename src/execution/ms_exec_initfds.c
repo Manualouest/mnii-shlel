@@ -18,8 +18,7 @@ int	ms_setup_pipes(t_cmd *cmd)
 
 	while (cmd && cmd->next)
 	{
-		if (pipe(pipes_fd) == -1)
-			return (EXIT_FAILURE);
+		pipe(pipes_fd);
 		if (cmd->fd_out == STDOUT_FILENO)
 			cmd->fd_out = pipes_fd[1];
 		else

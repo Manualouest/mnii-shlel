@@ -46,14 +46,14 @@ void	child_exec(t_cmd *to_exec, char ***env)
 	{
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
+		if (exec_pipe_builtin(to_exec, env) != -1)
+			exit(g_signal);
 		if (dup2(to_exec->fd_in, STDIN_FILENO) == -1)
 			ms_dup2_quit(to_exec, *env);
 		if (dup2(to_exec->fd_out, STDOUT_FILENO) == -1)
 			ms_dup2_quit(to_exec, *env);
 		ms_exec_closefds(to_exec->first);
 		rl_clear_history();
-		if (exec_pipe_builtin(to_exec, env) != -1)
-			exit(g_signal);	
 		ms_child_getpath(to_exec, envp_find(*env, "PATH"));
 		execve(to_exec->args[0], to_exec->args, *env);
 		ms_execve_quit(to_exec, *env);

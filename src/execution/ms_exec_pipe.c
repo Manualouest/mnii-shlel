@@ -20,12 +20,7 @@ void	ms_exec_pipe(t_cmd *to_exec, char ***env)
 	t_cmd	*first;
 
 	first = to_exec->first;
-	if (ms_setup_pipes(to_exec))
-	{
-		error_log("couldnt setup the pipes", '\n');
-		ms_exec_closefds(first);
-		return ;
-	}
+	ms_setup_pipes(to_exec);
 	while (to_exec)
 	{
 		child_exec(to_exec, env);

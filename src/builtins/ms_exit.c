@@ -37,7 +37,7 @@ int	builtin_exit(t_cmd *cmd, int argc, char **argv, char **envp)
 		g_signal = 2;
 		error_log("numeric argument required", '\n');
 	}
-	if (cmd && cmd->next == NULL)
+	if (cmd && cmd->next == NULL && !in_child)
 		ms_exec_unleak(cmd, envp);
 	if (!in_child)
 		exit(g_signal);
