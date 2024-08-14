@@ -23,6 +23,7 @@ void	ms_exec_pipe(t_cmd *to_exec, char ***env)
 	if (ms_setup_pipes(to_exec))
 	{
 		error_log("couldnt setup the pipes", '\n');
+		ms_exec_closefds(first);
 		return ;
 	}
 	while (to_exec)
