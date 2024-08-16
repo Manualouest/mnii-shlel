@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_heredoc_main.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 22:57:30 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/27 22:55:04 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/16 18:23:41 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ void	ms_do_heredoc(t_cmd *cmd, char *delimiter, char **envp)
 	}
 	unlink(filename);
 	free(filename);
-	if (cmd->fd_in == -1 && cmd->error_id == NO_ERROR)
+	if (cmd->fd_in == -1 && cmd->error_id <= NO_ERROR)
 		ms_handle_errors(cmd, -1, MS_FILE_HEREDOC, NULL);
 }
 

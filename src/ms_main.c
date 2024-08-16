@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_main.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/07/11 16:15:04 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/16 18:53:30 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	main(int argc, char *argv[], char *envp[])
 	t_cmd			*cmd;
 
 	signal(SIGINT, ms_sig_handler);
-	signal(SIGQUIT, SIG_IGN);
+	// signal(SIGQUIT, SIG_IGN);
 	input = NULL;
 	ms_env = tab_clone(envp);
 	while (1)
@@ -50,8 +50,8 @@ int	main(int argc, char *argv[], char *envp[])
 		if (cmd)
 		{
 		 	// ms_cmd_test_printer(cmd);
-			if (cmd->error_id == NO_ERROR && g_signal == 0)
-				ms_exec(cmd, &ms_env, cmd->next != NULL);
+			// if (cmd->error_id <= NO_ERROR)
+			ms_exec(cmd, &ms_env, cmd->next != NULL);
 			ms_free_cmd(cmd);
 		}
 		else if (g_signal == 0)

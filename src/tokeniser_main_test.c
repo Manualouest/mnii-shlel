@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokeniser_main_test.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/28 20:25:04 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/16 18:23:35 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ms_pipes_test_printer_find_error(int cmd, int cmd_errno)
 {
 	char	*error_char;
 
-	if (cmd == NO_ERROR && cmd_errno == 0)
+	if (cmd <= NO_ERROR && cmd_errno == 0)
 		write(1, ": NO_ERROR", 10);
 	else if (cmd == BAD_PIPE)
 		write(1, ": BAD_PIPE", 10);
@@ -40,7 +40,7 @@ void	ms_test_printer_find_error(int error, int cmd_errno)
 {
 	char	*error_char;
 
-	if (error == NO_ERROR && cmd_errno == 0)
+	if (error <= NO_ERROR && cmd_errno == 0)
 		write(1, "NO_ERROR\n", 9);
 	else if (error == BAD_PIPE)
 		write(1, "BAD_PIPE\n", 9);
