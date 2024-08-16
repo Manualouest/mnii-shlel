@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 18:48:35 by mbirou            #+#    #+#             */
-/*   Updated: 2024/07/08 05:26:11 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/16 18:35:17 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,13 +117,13 @@ t_cmd	*ms_tokeniser_main(char *line, char **envp)
 		ms_setup_round_two(cmd, envp);
 	else
 		cmd = ms_free_cmd(cmd);
-	if (!cmd || g_signal == 2)
+	if (!cmd)// || g_signal == 2)
 		return (NULL);
 	// ms_clean_delimiters(cmd, envp);
 	cpy_cmd = cmd;
-	while (cpy_cmd && cpy_cmd->error_id == NO_ERROR)
+	while (cpy_cmd && cpy_cmd->error_id <= NO_ERROR)
 		cpy_cmd = cpy_cmd->next;
-	if (cpy_cmd && cpy_cmd->error_id != NO_ERROR)
+	if (cpy_cmd && cpy_cmd->error_id > NO_ERROR)
 		cmd->error_id = cpy_cmd->error_id;
 	return (cmd);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokeniser_struct.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:07:16 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/27 16:28:25 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/16 12:01:48 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define TOKENISER_STRUCT_H
 
 # define MS_TOO_MUCH_ARG "too much arguments when executing minishell"
+# define MS_NO_FILE "No such file or directory"
 # define MS_FAIL_STRUCT "failed to create malloc minishell's struct"
 # define MS_NO_END_QUOTE "there's a quote unclosed"
 # define MS_SYNTAX_ERROR "syntax error near unexpected token"

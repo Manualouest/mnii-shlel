@@ -3,39 +3,84 @@
 /*                                                        :::      ::::::::   */
 /*   ms_string_cleaning.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:00:31 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/28 20:22:43 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/16 11:59:53 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
 
+void	ms_slide_char(char *str, int index)
+{
+	int	i;
+
+	while (--index >= 0)
+	{
+		i = -1;
+		while (str[++i + 1])
+			str[i] = str[i + 1];
+		str[i] = str[i + 1];
+	}
+}
+
+void	ms_shorten_str(char *str, int index)
+{
+	if (index > (int)ft_strlen(str))
+		return ;
+	while (str[index])
+	{
+		str[index] = 0;
+		index ++;
+	}
+}
+
 static void	ms_do_separation(t_cmd *cmd, int *len, int *i)
 {
-	char	*tp_char;
+	// char	*tp_char;
 
-	if (cmd->args[*i][*len + 1] == cmd->args[*i][*len]
+	// write(1, "len: ", 5);
+	// ft_putnbr_fd(*len, 1);
+	// write(1, ",i: ", 4);
+	// ft_putnbr_fd(*i, 1);
+	// write(1, "\n", 1);
+	if (*len == 0 && cmd->args[*i][*len + 1] == cmd->args[*i][*len]
 		&& cmd->args[*i][*len + 2])
 	{
 		cmd->args = tab_append(cmd->args,
 				ft_substr(cmd->args[*i], 0, *len + 2), *i);
-		*i = *i + 1;
-		tp_char = ft_substr(cmd->args[*i], *len + 2, ft_strlen(cmd->args[*i]));
-		free(cmd->args[*i]);
-		cmd->args[*i] = tp_char;
+		ms_slide_char(cmd->args[*i + 1], 2);
+		// tp_char = ft_substr(cmd->args[*i], *len + 2, ft_strlen(cmd->args[*i]));
+		// free(cmd->args[*i]);
+		// cmd->args[*i] = tp_char;
 		*len = 0;
 	}
-	else if (cmd->args[*i][*len + 1]
-		&& cmd->args[*i][*len + 1] != cmd->args[*i][*len])
+	else if (*len != 0 && cmd->args[*i][*len + 1] == cmd->args[*i][*len]
+		&& cmd->args[*i][*len + 2])
+	{
+		cmd->args = tab_append(cmd->args,
+				ft_strdup(&cmd->args[*i][*len]), *i + 1);
+		ms_shorten_str(cmd->args[*i], *len + 1);
+		*len = 0;
+	}
+	else if (*len == 0 && cmd->args[*i][*len + 1] != cmd->args[*i][*len])
 	{
 		cmd->args = tab_append(cmd->args,
 				ft_substr(cmd->args[*i], 0, *len + 1), *i);
-		*i = *i + 1;
-		tp_char = ft_substr(cmd->args[*i], *len + 1, ft_strlen(cmd->args[*i]));
-		free(cmd->args[*i]);
-		cmd->args[*i] = tp_char;
+		ms_slide_char(cmd->args[*i + 1], 1);
+		// tp_char = ft_substr(cmd->args[*i], *len + 1, ft_strlen(cmd->args[*i]));
+		// free(cmd->args[*i]);
+		// cmd->args[*i] = tp_char;
+		*len = 0;
+	}
+	else if (*len != 0 && cmd->args[*i][*len + 1] != cmd->args[*i][*len])
+	{
+		cmd->args = tab_append(cmd->args, ft_strdup(&cmd->args[*i][*len]), *i + 1);
+		ms_shorten_str(cmd->args[*i], *len);
+		// tp_char = ft_substr(cmd->args[*i], 0, *len);
+		// free(cmd->args[*i]);
+		// cmd->args[*i] = tp_char;
 		*len = 0;
 	}
 	// write(1, "	line: ", 7);
@@ -67,8 +112,10 @@ void	ms_separate_symbols_base(t_cmd *cmd)
 			{
 				old_quote = quote;
 				quote = ms_change_quote_level(cmd->args[i], len, quote);
-				if ((quote == 0 || old_quote == 0) && cmd->args[i][len + 1]
-					&& (cmd->args[i][len] == '<' || cmd->args[i][len] == '>'))
+				if ((quote == 0)
+					&& (cmd->args[i][len] == '<' || cmd->args[i][len] == '>')
+					&& (((cmd->args[i][len] != cmd->args[i][len + 1] && (len == 0 || (cmd->args[i][len] != cmd->args[i][len - 1]))) && ft_strlen(cmd->args[i]) != 1)
+						|| (cmd->args[i][len] == cmd->args[i][len + 1] && ft_strlen(cmd->args[i]) != 2)))
 					ms_do_separation(cmd, &len, &i);
 			}
 		}

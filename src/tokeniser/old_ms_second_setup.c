@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_second_setup.c                                  :+:      :+:    :+:   */
+/*   old_ms_second_setup.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 21:00:56 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/28 22:29:51 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/15 19:41:54 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,14 +59,14 @@ int	ms_env_util(char **arg, int *index, int *len)
 		// printf("left\n");
 		return (0);
 	}
-	printf("|%s|, %c, %d, %d, %d\n", arg[0], arg[0][*len + *index], quote_level, *len, *index);
+	// printf("|%s|, %c, %d, %d, %d\n", arg[0], arg[0][*len + *index], quote_level, *len, *index);
 	while (arg[0][++*len + *index] && arg[0][*len + *index] != ' '
 		&& arg[0][*len + *index] != '$' && arg[0][*len + *index] > 0
 		&& arg[0][*len + *index] != '='
 		&& (arg[0][*len + *index] != '"' && arg[0][*len + *index] != '\''
 		&& quote_level == 0))
 	{
-		printf("|%s|, %c, %d, %d, %d\n", arg[0], arg[0][*len + *index], quote_level, *len, *index);
+		// printf("|%s|, %c, %d, %d, %d\n", arg[0], arg[0][*len + *index], quote_level, *len, *index);
 		if (*len > 1 && arg[0][(*len - 1) + *index] == '?')
 			break ;
 	}
@@ -78,7 +78,7 @@ int	ms_env_util(char **arg, int *index, int *len)
 		else
 			*len = *len -1;
 	}
-	printf("%d\n", *len);
+	// printf("%d\n", *len);
 	return (1);
 }
 

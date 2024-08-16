@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_file_setup_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 19:59:36 by mbirou            #+#    #+#             */
-/*   Updated: 2024/07/11 16:10:20 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/16 18:52:29 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,38 +58,47 @@ int	ms_opens(t_cmd *cmd, char *filename, int is_created, int kind)
 {
 	if (kind == 1)
 	{
-		if (is_created == 0)
+		if (is_created == 0 && errno != EACCES)
 			return (open(filename, O_CREAT | O_APPEND | O_WRONLY, S_IRWXU));
 		else if (is_created == 1)
 			return (open(filename, O_APPEND | O_WRONLY));
 		else
-			ms_handle_errors(cmd, BAD_FILE, MS_SYNTAX_ERROR, filename);
+			ms_handle_errors(cmd, errno, strerror(errno), filename);
 		return (-1);
 	}
 	else if (kind == 0)
 	{
-		if (is_created == 0)
+		if (is_created == 0 && errno != EACCES)
 			return (open(filename, O_CREAT | O_WRONLY, S_IRWXU));
 		else if (is_created == 1)
 			return (open(filename, O_WRONLY));
 		else
-			ms_handle_errors(cmd, BAD_FILE, MS_SYNTAX_ERROR, filename);
+			ms_handle_errors(cmd, errno, strerror(errno), filename);
 		return (-1);
 	}
 	if (is_created == 1)
 		return (open(filename, O_RDONLY));
 	else
-		ms_handle_errors(cmd, BAD_FILE, MS_SYNTAX_ERROR, filename);
+		ms_handle_errors(cmd, errno, strerror(errno), filename);
 	return (-1);
+}
+
+void	ms_setup_signal(int error_id)
+{
+	if (error_id == 13)
+		g_signal = 1;
+	else
+		g_signal = error_id;
 }
 
 void	ms_handle_errors(t_cmd *cmd, int error_id, char *error, char *token)
 {
-	g_signal = 2;
-	if (cmd)
-		cmd->error_id = error_id;
-	write(2, error, ft_strlen(error));
-	if (error_id > 0)
+	if (error_id > 0 && cmd->next == NULL)
+		ms_setup_signal(error_id);
+	if (cmd->error_id == NO_ERROR)
+		write(2, error, ft_strlen(error));
+	if (error_id > 0 && error_id != errno
+		&& cmd->error_id == NO_ERROR)
 	{
 		write(2, " '", 2);
 		if (token)
@@ -100,6 +109,10 @@ void	ms_handle_errors(t_cmd *cmd, int error_id, char *error, char *token)
 			write(2, "newline", 7);
 		write(2, "'", 1);
 	}
+	if (cmd && error_id != errno)
+		cmd->error_id = error_id;
+	else if (cmd)
+		cmd->error_id = -1;
 	write(2, "\n", 1);
 }
 

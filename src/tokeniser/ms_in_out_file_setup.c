@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_in_out_file_setup.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 22:38:56 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/27 22:15:16 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/16 18:29:48 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,9 @@ int	ms_head_to_next_symbol(char **args, int prev_index, int error_id)
 	index = prev_index;
 	if (index < -1)
 		index = -1;
-	if (error_id != NO_ERROR)
-		return (-1);
+	(void)error_id;
+	// if (error_id > NO_ERROR)
+	// 	return (-1);
 	while (args && (index == -1 || (index >= 0 && args[index]))
 		&& index < tablen(args) && args[++index])
 	{
