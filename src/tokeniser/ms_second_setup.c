@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 14:20:40 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/15 19:19:30 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/18 07:53:16 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ int	ms_get_var_start(char *arg, int *var_len)
 	while (arg[++i])
 	{
 		quote_level = ms_change_quote_level(arg, i, quote_level);
-		// printf("get_var quote: %d(%d, |%c|, %d)\n", quote_level, i, arg[i], (int)arg[i]);
 		if (quote_level % 2 == 0 && arg[i] == '$')
 		{
 			if (!arg[i + 1] || arg[i + 1] == ' ' || (arg[i + 1] < 0 && !ms_change_quote_level(arg, i + 1, quote_level))
@@ -63,7 +62,6 @@ char *ms_get_var(char *arg, int var_pos, int var_len, char **envp)
 		var_name = ft_calloc(sizeof(char), 1);
 	if (!var_name)
 		return (NULL);
-	// printf("var_name: |%s|\n", var_name);
 	if (var_name[0] == 0)
 		return (var_name);
 	if (var_name[0] == '?')
@@ -74,7 +72,6 @@ char *ms_get_var(char *arg, int var_pos, int var_len, char **envp)
 	}
 	else 
 		raw_content = envp_find(envp, var_name);
-	// printf("raw_content: |%s|\n", raw_content);
 	free(var_name);
 	if (!raw_content)
 	{
@@ -132,42 +129,47 @@ char	*ms_replace_str(char *original, char *new)
 	return (new);
 }
 
-void	ms_test_tab_print(char **tab)
-{
-	int i = -1;
-	printf("tab print:\n");
-	while(tab[++i])
-	{
-		int	ii = -1;
-		printf("	|%s|: ", tab[i]);
-		while (tab[i][++ii])
-		{
-			if (tab[i][ii] < 0)
-			{
-				if (tab[i][ii] == -1)
-					printf("(-1)");
-				else if (tab[i][ii] == -2)
-					printf("(-2)");
-			}
-			printf("|%c|, ", tab[i][ii]);
-		}
-		printf("\n");
-	}
-	printf("\n");
-}
-
 int	ms_do_normal_separation(char ***arg, char *space, char quote, int arg_i)
 {
 	if (quote != 0)
 		arg[0] = tab_append(arg[0], ms_tripple_join(&quote, ft_strdup(&space[1]), &quote, 10), arg_i + 1);
 	else
 		arg[0] = tab_append(arg[0], ft_strdup(&space[1]), arg_i + 1);
-	// ms_test_tab_print(arg[0]);
 	arg[0][arg_i] = ms_replace_str(arg[0][arg_i], ft_substr(arg[0][arg_i], 0, ft_strlen(arg[0][arg_i]) - ft_strlen(space)));
-	// printf("new_arg: |%s|\n", arg[0][arg_i]);
 	if (!arg[0][arg_i])
 		return (0);
 	return (1);
+}
+
+int	ms_get_var_pos(int var_pos, int action)
+{
+	static int	var_pos_save;
+
+	if (action)
+		var_pos_save = var_pos;
+	return (var_pos_save);
+}
+
+void	ms_insert_spaced_loop(char ***arg, int arg_i, char *space, char quote)
+{
+	int	i;
+
+	i = 0;
+	while (space)
+	{
+		if (i == 0)
+		{
+			if (quote != 0)
+				arg[0] = tab_append(arg[0], ms_tripple_join(&quote, ft_strdup(&space[1]), "\0", 10), arg_i + 1);
+			else
+				arg[0] = tab_append(arg[0], ft_strdup(&space[1]), arg_i + 1);
+			arg[0][arg_i] = ms_replace_str(arg[0][arg_i], ft_substr(arg[0][arg_i], 0, ft_strlen(arg[0][arg_i]) - ft_strlen(space)));
+		}
+		else
+			ms_do_normal_separation(arg, space, quote, arg_i);
+		space = ft_strrchr(&arg[0][arg_i][ms_get_var_pos(0, 0)], ' ');
+		i ++;
+	}
 }
 
 int	ms_insert_spaced(char ***arg, int arg_i, int var_pos, int content_lenght)
@@ -177,13 +179,7 @@ int	ms_insert_spaced(char ***arg, int arg_i, int var_pos, int content_lenght)
 	char	*tp_space;
 	int		i;
 
-	// ms_test_tab_print(arg[0]);
 	quote = ms_get_quote_to_index(arg[0][arg_i], var_pos);
-	// ms_insert(arg, ft_strdup(var_content), var_pos, var_len);
-	// arg[0] = tab_append(arg[0], ft_strdup(&arg[0][arg_i][var_pos + ft_strlen(var_content)]), arg_i + 1);
-	// ms_test_tab_print(arg[0]);
-	// arg[0][arg_i] = ms_replace_str(arg[0][arg_i], ft_substr(arg[0][arg_i], 0, var_pos + ft_strlen(var_content)));
-	// printf("arg[arg_i]: |%s|\n", arg[0][arg_i]);
 	if (!arg[0][arg_i])
 		return (0);
 	i = 0;
@@ -194,10 +190,10 @@ int	ms_insert_spaced(char ***arg, int arg_i, int var_pos, int content_lenght)
 		space = ft_strchr(&tp_space[1], ' ');
 	}
 	space = tp_space;
+	// ms_insert_spaced_loop(arg, arg_i, space, quote);
+	// ms_get_var_pos(var_pos, 1);
 	while (space)
 	{
-		// printf("before: ");
-		// ms_test_tab_print(arg[0]);
 		if (i == 0)
 		{
 			if (quote != 0)
@@ -209,14 +205,17 @@ int	ms_insert_spaced(char ***arg, int arg_i, int var_pos, int content_lenght)
 		else
 			ms_do_normal_separation(arg, space, quote, arg_i);
 		space = ft_strrchr(&arg[0][arg_i][var_pos], ' ');
-		// printf("after: ");
-		// ms_test_tab_print(arg[0]);
 		i ++;
 	}
 	arg[0][arg_i] = ms_replace_str(arg[0][arg_i], ft_strjoin(arg[0][arg_i], &quote));
-	// printf("end: ");
-	// ms_test_tab_print(arg[0]);
 	return (1);
+}
+
+void	ms_setup_var_info(char ***args, int index, int *var_pos, int *var_len)
+{
+	*var_len = 0;
+	*var_pos = ms_get_var_start(args[0][index], var_len);
+	*var_len -= 1;
 }
 
 int	ms_expand_loop(char ***args, char **envp)
@@ -224,29 +223,23 @@ int	ms_expand_loop(char ***args, char **envp)
 	int		index;
 	int		var_pos;
 	int		var_len;
-	char	*var_content;
+	char	*var;
 
 	index = -1;
 	while (args[0][++index])
 	{
 		if (ms_has_dollar(args[0][index]))
 		{
-			var_len = 0;
-			var_pos = ms_get_var_start(args[0][index], &var_len);
-			var_len -= 1;
-			// printf("var_pos: %d(%c), var_len: %d(%c), arg: |%s|\n", var_pos, args[0][index][var_pos], var_len, args[0][index][var_len], args[0][index]);
-			var_content = ms_get_var(args[0][index], var_pos, var_len, envp);
-			// printf("var_content: |%s|\n", var_content);
-			if (!var_content)
+			ms_setup_var_info(args, index, &var_pos, &var_len);
+			var = ms_get_var(args[0][index], var_pos, var_len, envp);
+			if (!var)
 				return (0);
-			if (ft_strchr(var_content, ' '))
-			{
-				if (ms_insert(&args[0][index], var_content, var_pos, &var_len) && !ms_insert_spaced(args, index, var_pos, var_len))
-					return (0);
-			}
-			else if (!ms_insert(&args[0][index], var_content, var_pos, &var_len))
+			if (ft_strchr(var, ' ') && ms_insert(&args[0][index],
+				var, var_pos, &var_len) && !ms_insert_spaced(args,
+				index, var_pos, var_len))
 				return (0);
-			// printf("check arg: |%s|\n", args[0][index]);
+			else if (!ms_insert(&args[0][index], var, var_pos, &var_len))
+				return (0);
 			if (ms_has_dollar(args[0][index]))
 				index --;
 		}
@@ -256,7 +249,7 @@ int	ms_expand_loop(char ***args, char **envp)
 
 void	ms_setup_round_two(t_cmd *cmd, char **envp)
 {
-	t_cmd	*cpy_cmd;
+	t_cmd		*cpy_cmd;
 
 	cpy_cmd = cmd;
 	ms_separate_symbols_base(cmd);

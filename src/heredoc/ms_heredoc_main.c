@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 22:57:30 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/16 18:23:41 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/18 04:47:35 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,9 +198,14 @@ void	ms_launch_heredoc(t_cmd *cmd, char ***args, int *i, char **envp)
 	}
 	else if (args[0][*i + 1] && cmd->error_id != BAD_FILE)
 	{
-		ms_fake_heredoc(cmd, ft_strdup(args[0][*i + 1]));
-		args[0] = ms_remove_filename(args[0], *i);
-		*i = *i - 1;
+		if (args[0][*i + 1][0] != '>' && args[0][*i + 1][0] != '<')
+		{
+			ms_fake_heredoc(cmd, ft_strdup(args[0][*i + 1]));
+			args[0] = ms_remove_filename(args[0], *i);
+			*i = *i - 1;
+		}
+		else
+			ms_handle_errors(cmd, BAD_FILE, MS_SYNTAX_ERROR, args[0][*i + 1]);
 	}
 	else
 		ms_handle_errors(cmd, BAD_FILE, MS_SYNTAX_ERROR, NULL);

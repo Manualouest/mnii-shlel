@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_env_checking.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/23 15:03:30 by mbirou            #+#    #+#             */
-/*   Updated: 2024/07/11 16:05:12 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/18 07:03:54 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ int	ms_has_dollar(char *arg)
 				|| arg[index + 1] == ' '
 				|| (arg[index + 1] < 0
 					&& !ms_change_quote_level(arg, index + 1, quote_level))
-				|| arg[index + 1] == '"' || arg[index + 1] == '\'' || arg[index + 1] == '='))
+				|| arg[index + 1] == '"' || arg[index + 1] == '\''
+				|| arg[index + 1] == '='))
 			continue ;
 		if (quote_level % 2 == 0 && arg[index] == '$'
 			&& (index == 0 || (index > 0 && arg[index - 1] != '\\')))

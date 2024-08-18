@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:07:16 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/16 12:01:48 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/18 04:58:33 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ typedef struct s_cmd
 	pid_t			pid;
 	struct s_cmd	*next;
 	struct s_cmd	*first;
+	int				old_g_signal;
 }					t_cmd;
 
 #endif

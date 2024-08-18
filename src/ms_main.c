@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/08/16 18:53:30 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/18 07:01:17 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ int	main(int argc, char *argv[], char *envp[])
 	t_cmd			*cmd;
 
 	signal(SIGINT, ms_sig_handler);
-	// signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	input = NULL;
 	ms_env = tab_clone(envp);
 	while (1)
 	{
+		// write(1, &(char){g_signal + '0'}, 1);
+		// write(1, "-1\n", 3);
 		input = read_term();
 		if (!input)
 			break ;
@@ -50,8 +52,14 @@ int	main(int argc, char *argv[], char *envp[])
 		if (cmd)
 		{
 		 	// ms_cmd_test_printer(cmd);
-			// if (cmd->error_id <= NO_ERROR)
-			ms_exec(cmd, &ms_env, cmd->next != NULL);
+			// write(1, &(char){g_signal + '0'}, 1);
+			// write(1, "-2\n", 3);
+			if (g_signal == 0 && ((!cmd->args[0] || !cmd->args[0][0])))
+				g_signal = 127;
+			else if (cmd->error_id != 2 && g_signal == 0)
+				ms_exec(cmd, &ms_env, cmd->next != NULL);
+			// write(1, &(char){g_signal + '0'}, 1);
+			// write(1, "-3\n", 3);
 			ms_free_cmd(cmd);
 		}
 		else if (g_signal == 0)

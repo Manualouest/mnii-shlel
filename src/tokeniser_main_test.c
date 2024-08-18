@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/25 17:08:02 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/16 18:23:35 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/18 04:56:48 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,9 @@ void	ms_cmd_test_printer(t_cmd *full_line)
 	// char	*heredoc;
 
 	cmd = full_line;
+	write(1, "g_signal: ", 10);
+	ft_putnbr_fd(g_signal, 1);
+	write(1, "\n", 1);
 	while (cmd != NULL)
 	{
 

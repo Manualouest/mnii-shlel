@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 18:48:35 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/16 18:35:17 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/18 06:10:35 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,11 +100,25 @@ void	ms_clean_delimiters(t_cmd *cmd, char **envp)
 	}
 }
 
+void	ms_swap_signal(int	*old_signal)
+{
+	int	tp_int;
+
+	tp_int = *old_signal;
+	*old_signal = g_signal;
+	g_signal = tp_int;
+}
+#include <stdio.h>
 t_cmd	*ms_tokeniser_main(char *line, char **envp)
 {
 	t_cmd	*cmd;
 	t_cmd	*cpy_cmd;
+	int		old_signal;
+	int		signal_save;
 
+	old_signal = g_signal;
+	signal_save = g_signal;
+	g_signal = 0;
 	cmd = malloc(sizeof(*cmd));
 	if (!cmd)
 		return (NULL);
@@ -114,7 +128,12 @@ t_cmd	*ms_tokeniser_main(char *line, char **envp)
 	if (cmd && envp)
 		ms_hide_quotes(cmd);
 	if (cmd && envp)
+	{
+		ms_swap_signal(&old_signal);
 		ms_setup_round_two(cmd, envp);
+		if (g_signal == signal_save)
+			ms_swap_signal(&old_signal);
+	}
 	else
 		cmd = ms_free_cmd(cmd);
 	if (!cmd)// || g_signal == 2)
