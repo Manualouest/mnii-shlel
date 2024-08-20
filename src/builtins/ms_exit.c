@@ -32,7 +32,7 @@ int	builtin_exit(t_cmd *cmd, int argc, char **argv, char **envp)
 		g_signal = (atoi_exit(argv[1]));
 	else
 		g_signal = 0;
-	if (g_signal == -1)
+	if (g_signal == -1 && ft_strncmp(argv[1], "-1", 2))
 	{
 		g_signal = 2;
 		error_log("numeric argument required", '\n');

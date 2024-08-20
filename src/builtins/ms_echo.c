@@ -12,11 +12,12 @@
 
 #include <mnii_shlel.h>
 
+static bool is_dash_n_param(char *param);
+
 int	builtin_echo(t_cmd *cmd)
 {
 	char	**args;
 	bool	without_nl;
-	int		cmp;
 	int		i;
 
 	args = cmd->args;
@@ -25,15 +26,8 @@ int	builtin_echo(t_cmd *cmd)
 		ft_putstr_fd("\n", cmd->fd_out);
 		return (EXIT_SUCCESS);
 	}
-	i = 1;
-	cmp = ft_strncmp(args[i], "-n", ft_strlen(args[i]) + 1);
-	without_nl = (cmp == 0 || cmp == 'n');
-	while (args[i] && (cmp == 0 || cmp == 'n'))
-	{
-		cmp = ft_strncmp(args[i], "-n", ft_strlen(args[i]));
-		i++;
-	}
-	i = i - (i > 1);
+	without_nl = is_dash_n_param(args[0]);
+	i = 1 + without_nl;
 	while (args[i])
 	{
 		ft_putstr_fd(args[i], cmd->fd_out);
@@ -44,4 +38,18 @@ int	builtin_echo(t_cmd *cmd)
 	if (!without_nl)
 		ft_putstr_fd("\n", cmd->fd_out);
 	return (EXIT_SUCCESS);
+}
+
+static bool is_dash_n_param(char *param)
+{
+	int	i;
+
+	if (ft_strlen(param) < 2)
+		return (false);
+	i = 1;
+	while (param[i] == 'n')
+		i++;
+	if (param[i])
+		return (false);
+	return (true);
 }

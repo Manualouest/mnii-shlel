@@ -64,7 +64,7 @@ static void	print_env(int fd, char **env)
 		if (!env[i])
 			return;
 		equal = ft_strfind(env[i], '=');
-		if (equal == (int)ft_strlen(env[i]))
+		if (equal == -1)
 			print_export_format(fd, env[i], NULL);
 		else
 		{
@@ -81,7 +81,10 @@ static void print_export_format(int fd, char *str1, char *str2)
 	ft_putstr_fd("declare -x ", fd);
 	ft_putstr_fd(str1, fd);
 	if (!str2)
+	{
+		ft_putstr_fd("\n", fd);
 		return ;
+	}
 	ft_putstr_fd("=\"", fd);
 	ft_putstr_fd(str2, fd);
 	ft_putstr_fd("\"\n", fd);
