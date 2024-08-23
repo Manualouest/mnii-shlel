@@ -55,7 +55,7 @@ void	ms_child_getpath(t_cmd *cmd, char *env_path)
 	if (!expected_path)
 		return ;
 	free(cmd->args[0]);
-	cmd->args[0] = expected_path; 
+	cmd->args[0] = expected_path;
 }
 
 static char	*try_path(t_cmd *cmd, char *env_path)
@@ -65,9 +65,8 @@ static char	*try_path(t_cmd *cmd, char *env_path)
 	char	*tmp;
 	char	**tab_path;
 
-
 	i = 0;
-	tab_path= ft_split(env_path, ':');
+	tab_path = ft_split(env_path, ':');
 	while (tab_path[i])
 	{
 		final_len = ft_strlen(tab_path[i]) + ft_strlen(cmd->args[0]) + 2;
@@ -84,5 +83,3 @@ static char	*try_path(t_cmd *cmd, char *env_path)
 	free_tab((void **)tab_path);
 	return (tmp);
 }
-
-

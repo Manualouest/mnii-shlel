@@ -43,9 +43,9 @@ bool	ms_is_builtin(t_cmd *cmd)
 	if (ft_strncmp(cmd->args[0], "echo", 5) == 0)
 		return (true);
 	if (ft_strncmp(cmd->args[0], "env", 4) == 0)
-		return (true); ;
+		return (true);
 	if (ft_strncmp(cmd->args[0], "pwd", 4) == 0)
-		return (true); ;
+		return (true);
 	if (ft_strncmp(cmd->args[0], "exit", 5) == 0)
 		return (true);
 	if (ft_strncmp(cmd->args[0], "unset", 6) == 0)

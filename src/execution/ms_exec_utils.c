@@ -61,4 +61,3 @@ void	cmd_iter(t_cmd *cmd, void (*f)(t_cmd *))
 	f(cmd);
 	cmd_iter(cmd->next, f);
 }
-

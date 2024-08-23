@@ -15,7 +15,7 @@
 void	ms_execve_quit(t_cmd *cmd, char **env)
 {
 	char		*err_msg;
-	int 		err_code;
+	int			err_code;
 	struct stat	stat_var;
 
 	err_code = errno;
