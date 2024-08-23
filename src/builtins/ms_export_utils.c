@@ -29,12 +29,10 @@ char	*envp_find_similar(char **envp, char *to_find)
 		cmp = ft_strncmp(envp[i], to_find, len);
 		if (cmp < 0)
 			cmp = -cmp;
-//		printf("ft_strncmp(%s, %s, %d) = %d (%c)\n", envp[i], to_find, len, cmp, cmp);
 		if (cmp == '=' || cmp == 0)
 			return (envp[i]);
 		i++;
 	}
-//	printf("\n");
 	return (NULL);
 }
 

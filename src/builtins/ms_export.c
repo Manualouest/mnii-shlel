@@ -83,7 +83,7 @@ static void	select_action(char ***envp, char *to_add)
 	char	*similar;
 
 	tmp = ft_strchr(to_add, '=');
-	similar =  envp_find_similar(*envp, to_add);
+	similar = envp_find_similar(*envp, to_add);
 	if (!tmp && similar)
 		return ;
 	if (tmp && tmp[-1] == '+'

@@ -14,7 +14,7 @@
 
 static void	sort_envp(char **new_envp);
 static void	print_env(int fd, char **env);
-static void print_export_format(int fd, char *str1, char *str2);
+static void	print_export_format(int fd, char *str1, char *str2);
 
 int	builtin_export_noargs(t_cmd *cmd, char **envp)
 {
@@ -62,21 +62,21 @@ static void	print_env(int fd, char **env)
 		if (ft_strncmp(env[i], "_=", 2) == 0)
 			i++;
 		if (!env[i])
-			return;
+			return ;
 		equal = ft_strfind(env[i], '=');
 		if (equal == -1)
 			print_export_format(fd, env[i], NULL);
 		else
 		{
 			env[i][equal] = 0;
-			print_export_format(fd, env[i],  &env[i][equal + 1]);
+			print_export_format(fd, env[i], &env[i][equal + 1]);
 			env[i][equal] = '=';
 		}
 		i++;
 	}
 }
 
-static void print_export_format(int fd, char *str1, char *str2)
+static void	print_export_format(int fd, char *str1, char *str2)
 {
 	ft_putstr_fd("declare -x ", fd);
 	ft_putstr_fd(str1, fd);

@@ -36,7 +36,6 @@ int	builtin_cd(int argc, char **argv, char ***envp)
 		free(old_pwd);
 		return (EXIT_FAILURE);
 	}
-
 	new_pwd = getcwd(NULL, 0);
 	update_envp(envp, old_pwd, new_pwd);
 	free(old_pwd);

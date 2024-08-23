@@ -12,7 +12,7 @@
 
 #include <mnii_shlel.h>
 
-static bool is_dash_n_param(char *param);
+static bool	is_dash_n_param(char *param);
 
 int	builtin_echo(t_cmd *cmd)
 {
@@ -40,7 +40,7 @@ int	builtin_echo(t_cmd *cmd)
 	return (EXIT_SUCCESS);
 }
 
-static bool is_dash_n_param(char *param)
+static bool	is_dash_n_param(char *param)
 {
 	int	i;
 

@@ -96,5 +96,5 @@ static int	atoi_exit(char *nptr)
 			return (-1);
 		i++;
 	}
-	return (int)(sign * (num % 256));
+	return ((int)(sign * (num % 256)));
 }
