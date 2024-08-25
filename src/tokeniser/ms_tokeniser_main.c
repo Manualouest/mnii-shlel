@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 18:48:35 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/18 06:10:35 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/25 21:22:24 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,31 +52,6 @@ int	ms_check_for_bad_pipe(t_cmd *cmd)
 	return (0);
 }
 
-char	*ms_find_env_name(char *content, char **envp)
-{
-	int		i;
-	int		content_len;
-	char	*tp_char;
-
-	i = 0;
-	tp_char = ft_substr(content, 2, ft_strlen(content) - 3);
-	while (envp[i])
-	{
-		content_len = -1;
-		while (envp[i] && envp[i][++content_len] && envp[i][content_len] != '=')
-			;
-		if (ft_strncmp(&envp[i][content_len + 1], tp_char, ft_strlen(tp_char)) == 0
-			&& ft_strlen(tp_char) == ft_strlen(envp[i]) - content_len - 1)
-		{
-			free(tp_char);
-			return ft_substr(envp[i], 0, content_len);
-		}
-		i++;
-	}
-	free(tp_char);
-	return (NULL);
-}
-
 void	ms_clean_delimiters(t_cmd *cmd, char **envp)
 {
 	char	*tp_char;
@@ -100,19 +75,36 @@ void	ms_clean_delimiters(t_cmd *cmd, char **envp)
 	}
 }
 
-void	ms_swap_signal(int	*old_signal)
+t_cmd	*part_two(t_cmd *cmd, char **envp, int old_signal, int signal_save)
 {
-	int	tp_int;
+	t_cmd	*cpy_cmd;
 
-	tp_int = *old_signal;
-	*old_signal = g_signal;
-	g_signal = tp_int;
+	if (cmd && envp)
+	{
+		ms_swap_signal(&old_signal);
+		if (!ms_setup_round_two(cmd, envp))
+		{
+			cmd = ms_free_cmd(cmd);
+			return (NULL);
+		}
+		if (g_signal == signal_save)
+			ms_swap_signal(&old_signal);
+	}
+	else
+		cmd = ms_free_cmd(cmd);
+	if (!cmd)
+		return (NULL);
+	cpy_cmd = cmd;
+	while (cpy_cmd && cpy_cmd->error_id <= NO_ERROR)
+		cpy_cmd = cpy_cmd->next;
+	if (cpy_cmd && cpy_cmd->error_id > NO_ERROR)
+		cmd->error_id = cpy_cmd->error_id;
+	return (cmd);
 }
-#include <stdio.h>
+
 t_cmd	*ms_tokeniser_main(char *line, char **envp)
 {
 	t_cmd	*cmd;
-	t_cmd	*cpy_cmd;
 	int		old_signal;
 	int		signal_save;
 
@@ -127,22 +119,5 @@ t_cmd	*ms_tokeniser_main(char *line, char **envp)
 		return (cmd);
 	if (cmd && envp)
 		ms_hide_quotes(cmd);
-	if (cmd && envp)
-	{
-		ms_swap_signal(&old_signal);
-		ms_setup_round_two(cmd, envp);
-		if (g_signal == signal_save)
-			ms_swap_signal(&old_signal);
-	}
-	else
-		cmd = ms_free_cmd(cmd);
-	if (!cmd)// || g_signal == 2)
-		return (NULL);
-	// ms_clean_delimiters(cmd, envp);
-	cpy_cmd = cmd;
-	while (cpy_cmd && cpy_cmd->error_id <= NO_ERROR)
-		cpy_cmd = cpy_cmd->next;
-	if (cpy_cmd && cpy_cmd->error_id > NO_ERROR)
-		cmd->error_id = cpy_cmd->error_id;
-	return (cmd);
+	return (part_two(cmd, envp, old_signal, signal_save));
 }

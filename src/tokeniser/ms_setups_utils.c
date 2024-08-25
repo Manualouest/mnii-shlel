@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_setups_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 21:01:47 by mbirou            #+#    #+#             */
-/*   Updated: 2024/06/27 14:34:18 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/25 19:29:45 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,6 @@ int	ms_go_to_pipe(char *line, int *main_index)
 	}
 	*main_index = new_index;
 	return (new_index);
-}
-
-int	ms_is_there_pipe(char *line, int index)
-{
-	int	quote_level;
-
-	quote_level = 0;
-	while (line[++index] && !(line[index] == '|' && quote_level == 0))
-	{
-		quote_level = ms_change_quote_level(line, index, quote_level);
-	}
-	if (line[index] == '|' && quote_level == 0)
-		return (1);
-	return (0);
 }
 
 int	ms_change_quote_level(char *line, int index, int old_quote_level)
@@ -67,7 +53,7 @@ char	*ms_tripple_join(char *first, char *second, char *third, int frees)
 	full_join = ft_strjoin(f_s_joined, third);
 	if (first && frees % 1000 >= 100)
 		free(first);
-	if (second 	&& frees % 100 >= 10)
+	if (second && frees % 100 >= 10)
 		free(second);
 	if (third && frees % 10 == 1)
 		free(third);

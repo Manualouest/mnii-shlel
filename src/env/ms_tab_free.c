@@ -1,23 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ms_env.h                                           :+:      :+:    :+:   */
+/*   ms_tab_free.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/04 18:48:06 by mscheman          #+#    #+#             */
-/*   Updated: 2024/08/25 18:59:16 by mbirou           ###   ########.fr       */
+/*   Created: 2024/08/25 18:58:56 by mbirou            #+#    #+#             */
+/*   Updated: 2024/08/25 18:59:11 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MS_ENV_H
-# define MS_ENV_H
+#include <mnii_shlel.h>
 
-int		tablen(char **tab);
-char	**tab_append(char **tab, char *add, int pos);
-void	tab_replace(char **tab, char *old, char *new);
-char	**tab_clone(char **tab);
-char	*envp_find(char **envp, char *name);
-void	free_tab(void **tab);
+void	free_tab(void **tab)
+{
+	int	i;
 
-#endif
+	i = 0;
+	if (!tab)
+		return ;
+	while (tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+}

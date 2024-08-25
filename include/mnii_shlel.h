@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mnii_shlel.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:32:41 by mscheman          #+#    #+#             */
-/*   Updated: 2024/05/27 17:28:04 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/25 19:00:02 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,5 +51,7 @@ extern int g_signal;
 
 void	error_log(char *msg, char last_char);
 void	ms_sig_handler(int sig);
+void	ms_swap_signal(int	*old_signal);
+void	ms_setup_signal(int error_id, char *error);
 
 #endif

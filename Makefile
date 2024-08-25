@@ -16,11 +16,16 @@ SRC_NAME +=	tokeniser/ms_tokeniser_main.c\
 			tokeniser/ms_first_setup.c\
 			tokeniser/ms_setups_utils.c\
 			tokeniser/ms_env_checking.c\
+			tokeniser/ms_env_utils.c\
 			tokeniser/ms_second_setup.c\
+			tokeniser/ms_expand.c\
+			tokeniser/ms_expand_utils.c\
 			tokeniser/ms_in_out_file_setup.c\
 			tokeniser/ms_file_setup_utils.c\
 			tokeniser/ms_string_cleaning.c\
-			heredoc/ms_heredoc_main.c
+			tokeniser/ms_handle_quotes.c\
+			heredoc/ms_heredoc_main.c\
+			heredoc/ms_heredoc_expand.c
 
 SRC_NAME += builtins/ms_cd.c \
 			builtins/ms_pwd.c \
@@ -32,7 +37,8 @@ SRC_NAME += builtins/ms_cd.c \
 			builtins/ms_export_utils.c \
 			builtins/ms_export_noarg.c
 
-SRC_NAME += env/ms_tab_tools.c
+SRC_NAME += env/ms_tab_tools.c\
+			env/ms_tab_free.c
 
 SRC_NAME += execution/ms_exec.c \
 			execution/ms_exec_pipe.c \

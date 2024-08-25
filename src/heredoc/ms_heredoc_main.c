@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 22:57:30 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/18 04:47:35 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/25 18:57:47 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,85 +35,16 @@ static char	*ms_gen_filename(void)
 	return (name);
 }
 
-int	ms_should_expand_heredoc(char **delimiter)
-{
-	int		index;
-	char	*tp_arg;
-	int		do_expand;
-
-	index = -1;
-	do_expand = 1;
-	while (delimiter[0][++index] && do_expand)
-		if (delimiter[0][index] == -1 || delimiter[0][index] == -2)
-			do_expand = 0;
-	index = -1;
-	while (delimiter[0] && delimiter[0][++index])
-	{
-		if (delimiter[0][index] < 7)
-		{
-			tp_arg = ms_tripple_join(ft_substr(delimiter[0], 0, index),
-				&delimiter[0][index + 1], "", 100);
-			free(delimiter[0]);
-			delimiter[0] = tp_arg;
-			index --;
-		}
-	}
-	return (do_expand);
-}
-
-void	ms_insert_env(char **input, int i, int env_len, char **envp)
-{
-	char	*tp_str;
-	char	*env_name;
-	char	*envp_line;
-
-	
-	env_name = ft_substr(input[0], i + 1, env_len - 1);
-	envp_line = envp_find(envp, env_name);
-	if (envp_line)
-		tp_str = ms_tripple_join(ft_substr(input[0], 0, i),
-			&ft_strchr(envp_line, '=')[1],
-			&input[0][i + env_len], 100);
-	else
-		tp_str = ms_tripple_join(ft_substr(input[0], 0, i),
-			"", &input[0][i + env_len], 100);
-	free(env_name);
-	free(input[0]);
-	input[0] = ft_strdup(tp_str);
-	free(tp_str);
-}
-
-void	ms_do_heredoc_env(char **input, char **envp)
-{
-	int		i;
-	int		env_len;
-
-	i = -1;
-	while (input[0][++i])
-	{
-		if (input[0][i] == '$')
-		{
-			env_len = 0;
-			while(input[0][++env_len + i] && ft_isalnum(input[0][env_len + i]))
-				;
-			if (env_len == 1)
-				continue ;
-			ms_insert_env(input, i, env_len, envp);
-			i = -1;
-		}
-	}
-}
-
 void	ms_heredoc_loop_innit(t_cmd *cmd, char *delimiter, char *filename,
 			char **envp)
 {
 	char	*input;
 	int		do_expand;
-	
+
 	(void)filename;
 	do_expand = ms_should_expand_heredoc(&delimiter);
 	input = readline(HEREDOC_PROMPT);
-	while(input && !(ft_strlen(input) == ft_strlen(delimiter)
+	while (input && !(ft_strlen(input) == ft_strlen(delimiter)
 			&& !ft_strncmp(input, delimiter, ft_strlen(delimiter))))
 	{
 		if (do_expand)
@@ -141,12 +72,12 @@ void	ms_do_heredoc(t_cmd *cmd, char *delimiter, char **envp)
 
 	filename = ms_gen_filename();
 	if (!filename)
-		return ms_handle_errors(cmd, -1, MS_FILE_HEREDOC, NULL);
+		return (ms_handle_errors(cmd, -1, MS_FILE_HEREDOC, NULL));
 	fd = open(filename, O_CREAT | O_RDWR, S_IRWXU);
 	if (fd == -1)
 	{
 		free(filename);
-		return ms_handle_errors(cmd, -1, MS_FILE_HEREDOC, NULL);
+		return (ms_handle_errors(cmd, -1, MS_FILE_HEREDOC, NULL));
 	}
 	if (cmd->fd_in > 0)
 		close(cmd->fd_in);
@@ -166,10 +97,10 @@ void	ms_do_heredoc(t_cmd *cmd, char *delimiter, char **envp)
 void	ms_fake_heredoc(t_cmd *cmd, char *delimiter)
 {
 	char	*input;
-	
+
 	ms_should_expand_heredoc(&delimiter);
 	input = readline(HEREDOC_PROMPT);
-	while(input && !(ft_strlen(input) == ft_strlen(delimiter)
+	while (input && !(ft_strlen(input) == ft_strlen(delimiter)
 			&& !ft_strncmp(input, delimiter, ft_strlen(delimiter))))
 	{
 		free(input);

@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 19:59:36 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/18 07:04:40 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/25 20:16:36 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,25 +83,15 @@ int	ms_opens(t_cmd *cmd, char *filename, int is_created, int kind)
 	return (-1);
 }
 
-void	ms_setup_signal(int error_id, char *error)
-{
-	if (!ft_strncmp(error, MS_SYNTAX_ERROR, ft_strlen(error)))
-		g_signal = 2;
-	else if (error_id == 13 || error_id == 2)
-		g_signal = 1;
-	else
-		g_signal = 0;
-}
-
 void	ms_handle_errors(t_cmd *cmd, int error_id, char *error, char *token)
 {
-	if (cmd->error_id == NO_ERROR && g_signal == 0
-		&& (cmd->next == NULL
+	if (((cmd && cmd->error_id == NO_ERROR) || !cmd) && g_signal == 0
+		&& (((cmd && cmd->next == NULL) || !cmd)
 			|| !ft_strncmp(error, MS_SYNTAX_ERROR, ft_strlen(error))))
 		ms_setup_signal(error_id, error);
-	if (cmd->error_id == NO_ERROR)
+	if (cmd && cmd->error_id == NO_ERROR)
 		write(2, error, ft_strlen(error));
-	if (error_id > 0 && !ft_strncmp(error, MS_SYNTAX_ERROR, ft_strlen(error))
+	if (cmd && error_id > 0 && !ft_strncmp(error, MS_SYNTAX_ERROR, ft_strlen(error))
 		&& cmd->error_id == NO_ERROR)
 	{
 		write(2, " '", 2);

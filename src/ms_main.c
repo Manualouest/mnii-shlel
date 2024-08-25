@@ -6,19 +6,17 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/08/18 07:01:17 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/25 21:35:22 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <mnii_shlel.h>
 
-// clear; valgrind --show-leak-kinds=all --leak-check=full --suppressions=ms.supp ./minishell
-void	ms_cmd_test_printer(t_cmd *full_line);
-
-int g_signal = 0;
-
-static char *setup_prompt(char *dir);
+void		ms_cmd_test_printer(t_cmd *full_line);
+static char	*setup_prompt(char *dir);
 static char	*read_term(void);
+
+int	g_signal = 0;
 
 void	error_log(char *msg, char last_char)
 {
@@ -28,22 +26,14 @@ void	error_log(char *msg, char last_char)
 	write(STDERR_FILENO, "\033[0m", 4);
 }
 
-int	main(int argc, char *argv[], char *envp[])
+void	shell_loop(char **ms_env)
 {
-    (void)argc, (void)argv;
+	char	*input;
+	t_cmd	*cmd;
 
-	char			**ms_env;
-	char			*input;
-	t_cmd			*cmd;
-
-	signal(SIGINT, ms_sig_handler);
-	signal(SIGQUIT, SIG_IGN);
 	input = NULL;
-	ms_env = tab_clone(envp);
 	while (1)
 	{
-		// write(1, &(char){g_signal + '0'}, 1);
-		// write(1, "-1\n", 3);
 		input = read_term();
 		if (!input)
 			break ;
@@ -51,26 +41,34 @@ int	main(int argc, char *argv[], char *envp[])
 		free(input);
 		if (cmd)
 		{
-		 	// ms_cmd_test_printer(cmd);
-			// write(1, &(char){g_signal + '0'}, 1);
-			// write(1, "-2\n", 3);
 			if (g_signal == 0 && ((!cmd->args[0] || !cmd->args[0][0])))
 				g_signal = 127;
 			else if (cmd->error_id != 2 && g_signal == 0)
 				ms_exec(cmd, &ms_env, cmd->next != NULL);
-			// write(1, &(char){g_signal + '0'}, 1);
-			// write(1, "-3\n", 3);
-			ms_free_cmd(cmd);
+			if (cmd)
+				ms_free_cmd(cmd);
 		}
 		else if (g_signal == 0)
 			ms_handle_errors(NULL, -1, MS_FAIL_STRUCT, NULL);
 	}
+}
+
+int	main(int argc, char *argv[], char *envp[])
+{
+	char			**ms_env;
+
+	(void)argc;
+	(void)argv;
+	signal(SIGINT, ms_sig_handler);
+	signal(SIGQUIT, SIG_IGN);
+	ms_env = tab_clone(envp);
+	shell_loop(ms_env);
 	free_tab((void **)ms_env);
 	rl_clear_history();
 	exit(g_signal);
 }
 
-static char *read_term(void)
+static char	*read_term(void)
 {
 	char	*prompt;
 	char	*path;
@@ -85,7 +83,7 @@ static char *read_term(void)
 	return (input);
 }
 
-static char *setup_prompt(char *dir)
+static char	*setup_prompt(char *dir)
 {
 	size_t	malloc_size;
 	char	*work;

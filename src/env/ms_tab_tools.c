@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tab_tools.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/01 17:20:59 by mscheman          #+#    #+#             */
-/*   Updated: 2024/06/10 17:58:12 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/25 18:58:52 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,19 +97,4 @@ char	*envp_find(char **envp, char *name)
 		i++;
 	}
 	return (NULL);
-}
-
-void	free_tab(void **tab)
-{
-	int i;
-
-	i = 0;
-	if (!tab)
-		return ;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
 }
