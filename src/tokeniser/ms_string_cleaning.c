@@ -88,7 +88,7 @@ void	ms_separate_symbols_base(t_cmd *cmd, int quote)
 				quote = ms_change_quote_level(cmd->args[i], l, quote);
 				if ((quote == 0) && (((cmd->args[i][l] != cmd->args[i][l + 1]
 						&& (l == 0
-						|| (cmd->args[i][l] != cmd->args[i][l - 1])))
+							|| (cmd->args[i][l] != cmd->args[i][l - 1])))
 							&& ft_strlen(cmd->args[i]) != 1)
 						|| (cmd->args[i][l] == cmd->args[i][l + 1]
 							&& ft_strlen(cmd->args[i]) != 2))

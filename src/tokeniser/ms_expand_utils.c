@@ -18,11 +18,13 @@ void	ms_setup_var_info(char ***args, int index, int *var_pos, int *var_len)
 	*var_pos = ms_get_var_start(args[0][index], var_len);
 	*var_len -= 1;
 }
+
 char	*ms_replace_str(char *original, char *new)
 {
 	free(original);
 	return (new);
 }
+
 char	ms_get_quote_to_index(char *arg, int pos)
 {
 	int	i;

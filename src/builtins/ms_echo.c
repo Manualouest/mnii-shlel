@@ -26,13 +26,16 @@ int	builtin_echo(t_cmd *cmd)
 		ft_putstr_fd("\n", cmd->fd_out);
 		return (EXIT_SUCCESS);
 	}
-	without_nl = is_dash_n_param(args[0]);
-	i = 1 + without_nl;
+	i = 1;
+	without_nl = false;
+	while (is_dash_n_param(args[i]))
+		i++;
+	if (i != 1)
+		without_nl = true;
 	while (args[i])
 	{
 		ft_putstr_fd(args[i], cmd->fd_out);
-		i++;
-		if (args[i])
+		if (args[++i])
 			ft_putstr_fd(" ", cmd->fd_out);
 	}
 	if (!without_nl)

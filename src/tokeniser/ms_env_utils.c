@@ -37,5 +37,3 @@ char	*ms_find_env_name(char *content, char **envp)
 	free(tp_char);
 	return (NULL);
 }
-
-

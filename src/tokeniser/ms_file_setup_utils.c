@@ -91,7 +91,8 @@ void	ms_handle_errors(t_cmd *cmd, int error_id, char *error, char *token)
 		ms_setup_signal(error_id, error);
 	if (cmd && cmd->error_id == NO_ERROR)
 		write(2, error, ft_strlen(error));
-	if (cmd && error_id > 0 && !ft_strncmp(error, MS_SYNTAX_ERROR, ft_strlen(error))
+	if (cmd && error_id > 0
+		&& !ft_strncmp(error, MS_SYNTAX_ERROR, ft_strlen(error))
 		&& cmd->error_id == NO_ERROR)
 	{
 		write(2, " '", 2);

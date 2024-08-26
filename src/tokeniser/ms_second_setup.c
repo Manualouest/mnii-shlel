@@ -106,7 +106,6 @@ int	ms_setup_round_two(t_cmd *cmd, char **envp)
 		if (!ms_expand_loop(&cpy_cmd->args, envp))
 		{
 			ms_handle_errors(NULL, 0, MS_FAIL_STRUCT, NULL);
-			// ms_free_cmd(cmd);
 			return (0);
 		}
 		cpy_cmd = cpy_cmd->next;
