@@ -45,7 +45,8 @@ int			ms_get_var_start(char *arg, int *var_len);
 char		*ms_get_var(char *arg, int var_pos, int var_len, char **envp);
 
 // ms_expand_utils.c
-void		ms_setup_var_info(char ***args, int index, int *var_pos, int *var_len);
+void		ms_setup_var_info(char ***args, int index, int *var_pos,
+				int *var_len);
 char		*ms_replace_str(char *original, char *new);
 char		ms_get_quote_to_index(char *arg, int pos);
 

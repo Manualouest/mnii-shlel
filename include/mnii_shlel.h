@@ -43,7 +43,7 @@
 # include <ms_builtins.h>
 # include <ms_execution.h>
 
-extern int g_signal;
+extern int	g_signal;
 
 # define PROMPT_CONST "\001\033[1;31m\002mnii \001\033[1;35m\002shlel:"
 # define PROMPT_USER " \001\033[1;36m\002$\001\033[0;0m\002  "
