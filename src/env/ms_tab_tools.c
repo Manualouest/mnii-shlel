@@ -45,6 +45,7 @@ char	**tab_append(char **tab, char *add, int pos)
 		dup[i] = tab[i - (i > pos)];
 	dup[i + 1] = NULL;
 	free(tab);
+	i = 0;
 	return (dup);
 }
 

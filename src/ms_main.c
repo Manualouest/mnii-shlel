@@ -13,6 +13,7 @@
 #include <mnii_shlel.h>
 
 void		ms_cmd_test_printer(t_cmd *full_line);
+static void	shell_loop(char ***ms_env);
 static char	*setup_prompt(char *dir);
 static char	*read_term(void);
 
@@ -26,33 +27,6 @@ void	error_log(char *msg, char last_char)
 	write(STDERR_FILENO, "\033[0m", 4);
 }
 
-void	shell_loop(char **ms_env)
-{
-	char	*input;
-	t_cmd	*cmd;
-
-	input = NULL;
-	while (1)
-	{
-		input = read_term();
-		if (!input)
-			break ;
-		cmd = ms_tokeniser_main(input, ms_env);
-		free(input);
-		if (cmd)
-		{
-			if (g_signal == 0 && ((!cmd->args[0] || !cmd->args[0][0])))
-				g_signal = 127;
-			else if (cmd->error_id != 2 && g_signal == 0)
-				ms_exec(cmd, &ms_env, cmd->next != NULL);
-			if (cmd)
-				ms_free_cmd(cmd);
-		}
-		else if (g_signal == 0)
-			ms_handle_errors(NULL, -1, MS_FAIL_STRUCT, NULL);
-	}
-}
-
 int	main(int argc, char *argv[], char *envp[])
 {
 	char			**ms_env;
@@ -62,10 +36,37 @@ int	main(int argc, char *argv[], char *envp[])
 	signal(SIGINT, ms_sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 	ms_env = tab_clone(envp);
-	shell_loop(ms_env);
+	shell_loop(&ms_env);
 	free_tab((void **)ms_env);
 	rl_clear_history();
 	exit(g_signal);
+}
+
+static void	shell_loop(char ***ms_env)
+{
+	char	*input;
+	t_cmd	*cmd;
+
+	input = NULL;
+	while (true)
+	{
+		input = read_term();
+		if (!input)
+			break ;
+		cmd = ms_tokeniser_main(input, *ms_env);
+		free(input);
+		if (cmd)
+		{
+			if (g_signal == 0 && ((!cmd->args[0] || !cmd->args[0][0])))
+				g_signal = 127;
+			else if (cmd->error_id != 2 && g_signal == 0)
+				ms_exec(cmd, ms_env, cmd->next != NULL);
+			if (cmd)
+				ms_free_cmd(cmd);
+		}
+		else if (g_signal == 0)
+			ms_handle_errors(NULL, -1, MS_FAIL_STRUCT, NULL);
+	}
 }
 
 static char	*read_term(void)
