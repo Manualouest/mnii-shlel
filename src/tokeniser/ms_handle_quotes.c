@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 19:31:40 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/27 17:15:26 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/27 18:31:12 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	ms_hide_quotes(t_cmd *cmd)
 
 int	ms_is_hider(char c, int check_kind)
 {
-	if (!check_kind && ((c < 32 && c > 13) || c < 7))
+	if (!check_kind && c < 32 && c != 9)
 		return (1);
 	else if (check_kind && c != '<' && c != '>')
 		return (1);

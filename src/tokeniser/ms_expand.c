@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 19:17:10 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/27 17:09:11 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/27 19:12:11 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,14 +54,35 @@ char	ms_cut_param(char ***arg, int arg_i, int var_pos, int var_len)
 	}
 	else
 	{
-		arg[0] = tab_append(arg[0], ft_strjoin(&quote,
+		arg[0] = tab_append(arg[0], ft_strjoin(&(char){-1},
 					&arg[0][arg_i][var_pos + var_len]), arg_i + 1);
 		arg[0][arg_i] = ms_replace_str(arg[0][arg_i],
 				ft_substr(arg[0][arg_i], 0, var_pos));
 		arg[0][arg_i] = ms_replace_str(arg[0][arg_i],
-				ft_strjoin(arg[0][arg_i], &quote));
+				ft_strjoin(arg[0][arg_i], &(char){-1}));
 	}
 	return (quote);
+}
+
+int	ms_get_quoted(char ***arg, int arg_i, char **cut_var, int *i)
+{
+	*i = *i - 1;
+	if (arg[0][arg_i][ft_strlen(arg[0][arg_i])] < 0)
+	{
+		arg[0][arg_i + 1] = ms_tripple_join(&(char){-1},
+				cut_var[*i], arg[0][arg_i + 1], 11);
+		arg[0][arg_i] = ms_tripple_join(arg[0][arg_i],
+				cut_var[0], &(char){-1}, 110);
+	}
+	else
+	{
+		arg[0][arg_i + 1] = ms_tripple_join("",
+				cut_var[*i], arg[0][arg_i + 1], 11);
+		arg[0][arg_i] = ms_tripple_join(arg[0][arg_i], cut_var[0], "", 110);
+	}
+	if (arg[0][arg_i + 1])
+		return (1);
+	return (0);
 }
 
 int	ms_insert_spaced(char ***arg, int arg_i, int var_pos, int var_len)
@@ -69,6 +90,7 @@ int	ms_insert_spaced(char ***arg, int arg_i, int var_pos, int var_len)
 	char	**cut_var;
 	char	*tp_str;
 	char	quote[1];
+	int		stopper;
 	int		i;
 
 	if (!arg[0][arg_i])
@@ -78,15 +100,14 @@ int	ms_insert_spaced(char ***arg, int arg_i, int var_pos, int var_len)
 	free(tp_str);
 	quote[0] = ms_cut_param(arg, arg_i, var_pos, var_len);
 	i = tablen(cut_var);
-	while (--i >= 0)
+	stopper = ms_get_quoted(arg, arg_i, cut_var, &i);
+	while (--i >= stopper)
 	{
 		if (quote[0] == 0)
 			arg[0] = tab_append(arg[0], cut_var[i], arg_i + 1);
 		else
-		{
 			arg[0] = tab_append(arg[0], ms_tripple_join(&(char){-1},
 						cut_var[i], &(char){-1}, 10), arg_i + 1);
-		}
 	}
 	free(cut_var);
 	return (1);
