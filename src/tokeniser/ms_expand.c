@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 19:17:10 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/25 19:27:34 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/27 17:09:11 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ int	ms_insert_spaced(char ***arg, int arg_i, int var_pos, int var_len)
 						cut_var[i], &(char){-1}, 10), arg_i + 1);
 		}
 	}
+	free(cut_var);
 	return (1);
 }
 

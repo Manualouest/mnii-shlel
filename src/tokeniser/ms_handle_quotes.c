@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 19:31:40 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/25 19:32:28 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/27 17:15:26 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,15 @@ void	ms_hide_quotes(t_cmd *cmd)
 	}
 }
 
+int	ms_is_hider(char c, int check_kind)
+{
+	if (!check_kind && ((c < 32 && c > 13) || c < 7))
+		return (1);
+	else if (check_kind && c != '<' && c != '>')
+		return (1);
+	return (0);
+}
+
 void	ms_remove_hiders(t_cmd *cd, int ia)
 {
 	char	*tp_arg;
@@ -68,8 +77,8 @@ void	ms_remove_hiders(t_cmd *cd, int ia)
 			i = -1;
 			while (cd->args[ia] && cd->args[ia][++i])
 			{
-				if (cd->args[ia][i] < 32 && cd->args[ia - (ia >= 1)][0] != '<'
-					&& cd->args[ia - (ia >= 1)][0] != '>')
+				if (ms_is_hider(cd->args[ia][i], 0)
+					&& ms_is_hider(cd->args[ia - (ia >= 1)][0], 1))
 				{
 					tp_arg = ms_tripple_join(ft_substr(cd->args[ia], 0, i),
 							&cd->args[ia][i + 1], "", 100);

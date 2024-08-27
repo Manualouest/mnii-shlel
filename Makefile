@@ -47,14 +47,14 @@ SRC_NAME += execution/ms_exec.c \
 			execution/ms_exec_builtins.c \
 			execution/ms_exec_quit.c
 
-# to remove
-SRC_NAME += tokeniser_main_test.c
-
 SRC = $(addprefix $(SRC_DIR), $(SRC_NAME))
 
 OBJ_DIR = obj/
 OBJ_NAME = $(SRC_NAME:.c=.o)
 OBJ = $(patsubst %, $(OBJ_DIR)%, $(OBJ_NAME))
+
+all: $(NAME)
+
 $(OBJ_DIR)%.o:$(SRC_DIR)%.c
 	@mkdir -p $(dir $@)
 	@cc $(CC_FLAGS) $< -c -o $@
@@ -76,6 +76,5 @@ fclean: clean
 	@rm -f $(NAME)
 	@echo "\033[1;31m Deleted executable" $(NAME)
 
-all: $(NAME)
 
 re: fclean all

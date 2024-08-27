@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 19:59:36 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/25 20:16:36 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/27 17:02:00 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ int	ms_opens(t_cmd *cmd, char *filename, int is_created, int kind)
 		if (is_created == 0 && errno != EACCES)
 			return (open(filename, O_CREAT | O_WRONLY, S_IRWXU));
 		else if (is_created == 1)
-			return (open(filename, O_WRONLY));
+			return (open(filename, O_TRUNC | O_WRONLY));
 		else
 			ms_handle_errors(cmd, errno, strerror(errno), filename);
 		return (-1);
