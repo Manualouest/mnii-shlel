@@ -17,6 +17,7 @@ void	*ms_free_cmd(t_cmd *cmd)
 	int		i;
 	t_cmd	*tp_cmd;
 
+	ms_exec_closefds(cmd);
 	while (cmd != NULL)
 	{
 		i = -1;
