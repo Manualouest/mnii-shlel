@@ -76,7 +76,7 @@ static void	update_envp(char ***envp, char *old_pwd, char *new_pwd)
 {
 	char	*tmp;
 
-	if (envp_find((*envp), "PWD"))
+	if (envp_find((*envp), "PWD") && old_pwd)
 	{
 		tmp = malloc(sizeof(char) * (ft_strlen(old_pwd) + 8));
 		ft_strlcpy(tmp, "OLDPWD=", 8);

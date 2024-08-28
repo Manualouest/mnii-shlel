@@ -87,10 +87,15 @@ static char	*read_term(void)
 static char	*setup_prompt(char *dir)
 {
 	size_t	malloc_size;
+	bool	dir_exists;
 	char	*work;
 
+	dir_exists = true;
 	if (dir == NULL)
+	{
 		dir = ft_strdup("tf");
+		dir_exists = false;
+	}
 	malloc_size = ft_strlen(PROMPT_CONST) + ft_strlen(PROMPT_USER);
 	malloc_size += ft_strlen(dir) + ft_strlen("\001\033[1;32m\002") + 1;
 	work = malloc(sizeof(char) * malloc_size);
@@ -98,5 +103,7 @@ static char	*setup_prompt(char *dir)
 	ft_strlcat(work, " \001\033[1;32m\002", malloc_size);
 	ft_strlcat(work, dir, malloc_size);
 	ft_strlcat(work, PROMPT_USER, malloc_size);
+	if (!dir_exists)
+		free(dir);
 	return (work);
 }
