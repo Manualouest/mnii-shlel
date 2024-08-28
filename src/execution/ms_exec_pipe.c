@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exec_pipe.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/07 18:33:01 by mscheman          #+#    #+#             */
-/*   Updated: 2024/06/12 14:33:04 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/28 16:43:40 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ void	ms_exec_pipe(t_cmd *to_exec, char ***env)
 	}
 	ms_exec_closefds(first);
 	wait_child(first);
+	if (g_signal == 130)
+		write(1, "\n", 1);
+	else if (g_signal == 131)
+		ft_putstr_fd("Quit\n", 2);
 	ms_free_cmd(to_exec);
 }
 
@@ -40,6 +44,8 @@ static void	wait_child(t_cmd *child)
 	waitpid(child->pid, &status, 0);
 	if (WIFEXITED(status))
 		g_signal = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		g_signal = WTERMSIG(status) + 128;
 	wait_child(child->next);
 }
 

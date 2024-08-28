@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_exec.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <manutea.birou@gmail.com>           +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 14:33:15 by mscheman          #+#    #+#             */
-/*   Updated: 2024/06/12 14:34:04 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/28 16:50:34 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,20 @@ void	ms_exec(t_cmd *to_exec, char ***env, bool is_pipe)
 		return ;
 	}
 	if (ms_exec_builtin(to_exec, env) != -1)
+	{
+		signal(SIGINT, ms_sig_handler);
 		return ;
+	}
 	child_exec(to_exec, env);
 	waitpid(to_exec->pid, &status, 0);
 	if (WIFEXITED(status))
 		g_signal = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		g_signal = WTERMSIG(status) + 128;
+	if (g_signal == 130)
+		write(1, "\n", 1);
+	else if (g_signal == 131)
+		ft_putstr_fd("Quit\n", 2);
 	signal(SIGINT, ms_sig_handler);
 }
 
@@ -47,9 +56,9 @@ void	child_exec(t_cmd *to_exec, char ***env)
 		signal(SIGQUIT, SIG_DFL);
 		if (exec_pipe_builtin(to_exec, env) != -1)
 			exit(g_signal);
-		if (dup2(to_exec->fd_in, STDIN_FILENO) == -1)
+		if (to_exec->fd_in != -1 && dup2(to_exec->fd_in, STDIN_FILENO) == -1)
 			ms_dup2_quit(to_exec, *env);
-		if (dup2(to_exec->fd_out, STDOUT_FILENO) == -1)
+		if (to_exec->fd_out != -1 && dup2(to_exec->fd_out, STDOUT_FILENO) == -1)
 			ms_dup2_quit(to_exec, *env);
 		ms_exec_closefds(to_exec->first);
 		rl_clear_history();

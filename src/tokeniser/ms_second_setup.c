@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 14:20:40 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/25 21:25:30 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/28 17:32:18 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,28 +70,30 @@ char	*ms_get_var_parse(char *arg, int var_pos, int var_len)
 char	*ms_get_var(char *arg, int var_pos, int var_len, char **envp)
 {
 	char	*var_name;
-	char	*raw_content;
-	char	*var_content;
+	char	*env_line;
+	char	*var;
 
 	var_name = ms_get_var_parse(arg, var_pos, var_len);
 	if (!var_name)
 		return (NULL);
 	if (var_name[0] == '?')
 	{
-		var_content = ft_itoa(g_signal);
+		var = ft_itoa(g_signal);
 		free(var_name);
-		return (var_content);
+		return (var);
 	}
 	else
-		raw_content = envp_find(envp, var_name);
+		env_line = envp_find(envp, var_name);
 	free(var_name);
-	if (!raw_content)
+	if (!env_line)
 	{
-		raw_content = ft_calloc(sizeof(char), 1);
-		return (raw_content);
+		env_line = ft_calloc(sizeof(char), 1);
+		return (env_line);
 	}
-	var_content = ft_strdup(&(ft_strchr(raw_content, '=')[1]));
-	return (var_content);
+	var = ft_calloc(sizeof(char), 1);
+	if (ft_strchr(env_line, '=') && ft_strchr(env_line, '=')[0])
+		var = ms_replace_str(var, ft_strdup(&(ft_strchr(env_line, '=')[1])));
+	return (var);
 }
 
 int	ms_setup_round_two(t_cmd *cmd, char **envp)

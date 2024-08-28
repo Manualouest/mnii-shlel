@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 22:57:30 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/27 19:40:13 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/28 17:32:43 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ void	ms_heredoc_loop_innit(t_cmd *cmd, char *delimiter, char *filename,
 	(void)filename;
 	do_expand = ms_should_expand_heredoc(&delimiter);
 	input = readline(HEREDOC_PROMPT);
-	while (input && !(ft_strlen(input) == ft_strlen(delimiter)
+	while (g_signal != 130 && input
+		&& !(ft_strlen(input) == ft_strlen(delimiter)
 			&& !ft_strncmp(input, delimiter, ft_strlen(delimiter))))
 	{
 		if (do_expand)
@@ -57,9 +58,8 @@ void	ms_heredoc_loop_innit(t_cmd *cmd, char *delimiter, char *filename,
 	free(delimiter);
 	if (!input)
 	{
-		close(cmd->fd_in);
+		write(cmd->fd_in, &(char){'\0'}, 1);
 		ms_handle_errors(cmd, 0, MS_FAIL_HEREDOC, NULL);
-		cmd->fd_in = -1;
 		return ;
 	}
 	free(input);
@@ -96,6 +96,7 @@ void	ms_do_heredoc(t_cmd *cmd, char *delimiter, char **envp)
 
 void	ms_launch_heredoc(t_cmd *cmd, char ***args, int *i, char **envp)
 {
+	signal(SIGINT, ms_sig_heredoc);
 	if (args[0][*i + 1] && cmd->error_id != BAD_FILE)
 	{
 		if (args[0][*i + 1][0] != '>' && args[0][*i + 1][0] != '<')
@@ -109,4 +110,10 @@ void	ms_launch_heredoc(t_cmd *cmd, char ***args, int *i, char **envp)
 	}
 	else
 		ms_handle_errors(cmd, BAD_FILE, MS_SYNTAX_ERROR, NULL);
+	if (g_signal == 130)
+	{
+		close(cmd->fd_in);
+		cmd->fd_in = -1;
+	}
+	signal(SIGINT, ms_sig_handler);
 }

@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/27 11:36:06 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/25 18:59:45 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/08/28 17:06:06 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,18 @@ void	ms_sig_handler(int sig)
 		rl_redisplay();
 		g_signal = 130;
 	}
+}
+
+void	ms_sig_heredoc(int sig)
+{
+	char	c;
+
+	if (sig == SIGINT)
+		g_signal = 130;
+	c = '\n';
+	ioctl(0, TIOCSTI, &c);
+	rl_on_new_line();
+	rl_replace_line("", 0);
 }
 
 void	ms_swap_signal(int	*old_signal)
