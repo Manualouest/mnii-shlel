@@ -15,30 +15,12 @@
 static void	wait_child(t_cmd *child);
 static char	*try_path(t_cmd *cmd, char *env_path);
 
-void	print_cmd(t_cmd *cmd, int pos)
-{
-	if (!cmd)
-		return;
-	printf("- args (%d): \t|", pos);
-	for (int i = 0; cmd->args[i]; ++i) {
-		printf(" %s |", cmd->args[i]);
-	}
-	printf("\n");
-	printf("- fd_in: %d\n", cmd->fd_in);
-	printf("- fd_out: %d\n", cmd->fd_out);
-	printf("\n");
-	print_cmd(cmd->next, ++pos);
-}
-
 void	ms_exec_pipe(t_cmd *to_exec, char ***env)
 {
 	t_cmd	*first;
 
 	first = to_exec->first;
-	print_cmd(to_exec, 0);
-	printf("\naaa\n");
 	ms_setup_pipes(to_exec);
-	print_cmd(to_exec, 0);
 	while (to_exec)
 	{
 		child_exec(to_exec, env);

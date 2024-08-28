@@ -50,11 +50,12 @@ static void	shell_loop(char ***ms_env)
 	input = NULL;
 	while (true)
 	{
+		cmd = NULL;
 		input = read_term();
 		if (!input)
 			break ;
-		cmd = ms_tokeniser_main(input, *ms_env);
-		free(input);
+		if (input[0])
+			cmd = ms_tokeniser_main(input, *ms_env);
 		if (cmd)
 		{
 			if (g_signal == 0 && ((!cmd->args[0] || !cmd->args[0][0])))
@@ -64,8 +65,9 @@ static void	shell_loop(char ***ms_env)
 			if (cmd)
 				ms_free_cmd(cmd);
 		}
-		else if (g_signal == 0)
+		else if (g_signal == 0 && input[0])
 			ms_handle_errors(NULL, -1, MS_FAIL_STRUCT, NULL);
+		free(input);
 	}
 }
 
@@ -80,7 +82,8 @@ static char	*read_term(void)
 	free(path);
 	input = readline(prompt);
 	free(prompt);
-	add_history(input);
+	if (input && input[0])
+		add_history(input);
 	return (input);
 }
 

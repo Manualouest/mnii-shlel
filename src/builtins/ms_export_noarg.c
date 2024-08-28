@@ -35,7 +35,7 @@ static void	sort_envp(char **new_envp)
 
 	i = 0;
 	if (!new_envp[i])
-		return;
+		return ;
 	while (new_envp[i + 1])
 	{
 		len = ft_strlen(new_envp[i]);

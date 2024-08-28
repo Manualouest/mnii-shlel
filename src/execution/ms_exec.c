@@ -19,7 +19,6 @@ void	ms_exec(t_cmd *to_exec, char ***env, bool is_pipe)
 	int		status;
 
 	signal(SIGINT, SIG_IGN);
-
 	if (is_pipe)
 	{
 		ms_exec_pipe(to_exec, env);
