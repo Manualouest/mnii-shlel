@@ -31,8 +31,9 @@ int	main(int argc, char *argv[], char *envp[])
 {
 	char			**ms_env;
 
-	(void)argc;
 	(void)argv;
+	if (argc != 1)
+		return (EXIT_FAILURE);
 	signal(SIGINT, ms_sig_handler);
 	signal(SIGQUIT, SIG_IGN);
 	ms_env = tab_clone(envp);

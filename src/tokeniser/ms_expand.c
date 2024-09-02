@@ -51,9 +51,9 @@ void	ms_cut_param(char ***arg, int arg_i, int var_pos, int var_len)
 int	ms_get_stop(char ***arg, int arg_i, char **cut_var, int *i)
 {
 	*i = *i - 1;
-		arg[0][arg_i + 1] = ms_tripple_join("",
-				cut_var[*i], arg[0][arg_i + 1], 11);
-		arg[0][arg_i] = ms_tripple_join(arg[0][arg_i], cut_var[0], "", 110);
+	arg[0][arg_i + 1] = ms_tripple_join("",
+			cut_var[*i], arg[0][arg_i + 1], 11);
+	arg[0][arg_i] = ms_tripple_join(arg[0][arg_i], cut_var[0], "", 110);
 	if (arg[0][arg_i + 1])
 		return (1);
 	return (0);
