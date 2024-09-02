@@ -96,7 +96,7 @@ static char	*setup_prompt(char *dir)
 	dir_exists = true;
 	if (dir == NULL)
 	{
-		dir = ft_strdup("tf");
+		dir = ft_strdup("i forgorrrr");
 		dir_exists = false;
 	}
 	malloc_size = ft_strlen(PROMPT_CONST) + ft_strlen(PROMPT_USER);
