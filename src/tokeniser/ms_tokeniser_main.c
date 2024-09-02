@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 18:48:35 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/25 21:22:24 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/09/02 11:12:12 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_cmd	*part_two(t_cmd *cmd, char **envp, int old_signal, int signal_save)
 {
 	t_cmd	*cpy_cmd;
 
-	if (cmd && envp)
+	if (cmd && envp && cmd->error_id == 0 && g_signal == 0)
 	{
 		ms_swap_signal(&old_signal);
 		if (!ms_setup_round_two(cmd, envp))
