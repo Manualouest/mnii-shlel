@@ -24,13 +24,13 @@ int	builtin_cd(int argc, char **argv, char ***envp)
 
 	if (check(argc, *envp))
 		return (EXIT_FAILURE);
-	if (argc == 1 && (chdir(&envp_find(*envp, "HOME")[6]) != 0))
+	if (argc == 1 && (chdir(&envp_find(*envp, "HOME")[5]) != 0))
 	{
 		error(errno);
 		return (EXIT_FAILURE);
 	}
 	old_pwd = getcwd(NULL, 0);
-	if (chdir(argv[1]) != 0)
+	if (argv[1] && chdir(argv[1]) != 0)
 	{
 		error(errno);
 		free(old_pwd);
