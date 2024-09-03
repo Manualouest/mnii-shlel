@@ -72,7 +72,7 @@ static char	*try_path(t_cmd *cmd, char *env_path)
 	char	**tab_path;
 
 	i = 0;
-	tab_path = ft_split(env_path, ':');
+	tab_path = ft_split(&env_path[5], ':');
 	while (tab_path[i])
 	{
 		final_len = ft_strlen(tab_path[i]) + ft_strlen(cmd->args[0]) + 2;
