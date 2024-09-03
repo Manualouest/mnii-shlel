@@ -100,7 +100,6 @@ void	ms_misc_params_setup(t_cmd *cmd, t_cmd *first_cmd)
 	cmd->fd_out = 1;
 	cmd->error_id = NO_ERROR;
 	cmd->first = first_cmd;
-	cmd->old_g_signal = g_signal;
 }
 
 void	ms_base_setup(t_cmd *cmd, char *line)

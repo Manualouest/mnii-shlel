@@ -20,26 +20,21 @@
 # include <sys/stat.h>
 # include <sys/ioctl.h>
 # include <sys/wait.h>
-# include <string.h>
 # include <curses.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <unistd.h>
 # include <stdlib.h>
-# include <stdarg.h>
 # include <sys/types.h>
 # include <dirent.h>
 # include <signal.h>
 # include <errno.h>
 # include <termios.h>
 # include <limits.h>
-# include <stdint.h>
 
 # include <tokeniser_struct.h>
 # include <ms_env.h>
 # include <tokeniser.h>
-# include <parsing.h>
-
 # include <ms_builtins.h>
 # include <ms_execution.h>
 
