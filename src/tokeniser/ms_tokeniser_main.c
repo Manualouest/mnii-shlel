@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_tokeniser_main.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 18:48:35 by mbirou            #+#    #+#             */
-/*   Updated: 2024/09/02 11:12:12 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/09/06 11:57:35 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,13 +83,11 @@ t_cmd	*part_two(t_cmd *cmd, char **envp, int old_signal, int signal_save)
 	if (cmd && envp && cmd->error_id == 0 && g_signal == 0)
 	{
 		ms_swap_signal(&old_signal);
-		if (!ms_setup_round_two(cmd, envp))
+		if (!ms_setup_round_two(cmd, envp, signal_save))
 		{
 			cmd = ms_free_cmd(cmd);
 			return (NULL);
 		}
-		if (g_signal == signal_save)
-			ms_swap_signal(&old_signal);
 	}
 	else
 		cmd = ms_free_cmd(cmd);

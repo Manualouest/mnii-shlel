@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_in_out_file_setup.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 22:38:56 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/18 07:05:42 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/09/06 11:07:01 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ void	ms_in_out_files_setup(t_cmd *cmd, char **envp)
 	int		index;
 
 	index = -1;
-	while (cmd)
+	while (cmd && cmd->error_id == 0 && g_signal == 0)
 	{
 		args = cmd->args;
 		index = ms_head_to_next_symbol(args, index, cmd->error_id);

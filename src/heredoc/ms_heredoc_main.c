@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   ms_heredoc_main.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 22:57:30 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/28 17:32:43 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/09/06 11:43:11 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <tokeniser.h>
+
+void	ms_parse_name(char *name)
+{
+	int	i;
+
+	i = 0;
+	name[0] = '.';
+	while (name[i])
+	{
+		if (!ft_isprint(name[i]))
+			name[i] = ((int)name[i] % 94) + 32;
+		if (name[i] == ' ' || name[i] == '\\')
+			name[i] = 's';
+		i ++;
+	}
+}
 
 static char	*ms_gen_filename(void)
 {
@@ -23,25 +39,26 @@ static char	*ms_gen_filename(void)
 		return (NULL);
 	name = ft_calloc(sizeof(char), 11);
 	read(rd_num, name, 10);
+	ms_parse_name(name);
 	fd = access(name, F_OK);
 	while (fd != -1)
 	{
 		free(name);
 		name = ft_calloc(sizeof(char), 11);
 		read(rd_num, name, 10);
+		ms_parse_name(name);
 		fd = access(name, F_OK);
 	}
 	close(rd_num);
 	return (name);
 }
 
-void	ms_heredoc_loop_innit(t_cmd *cmd, char *delimiter, char *filename,
+void	ms_heredoc_loop_innit(t_cmd *cmd, char *delimiter,
 			char **envp)
 {
 	char	*input;
 	int		do_expand;
 
-	(void)filename;
 	do_expand = ms_should_expand_heredoc(&delimiter);
 	input = readline(HEREDOC_PROMPT);
 	while (g_signal != 130 && input
@@ -82,7 +99,7 @@ void	ms_do_heredoc(t_cmd *cmd, char *delimiter, char **envp)
 	if (cmd->fd_in > 0)
 		close(cmd->fd_in);
 	cmd->fd_in = fd;
-	ms_heredoc_loop_innit(cmd, delimiter, filename, envp);
+	ms_heredoc_loop_innit(cmd, delimiter, envp);
 	if (cmd->fd_in != -1)
 	{
 		close(cmd->fd_in);
@@ -110,7 +127,7 @@ void	ms_launch_heredoc(t_cmd *cmd, char ***args, int *i, char **envp)
 	}
 	else
 		ms_handle_errors(cmd, BAD_FILE, MS_SYNTAX_ERROR, NULL);
-	if (g_signal == 130)
+	if (g_signal == 130 && cmd->fd_in > 0)
 	{
 		close(cmd->fd_in);
 		cmd->fd_in = -1;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokeniser.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 18:07:08 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/27 19:40:38 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/09/06 11:29:47 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int			ms_change_quote_level(char *line, int index, int old_quote_level);
 char		*ms_tripple_join(char *first, char *second, char *third,
 				int frees);
 char		**ms_remove_empty_chars(char **args);
+void		ms_check_exit(t_cmd *cmd);
 
 // ms_env_utils.c
 char		*ms_find_env_name(char *content, char **envp);
@@ -40,7 +41,7 @@ char		*ms_find_env_name(char *content, char **envp);
 int			ms_has_dollar(char *arg);
 
 // ms_second_setup.c
-int			ms_setup_round_two(t_cmd *cmd, char **envp);
+int			ms_setup_round_two(t_cmd *cmd, char **envp, int signal_save);
 int			ms_get_var_start(char *arg, int *var_len);
 char		*ms_get_var(char *arg, int var_pos, int var_len, char **envp);
 

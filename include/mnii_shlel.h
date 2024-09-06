@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   mnii_shlel.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:32:41 by mscheman          #+#    #+#             */
-/*   Updated: 2024/08/28 17:00:08 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/09/06 11:46:49 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 # include <libft.h>
 # include <get_next_line_bonus.h>
-
+#include <stdio.h>
 # include <fcntl.h>
 # include <sys/stat.h>
 # include <sys/ioctl.h>

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_setups_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/13 21:01:47 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/25 19:29:45 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/09/06 11:04:16 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,4 +88,18 @@ char	**ms_remove_empty_chars(char **args)
 	}
 	free(args);
 	return (n_args);
+}
+
+void	ms_check_exit(t_cmd *cmd)
+{
+	t_cmd	*cpy_cmd;
+
+	cpy_cmd = cmd;
+	while (cpy_cmd)
+	{
+		if (cpy_cmd->args && cpy_cmd->args[0] && !cpy_cmd->args[1]
+			&& !ft_strncmp(cpy_cmd->args[0], "exit", 5))
+			cpy_cmd->args = tab_append(cpy_cmd->args, ft_strdup("$?"), 1);
+		cpy_cmd = cpy_cmd->next;
+	}
 }

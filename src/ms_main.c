@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_main.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/23 14:28:23 by mscheman          #+#    #+#             */
-/*   Updated: 2024/08/25 21:35:22 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/09/06 11:05:38 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static void	shell_loop(char ***ms_env)
 		{
 			if (g_signal == 0 && ((!cmd->args[0] || !cmd->args[0][0])))
 				g_signal = 127;
-			else if (cmd->error_id != 2 && g_signal == 0)
+			else if (cmd->error_id < 2 && g_signal == 0)
 				ms_exec(cmd, ms_env, cmd->next != NULL);
 			if (cmd)
 				ms_free_cmd(cmd);

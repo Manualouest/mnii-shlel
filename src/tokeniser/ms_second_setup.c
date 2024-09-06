@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ms_second_setup.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/04 14:20:40 by mbirou            #+#    #+#             */
-/*   Updated: 2024/08/28 17:32:18 by mbirou           ###   ########.fr       */
+/*   Updated: 2024/09/06 11:57:31 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,13 @@ char	*ms_get_var(char *arg, int var_pos, int var_len, char **envp)
 	return (var);
 }
 
-int	ms_setup_round_two(t_cmd *cmd, char **envp)
+int	ms_setup_round_two(t_cmd *cmd, char **envp, int signal_save)
 {
 	t_cmd		*cpy_cmd;
 
 	cpy_cmd = cmd;
 	ms_separate_symbols_base(cmd, 0);
+	ms_check_exit(cmd);
 	while (cpy_cmd)
 	{
 		cpy_cmd->args = ms_remove_empty_chars(cpy_cmd->args);
@@ -112,7 +113,11 @@ int	ms_setup_round_two(t_cmd *cmd, char **envp)
 		}
 		cpy_cmd = cpy_cmd->next;
 	}
-	ms_in_out_files_setup(cmd, envp);
-	ms_remove_hiders(cmd, -1);
+	if (cmd->error_id == 0 && g_signal == signal_save)
+	{
+		g_signal = 0;
+		ms_in_out_files_setup(cmd, envp);
+		ms_remove_hiders(cmd, -1);
+	}
 	return (1);
 }
