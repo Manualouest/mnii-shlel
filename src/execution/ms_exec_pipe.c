@@ -20,7 +20,13 @@ void	ms_exec_pipe(t_cmd *to_exec, char ***env)
 	t_cmd	*first;
 
 	first = to_exec->first;
-	ms_setup_pipes(to_exec);
+	if (ms_setup_pipes(to_exec))
+	{
+		error_log("failed to setup pipes", '\n');
+//		ms_free_cmd(first);
+		ms_exec_closefds(to_exec);
+		return ;
+	}
 	while (to_exec)
 	{
 		child_exec(to_exec, env);
@@ -32,7 +38,6 @@ void	ms_exec_pipe(t_cmd *to_exec, char ***env)
 		write(1, "\n", 1);
 	else if (g_signal == 131)
 		ft_putstr_fd("Quit\n", 2);
-	ms_free_cmd(to_exec);
 }
 
 static void	wait_child(t_cmd *child)
